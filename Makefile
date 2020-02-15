@@ -28,7 +28,7 @@ info: ## list info about package
 
 
 clean: ## Clean build resources
-	rm -rf dist node_modules lib docs/_html yarn-error.log yarn.lock package-lock.json
+	rm -rf dist node_modules lib docs/.vuepress/dist yarn-error.log yarn.lock package-lock.json
 
 
 build: ## Build and compile package
