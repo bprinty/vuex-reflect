@@ -180,6 +180,7 @@ class Post extends Model {
       */
       author: {
         type: Author,
+        collapse: 'author_id',
       },
     };
   }
@@ -226,6 +227,55 @@ const author = Author.get({email: 'john@doe.com'})
 
 author.name // get author name
 author.posts[0].title // get first post available for author (in store)
+```
+
+Creating a new object is as easy as:
+
+```javascript
+const obj = new Post({ title: 'my-post', body: 'This is a post.', author: author })
+```
+
+Once objects are created, they aren't initially saved to the store or the backend. To issue a `create` action that will `POST` data to the API and update the store, you'll need to use `Model.commit()`:
+
+```javascript
+// Create new object
+const obj = new Post({ title: 'my-post', body: 'This is a post.', author: author });
+
+// Check out property values
+obj.title // 'my-post' -- local version of data has been set
+obj.$.title // null -- data hasn't been committed to store
+
+// Commit data to backend and save result in Vuex store.
+obj.commit().then((result) => {
+  result.title // 'my-post' -- local version of data is set
+  result.$.title // 'my-post' -- store version of data is set after request
+});
+```
+
+If you remember from above, the `author` property was set to be a linked instance of the `Author` model. In the `property` definition for `author` above, we set the `collapse` property to `author_id`. The effect of this is collapsing that linked model into a single property in the `POST` payload:
+
+```javascript
+// POST /posts
+{
+  title: 'my-post',
+  body: 'This is a post',
+  author_id: 1,
+}
+```
+
+Without setting the `collapse` property, the full `Author` json is sent in the request:
+
+```javascript
+// POST /posts
+{
+  title: 'my-post',
+  body: 'This is a post',
+  author: {
+    id: 1,
+    name: 'Jane Doe',
+    email: 'jane@doe.com',
+  },
+}
 ```
 
 This overview covered several of the high-level features provided by this library, and you can find more information about each of the concepts alluded to above in these subsections:
