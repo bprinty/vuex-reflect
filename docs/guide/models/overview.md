@@ -41,7 +41,7 @@ class Author extends Model {
     return {
       query: '/authors',
       get: '/authors/:id',
-      udpate: '/authors/:id',
+      update: '/authors/:id',
     };
   }
 

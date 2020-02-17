@@ -8,9 +8,9 @@ class Todo extends Model {
   // SOMETHING LIKE BELOW, MAYBE CLEANED UP
   static actions() {
     return {
-      done: '/posts/{id}/done',
+      done: '/posts/:id/done',
       not: {
-        url: '/posts/{id}/done',
+        url: '/posts/:id/done',
         payload() {
           return {
             done: true,
@@ -18,6 +18,22 @@ class Todo extends Model {
         }
       }
     };
+  }
+
+  closeTodo() {
+    return this.post('/posts/:id/done')
+  }
+
+  getDoneTodos() {
+    return this.get('/posts/:id/done')
+  }
+
+  fetchDoneTodos() {
+    return this.fetch('/posts/:id/done')
+  }
+
+  getStatus() {
+    return this.get('/posts/:id/status')
   }
 
 }
