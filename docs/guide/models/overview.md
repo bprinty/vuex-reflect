@@ -83,7 +83,7 @@ class Author extends Model {
       todos: {
         type: Array,
         model: Post,
-        fetch: '/authors/:id/posts',
+        url: '/authors/:id/posts',
       },
     }
   }
