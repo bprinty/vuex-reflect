@@ -281,7 +281,7 @@ Without setting the `collapse` property, the full `Author` json is sent in the r
 This overview covered several of the high-level features provided by this library, and you can find more information about each of the concepts alluded to above in these subsections:
 
 1. [API](/guide/models/api.md) - Information about configuring API endpoints for fetching, updating, and querying data.
-1. [Properties](/guide/models/properties.md) - Information about declaring model properties, along with mechanisms for validation and property mutations.
-1. [Relationships](/guide/models/relationships.md) - Information about configuring relationships between models, including API endpoints for fetching nested data.
-1. [Querying](/guide/models/querying.md) - Information about querying data via the ORM.
-1. [Customization](/guide/models/customization.md) - Information about customizing models with custom methods.
+2. [Properties](/guide/models/properties.md) - Information about declaring model properties, along with mechanisms for validation and property mutations.
+3. [Relationships](/guide/models/relationships.md) - Information about configuring relationships between models, including API endpoints for fetching nested data.
+4. [Querying](/guide/models/querying.md) - Information about querying data via the ORM.
+5. [Customization](/guide/models/customization.md) - Information about customizing models with custom methods.
