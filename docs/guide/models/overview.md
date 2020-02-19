@@ -1,6 +1,6 @@
 # Overview
 
-Let's take a top-down approach to understanding how models work with Vuex Reflect. Throughout this section of the documentation, let's focus on building a content management application with two related models: `Posts` and `Authors`. Using the ORM from this library, we want to define Models to help us traverse our data and reflect a backend API. Additionally, we'll be defining relationships in our Models that connect the two models. First, let's start with `Author`. The API for reflecting author data looks like:
+Let's take a top-down approach to understanding how models work with Vuex Reflect. Throughout this section of the documentation, let's focus on building a content management application with two related models: `Posts` and `Authors`. Using the ORM from this library, we want to define Models to help us traverse our data and reflect a backend API. Additionally, we'll be defining relationships between our Models. First, let's start with `Author`. The API providing `Author` data has the following endpoints:
 
 ```
 /authors
@@ -14,9 +14,12 @@ Let's take a top-down approach to understanding how models work with Vuex Reflec
   GET - Query all or a subset of posts for a single author.
 ```
 
-Where `Author` records from the API have the shape:
+> Note that a targeted endpoint exists `/authors/:id/posts` for querying all posts for a specific author. This can be represented in our Model definition via `relationship()` configuraton.
+
+The `Author` records from this API take the shape:
 
 ```javascript
+// GET /authors
 [
   { id: 1, name: 'Jane Doe', email: 'jane@doe.com' },
   { id: 2, name: 'John Doe', email: 'john@doe.com' },
@@ -24,9 +27,7 @@ Where `Author` records from the API have the shape:
 ]
 ```
 
-Note that a targeted endpoint exists `/authors/:id/posts` for querying all posts for a specific author. This can be represented in our Model definition via `relationship()` configuraton.
-
-Now that we understand the data involved, let's define our author model like (using `validator` for email validation):
+Now that we understand the data involved, let's define our `Author` model:
 
 ```javascript
 import v from 'validator';
@@ -40,7 +41,7 @@ class Author extends Model {
     return {
       query: '/authors',
       get: '/authors/:id',
-      udpate: '/authors/:id',
+      update: '/authors/:id',
     };
   }
 
@@ -56,7 +57,6 @@ class Author extends Model {
         default: null,
         required: true,
         type: String,
-        validation: /^[a-zA-Z]+( [a-zA-z]+)?$/, // validate input with regex
       },
       /**
       * Author email.
@@ -81,21 +81,22 @@ class Author extends Model {
        * All todo items for a single author.
        */
       todos: {
-        type: Post,
-        fetch: '/authors/:id/posts',
+        type: Array,
+        model: Post,
+        url: '/authors/:id/posts',
       },
     }
   }
 }
 ```
 
-Let's unpack some of the items above:
+Let's unpack some parts of the `Author` definition from above:
 
-1. There are many different api actions that can be used when defining Models. The [API](/guide/models/api.md) subsection has more details on all available actions.
+1. This library provides granularity over what endpoints are used during specific types of API actions. The [API](/guide/models/api.md) subsection has more details on all available actions.
 2. Properties can define (in a declarative way) rules for mutating and validating data during updates. The [Properties](/guide/models/properties.md) subsection has more information on these rules.
 3. Relationships between models where data can be fetched via API can be defined using the `relationships()` static method. The [Relationships](/guide/models/relationships.md) subsection has more information on how to configure these data links.
 
-Now that we've defined our `Author` Model, let's define our `Post` Model. The API for reflecting post data looks like:
+Now that we've defined our `Author` Model, let's define our `Post` Model. The API providing `Post` data has the following endpoints:
 
 ```
 /posts
@@ -107,9 +108,10 @@ Now that we've defined our `Author` Model, let's define our `Post` Model. The AP
   DELETE - Delete a specific post.
 ```
 
-Where `Post` records from the API have the shape:
+The `Post` records from this API take the shape:
 
 ```javascript
+// GET /posts
 [
   {
       id: 1,
@@ -135,7 +137,9 @@ Where `Post` records from the API have the shape:
 ]
 ```
 
-Note that `Post` data from the API contains nested information about related `Author` data. This is a common pattern in web development, and ORMs should be built to handle that information accordingly. You can see in the `Post` model definition below, where the nested `Author` configuration is represented as an entry in the `props()` definition:
+Note that `Post` data from the API contains nested information about related `Author` data. This is a commonly used pattern in web development, and the ORM from this library is built to support that pattern accordingly (by saving nested `Author` objects in the Vuex store automatically).
+
+In the `Post` model definition below, note how the nested `Author` configuration is represented as an entry in the `props()` definition:
 
 ```javascript
 class Post extends Model {
@@ -145,9 +149,9 @@ class Post extends Model {
    */
   static api() {
     return {
-      create: '/posts', // url for POST-ing new todo items
-      query: '/posts', // url for querying with parameters (/todos?name.like=my-todo)
-      update: '/posts/{id}', // url for GET/PUT/DELETE operations on single todo
+      create: '/posts',
+      query: '/posts',
+      update: '/posts/:id',
     };
   }
 
@@ -176,52 +180,108 @@ class Post extends Model {
       */
       author: {
         type: Author,
+        collapse: 'author_id',
       },
     };
   }
 }
 ```
 
-Once these models have been defined, you can interact with the data like so:
+Once these models have been defined, you can use them throughout your application. As a quick example, let's take a look at a component that interacts with data from the `Post` model. In this component, you'll see that we need to first fetch the data before using it in the component.
 
 ```javascript
-// javascript detailing how to use the orm to fetch data in
+// JavaScript portion of Post Feed component.
 export default {
-  name: 'my-component',
+  name: 'post-feed',
   created() {
-    Post.fetch() // fetch data and save to store
+    Post.fetch()
+  },
+  computed() {
+    allPosts() {
+      return Post.query().all();
+    },
+    shortPosts() {
+      return Post.query.filter((x) => { x.body.length < 200 }).all();
+    },
   },
 }
 ```
 
-Once data have been fetched and added to the frontend store, you can query and interact with those data:
+This hints at an important principle you need to understand when using this library: the ORM **will only query data currently in the store**. It's up to developers to ensure that their store is in-sync with the data they want to have available. Fetching data from the API and into the store is easily done with `Model.fetch()`.
+
+The [Store](/guide/store/overview.md) section provides more detail about how data flow into and out of the store. Technically, you don't even need models to use the API reflection functionality provided by this library. All Models in this module use getters and mutations from the store when accessing data.
+
+As alluded to above, once data have been fetched and added to the frontend store, you can query and interact with those data:
 
 ```javascript
 const post = Post.get(1); // get post by id
 
 post.title // get author
 post.author.email // get author email
-
-
-typeof post.author === 'Author'
-
 ```
 
 And since author data was embedded in the `Post` fetch, you can also access `Author` data from the store without fetching authors:
 
+```javascript
+const author = Author.get({email: 'john@doe.com'})
+
+author.name // get author name
+author.posts[0].title // get first post available for author (in store)
 ```
 
+Creating a new object is as easy as:
+
+```javascript
+const obj = new Post({ title: 'my-post', body: 'This is a post.', author: author })
 ```
 
-This highlights an important principle you need to understand when using this library: **any models you fetch will be saved to the store, and any model in the store is queryable via the orm**. The [Store](/guide/store/overview.md) section provides more detail about how data flow into and out of the store. Technically, you don't even need models to use the API reflection functionality provided by this module. All Models in this module use getters and mutations from the store when accessing data. That section of the documentation discusses internals of how data are stored and how you can use the store in a declarative way without defining models.
+Once objects are created, they aren't initially saved to the store or the backend. To issue a `create` action that will `POST` data to the API and update the store, you'll need to use `Model.commit()`:
 
-This overview covered several of the high-level features provided by this module, and you can find more information about each of the concepts alluded to above in these subsections:
+```javascript
+// Create new object
+const obj = new Post({ title: 'my-post', body: 'This is a post.', author: author });
 
-1. [API]
-2. [Properties]
+// Check out property values
+obj.title // 'my-post' -- local version of data has been set
+obj.$.title // null -- data hasn't been committed to store
 
+// Commit data to backend and save result in Vuex store.
+obj.commit().then((result) => {
+  result.title // 'my-post' -- local version of data is set
+  result.$.title // 'my-post' -- store version of data is set after request
+});
+```
 
- about configuring, getting, and setting properties on models is detailed in the [Properties](/guide/models/properties.md) subsection of this documentation.
+If you remember from above, the `author` property was set to be a linked instance of the `Author` model. In the `property` definition for `author` above, we set the `collapse` property to `author_id`. The effect of this is collapsing that linked model into a single property in the `POST` payload:
 
+```javascript
+// POST /posts
+{
+  title: 'my-post',
+  body: 'This is a post',
+  author_id: 1,
+}
+```
 
-TODO: GO OVER ALL COMPONENTS OF THE MODELS AND TALK ABOUT HOW THEY'LL BE ELABORATED ON IN OTHER SECTIONS OF THE DOCUMENTATION
+Without setting the `collapse` property, the full `Author` json is sent in the request:
+
+```javascript
+// POST /posts
+{
+  title: 'my-post',
+  body: 'This is a post',
+  author: {
+    id: 1,
+    name: 'Jane Doe',
+    email: 'jane@doe.com',
+  },
+}
+```
+
+This overview covered several of the high-level features provided by this library, and you can find more information about each of the concepts alluded to above in these subsections:
+
+1. [API](/guide/models/api.md) - Information about configuring API endpoints for fetching, updating, and querying data.
+1. [Properties](/guide/models/properties.md) - Information about declaring model properties, along with mechanisms for validation and property mutations.
+1. [Relationships](/guide/models/relationships.md) - Information about configuring relationships between models, including API endpoints for fetching nested data.
+1. [Querying](/guide/models/querying.md) - Information about querying data via the ORM.
+1. [Customization](/guide/models/customization.md) - Information about customizing models with custom methods.

@@ -62,8 +62,8 @@ module.exports = {
                 '/guide/models/api',
                 '/guide/models/properties',
                 '/guide/models/relationships',
-                '/guide/models/customization',
                 '/guide/models/querying',
+                '/guide/models/customization',
               ],
             },
             {
