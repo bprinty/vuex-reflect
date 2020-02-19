@@ -72,10 +72,8 @@ module.exports = {
               children: [
                 '/guide/store/overview',
                 '/guide/store/api',
-                '/guide/store/declare',
-                '/guide/store/templates',
-                '/guide/store/mutations',
-                '/guide/store/validation',
+                '/guide/store/contract',
+                '/guide/store/debugging',
               ],
             },
             {
