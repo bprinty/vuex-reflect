@@ -1,22 +1,166 @@
 # Configure
 
 
-## Registering Plugin
+## Registering Models
 
-To register this plugin with the `Vuex` store in your application, add it to the list of plugins passed into `Vuex.Store()`:
+There are two ways to register this library with the `Vuex` store in your application. The first is to register all `Model` classes:
 
 ```javascript
-import Vue from 'vue'
-import Vuex from 'vuex'
-import Reflect from 'vuex-reflect'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
 
-Vue.use(Vuex)
+// creating models
+class Post extends Model {
+  static api() { ... }
+  ...
+}
+class Author extends Model { ... }
 
+// registering models
+const db = Reflect({ Post, Author });
+
+// creating the store
+Vue.use(Vuex);
 const store = new Vuex.Store({
-  plugins: [Reflect()]
+  state: { ... },
+  mutations: { ... },
+  ...
+  plugins: [db],
 })
+```
 
-export default store
+Creating Models to register via this library is detailed in the [Models](/guide/models/overview.md) section of the documentation.
+
+## Registering Store Configuration
+
+The second is for users who don't want to use an ORM in their application (they wish to use the store directly). To register Vuex Reflect configuration directly with the Store, use:
+
+```javascript
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
+
+// declaring configuration
+const posts = {
+  default: [],
+  api: { ... }
+  ...
+};
+const authors = { ... };
+
+// registering configuration
+const db = Reflect({ posts, authors });
+
+// creating the store
+Vue.use(Vuex);
+const store = new Vuex.Store({
+  state: { ... },
+  mutations: { ... },
+  ...
+  plugins: [db],
+})
+```
+
+Creating non-model configuration to register via this library is detailed in the [Store](/guide/models/overview.md) section of the documentation.
+
+## Configuration with Vuex Modules
+
+Separating parts of the store into modules that encapsulate logical blocks of your application is a common practice when using Vuex. With this library, you can similary use modules to segment large code-bases to make them more manageable. Here is an example of declaring Models to use within the context of a vuex module:
+
+```javascript
+// contents of ./modules/moduleA/models.js
+
+import { Model } from 'vuex-reflect';
+
+class ModelAA extends Model {
+  ...
+}
+
+class ModelAB extends Model {
+  ...
+}
+
+export default {
+  ModelAA,
+  ModelAB,
+};
+```
+
+```javascript
+// contents of ./store.js
+
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
+import a from './modules/moduleA/models';
+import b from './modules/moduleB/models';
+
+// registering configuration
+const db = Reflect({
+  modules: { a, b },
+});
+
+// creating the store
+Vue.use(Vuex);
+const store = new Vuex.Store({
+  plugins: [db],
+})
+```
+
+If you need to define additional store constructs (`state`, `mutations`, etc ...) for modules, you can do so as you normally would with `Vuex` modules:
+
+```javascript
+// contents of ./modules/moduleA/store.js
+
+const state = {
+  // other state parameters
+};
+
+const mutations = { ... };
+
+const getters = { ... };
+
+const actions = { ... };
+
+export default {
+  state,
+  mutations,
+  getters,
+  actions,
+};
+```
+
+And register them in your application like so:
+
+```javascript
+// contents of ./store.js
+
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
+import moduleA from './modules/moduleA/store';
+import moduleB from './modules/moduleA/store';
+import modelsA from './modules/moduleA/models';
+import modelsB from './modules/moduleB/models';
+
+// registering configuration
+const db = Reflect({
+  modules: {
+    a: modelsA,
+    b: modelsB,
+  },
+});
+
+// creating the store
+Vue.use(Vuex);
+const store = new Vuex.Store({
+  modules: {
+    a: moduleA,
+    b: moduleB,
+  }
+  plugins: [db],
+})
 ```
 
 ## Axios Configuration
