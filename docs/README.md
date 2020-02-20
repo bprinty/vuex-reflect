@@ -101,7 +101,30 @@ class Todo extends Model {
 }
 ```
 
-With this syntax, you define (in clear code) 1) where the data come from, and 2) how that data are mutated and validated during updates. Once you have a model, you can use it to fetch data for the store using (typically called when a component is created):
+Once models are defined, you can register them with Vuex like so:
+
+```javascript
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
+import { Post, Author } from 'models';
+
+Vue.use(Vuex);
+
+const db = Reflect({
+  Post,
+  Author
+});
+
+const store = new Vuex.Store({
+  state: { ... },
+  mutations: { ... },
+  ...
+  plugins: [db],
+})
+```
+
+With the syntax provided by this library, you define (in clear code) 1) where the data come from, and 2) how that data are mutated and validated during updates. Once you have a model, you can use it to fetch data for the store using (typically called when a component is created):
 
 ```javascript
 Todo.fetch().then(() => {
