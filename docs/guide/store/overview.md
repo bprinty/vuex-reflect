@@ -2,6 +2,13 @@
 
 In a previous section of the documentation, we discussed the ORM and how to define front-end models for your application that can represent data from an external API. This section of the documentation will cover how data are organized in the Vuex store when you define models, along with the Vuex constructs used for accessing and mutating data within this library.
 
+::: tip Disclaimer
+
+This section is only relevant if you wish to understand how the ORM functions in the application or develop configuration for the store directly (bypass using the ORM). If you plan to use the ORM with this plugin, simply follow the guidelines in the [Models](/guide/models/overview.md) section of the documentation.
+
+:::
+
+
 Similarly to the previous section, let's take a top-down approach to understanding how data are managed in the Vuex store. This section will reference two models from the previous section: `Posts` and `Authors`. Just as a refresher, here are endpoints for the `Author` model:
 
 ```
@@ -163,7 +170,7 @@ Instead of needing to define individual actions for updating data via `GET/POST/
 
 ```javascript
 // fetch all post data from api
-this.$store.dispatch('profile.fetch').then((data) => {
+this.$store.dispatch('profile.query').then((data) => {
   // do something with the data
 });
 
