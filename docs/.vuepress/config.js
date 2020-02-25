@@ -77,14 +77,14 @@ module.exports = {
                 '/guide/store/debugging',
               ],
             },
-            {
-              title: 'Examples',
-              collapsable: false,
-              children: [
-                '/guide/examples/todo',
-                '/guide/examples/blog',
-              ],
-            },
+            // {
+            //   title: 'Examples',
+            //   collapsable: false,
+            //   children: [
+            //     '/guide/examples/todo',
+            //     '/guide/examples/blog',
+            //   ],
+            // },
           ],
           // '/api/': sidebarTree()['/api/']
         }
