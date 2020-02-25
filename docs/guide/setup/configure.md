@@ -210,7 +210,7 @@ Other options available when setting up this library are as follows:
 
 ### Default Request Methods
 
-To change the default request methods used for various operations
+To change the default request methods used for various operations, use the `methods` keyword when defining Vuex-Reflect options.
 
 ```javascript
 var reflect = Reflect({
@@ -223,5 +223,3 @@ var reflect = Reflect({
   },
 });
 ```
-
-> TODO: add more documentation for the Other Options and Default Request Methods sections to add more context.
