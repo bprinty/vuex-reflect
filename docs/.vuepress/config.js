@@ -72,20 +72,19 @@ module.exports = {
               children: [
                 '/guide/store/overview',
                 '/guide/store/api',
-                '/guide/store/declare',
-                '/guide/store/templates',
-                '/guide/store/mutations',
-                '/guide/store/validation',
+                '/guide/store/contract',
+                '/guide/store/querying',
+                '/guide/store/debugging',
               ],
             },
-            {
-              title: 'Examples',
-              collapsable: false,
-              children: [
-                '/guide/examples/todo',
-                '/guide/examples/blog',
-              ],
-            },
+            // {
+            //   title: 'Examples',
+            //   collapsable: false,
+            //   children: [
+            //     '/guide/examples/todo',
+            //     '/guide/examples/blog',
+            //   ],
+            // },
           ],
           // '/api/': sidebarTree()['/api/']
         }

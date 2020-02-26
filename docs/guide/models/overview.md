@@ -27,6 +27,9 @@ The `Author` records from this API take the shape:
 ]
 ```
 
+
+## Defining Models
+
 Now that we understand the data involved, let's define our `Author` model:
 
 ```javascript
@@ -187,7 +190,12 @@ class Post extends Model {
 }
 ```
 
-Once these models have been defined, you can use them throughout your application. As a quick example, let's take a look at a component that interacts with data from the `Post` model. In this component, you'll see that we need to first fetch the data before using it in the component.
+> See the [Configuration](/guide/setup/configure.md) section of the documentation for details on how to register these definitions with the `Vuex` store.
+
+
+## Using Models in Components
+
+Once these models have been defined and [registered](/guide/setup/configure.md), you can use them throughout your application. As a quick example, let's take a look at a component that interacts with data from the `Post` model. In this component, you'll see that we need to first fetch the data before using it in the component.
 
 ```javascript
 // JavaScript portion of Post Feed component.
@@ -211,6 +219,9 @@ This hints at an important principle you need to understand when using this libr
 
 The [Store](/guide/store/overview.md) section provides more detail about how data flow into and out of the store. Technically, you don't even need models to use the API reflection functionality provided by this library. All Models in this module use getters and mutations from the store when accessing data.
 
+
+## Querying Data
+
 As alluded to above, once data have been fetched and added to the frontend store, you can query and interact with those data:
 
 ```javascript
@@ -223,7 +234,7 @@ post.author.email // get author email
 And since author data was embedded in the `Post` fetch, you can also access `Author` data from the store without fetching authors:
 
 ```javascript
-const author = Author.get({email: 'john@doe.com'})
+const author = Author.get({email: 'john@doe.com'});
 
 author.name // get author name
 author.posts[0].title // get first post available for author (in store)
@@ -278,10 +289,45 @@ Without setting the `collapse` property, the full `Author` json is sent in the r
 }
 ```
 
+
+## Clearing Store Data
+
+Single page web applications (SPWA) also need the capacity to clear data from the store when users navigate across views of the application. It might not always be necessary, but here is some code showing how to remove model data from the store once a component is destroyed:
+
+```html
+<template></template>
+<script>
+export default {
+  name: 'my-component',
+  data() {
+    return {
+      items: [],
+    }
+  }
+  created() {
+    // fetch item data for the view
+    Item.fetch().then((items) => {
+      this.items = items;
+    });
+  },
+  destroyed() {
+    // clear items associated with this view
+    this.items.forEach(obj => obj.remove());
+
+    // or, to clear all items from the store
+    Item.clear();
+  },
+}
+</script>
+```
+
+
+## Additional Information
+
 This overview covered several of the high-level features provided by this library, and you can find more information about each of the concepts alluded to above in these subsections:
 
 1. [API](/guide/models/api.md) - Information about configuring API endpoints for fetching, updating, and querying data.
-1. [Properties](/guide/models/properties.md) - Information about declaring model properties, along with mechanisms for validation and property mutations.
-1. [Relationships](/guide/models/relationships.md) - Information about configuring relationships between models, including API endpoints for fetching nested data.
-1. [Querying](/guide/models/querying.md) - Information about querying data via the ORM.
-1. [Customization](/guide/models/customization.md) - Information about customizing models with custom methods.
+2. [Properties](/guide/models/properties.md) - Information about declaring model properties, along with mechanisms for validation and property mutations.
+3. [Relationships](/guide/models/relationships.md) - Information about configuring relationships between models, including API endpoints for fetching nested data.
+4. [Querying](/guide/models/querying.md) - Information about querying data via the ORM.
+5. [Customization](/guide/models/customization.md) - Information about customizing models with custom methods.

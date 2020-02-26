@@ -16,6 +16,13 @@ Because this module integrates with Vuex for storing data, it also integrates wi
 The name `Reflect` was chosen because this package essentially lets you reflect the data provided via an API into your store, with minimal configuration. There are many types of data reflection throughout a well-designed application - the UI reflects data from the frontend data store, the frontend store reflects data from the API, and the API reflects data from the database. This library covers one piece of that puzzle.
 
 
+## Prerequisites
+
+This documentation assumes users have at least a practical understanding of Vuex and the constructs Vuex uses to manage application state. For more information on Vuex, see the [documentation](https://vuex.vuejs.org/).
+
+Another concept this documentation assumes users understand is the [MVMM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) architectural pattern. This documentation will refer to both frontend and backend data models for organizing data structures throughout application development.
+
+
 ## Quickstart
 
 The sections below detail how to configure this plugin to build a minimal [todo list](https://vuejs.org/v2/examples/todomvc.html) application that connects to an external API for managing data. First, we'll use this library to define models in the system, and will then use those models in components of the application.
@@ -69,16 +76,6 @@ class Todo extends Model {
    */
   static props() {
     return {
-      // NOTE: NOT SURE IF WE SHOULD MAKE DEVELOPERS NAME THE PRIMARY KEY
-      // /**
-      //  * Unique id for object.
-      //  */
-      // id: {
-      //   key: true
-      //   default: null,
-      //   type: Number,
-      //   validation: value => value > 1, // validate input with function
-      // },
       /**
        * Todo text
        */
@@ -101,10 +98,33 @@ class Todo extends Model {
 }
 ```
 
-With this syntax, you define (in clear code) 1) where the data come from, and 2) how that data are mutated and validated during updates. Once you have a model, you can use it to fetch data for the store using (typically called when a component is created):
+Once models are defined, you can register them with Vuex like so:
 
 ```javascript
-Todo.fetch().then(() => {
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
+import { Post, Author } from 'models';
+
+Vue.use(Vuex);
+
+const db = Reflect({
+  Post,
+  Author
+});
+
+const store = new Vuex.Store({
+  state: { ... },
+  mutations: { ... },
+  ...
+  plugins: [db],
+})
+```
+
+With the syntax provided by this library, you define (in clear code) 1) where the data come from, and 2) how that data are mutated and validated during updates. Once you have a model, you can use it to fetch data for the store using (typically called when a component is created):
+
+```javascript
+Todo.query().then(() => {
   console.log('Data fetched and saved to vuex store.');
 });
 ```
@@ -114,12 +134,10 @@ To see all of the data fetched, you can access the store directly:
 ```javascript
 // result of: store.state
 {
-  models: {
-    todo: {
-      1: { id: 1, text: 'first todo', done: false },
-      2: { id: 2, text: 'done todo', done: true },
-      ...
-    }
+  todos: [
+    { id: 1, text: 'first todo', done: false },
+    { id: 2, text: 'done todo', done: true },
+    ...
   }
 }
 ```
@@ -266,21 +284,20 @@ Above, you can see more examples of querying data using the ORM, along with the 
     - [API](/guide/models/api.md)
     - [Properties](/guide/models/properties.md)
     - [Relationships](/guide/models/relationships.md)
-    - [Customization](guide/models/customization.md)
     - [Querying](guide/models/querying.md)
+    - [Customization](guide/models/customization.md)
 - Store
     - [Overview](/guide/store/overview.md)
     - [API](guide/store/api.md)
-    - [Declarative Syntax](guide/store/declare.md)
-    - [Templates](guide/store/templates.md)
-    - [Mutations](guide/store/mutations.md)
-    - [Validation](guide/store/validation.md)
-- Examples
-    - [Todo List](/guide/examples/todo.md)
-    - [Blog](guide/examples/blog.md)
+    - [Contract](guide/store/contract.md)
+    - [Querying](guide/store/querying.md)
+    - [Debugging](guide/store/debugging.md)
 
 
 <!--
+- Examples
+    - [Todo List](/guide/examples/todo.md)
+    - [Blog](guide/examples/blog.md)
 - Events
     - [Overview](/guide/events/overview.md)
     - [Model Events](/guide/events/model-events.md)
