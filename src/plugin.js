@@ -1,4 +1,7 @@
 
+/**
+ * Main entrypoint for Vuex Reflect plugin.
+ */
 export function Reflect(models) {
 
   // sanitize inputs
@@ -11,6 +14,6 @@ export function Reflect(models) {
     store.subscribe((mutation, state) => {
       // called after every mutation.
       // The mutation comes in the format of `{ type, payload }`.
-    })
+    });
   }
 }
