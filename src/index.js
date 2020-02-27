@@ -9,7 +9,7 @@ import Reflect from './plugin';
 
 
 // exports
-export default {
+export {
     Model,
     Reflect,
 };

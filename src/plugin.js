@@ -2,7 +2,7 @@
 /**
  * Main entrypoint for Vuex Reflect plugin.
  */
-export function Reflect(models) {
+export default function Reflect(models) {
 
   // sanitize inputs
 
