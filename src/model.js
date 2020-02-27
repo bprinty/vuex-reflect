@@ -1,6 +1,4 @@
 
-import query from './querying';
-
 /**
  * Abstract base class for Model definitions.
  */
@@ -27,7 +25,4 @@ export default class Model {
     return {};
   }
 
-  query() {
-    return query();
-  }
 }
