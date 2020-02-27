@@ -50,7 +50,7 @@ Documentation for the project can be found [here](http://storage.googleapis.com/
 
 <!-- TODO: don't store docs in a bucket after it's published - use GitHub pages. -->
 
-## Developers
+## Contributors
 
 Below are some useful notes for developers looking to contribute to this project.
 
