@@ -60,7 +60,7 @@ Documentation for the project can be found [here](http://storage.googleapis.com/
 
 ### Getting Started
 
-To get started contributing to the project, simply clone the repo and setup the dependencies using `yarn` or `npm`:
+To get started contributing to the project, simply clone the repo and setup the dependencies using `yarn` or `npm install`:
 
 ```bash
 git clone git@github.com:bprinty/vuex-reflect.git
