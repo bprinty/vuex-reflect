@@ -26,10 +26,11 @@
     "test:watch": "jest --watch",
     "docs:api": "vuepress-jsdoc --source ./src/ --dist docs --folder api --title API --exclude *.test.js,exclude.js",
     "docs": "yarn docs:api && vuepress build docs",
+    "docs:dev": "vuepress dev docs",
     "publish": "npm publish"
   },
   "main": [
-    "dist/vuex-reflect.min.js"
+    "dist/index.min.js"
   ],
   "dependencies": {
     "@babel/cli": "^7.8.4",
