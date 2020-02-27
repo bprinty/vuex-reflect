@@ -108,7 +108,10 @@ axios.get.mockImplementation((url) => {
   const { id, endpoint } = normalize(url);
   return new Promise((resolve, reject) => {
     if (!(endpoint in api) || api[endpoint] === null) {
-      reject(`URL ${url} not in API`);
+      reject({
+        status: 404,
+        message: `URL ${url} not in API`,
+      });
     }
     if (id === null) {
       resolve({
@@ -128,7 +131,10 @@ axios.post.mockImplementation((url, data) => {
   const { id, endpoint } = normalize(url);
   return new Promise((resolve, reject) => {
     if (!(endpoint in api) || api[endpoint] === null) {
-      reject(`URL ${url} not in API`);
+      reject({
+        status: 404,
+        message: `URL ${url} not in API`,
+      });
     }
     resolve({
       status: (id === null) ? 201 : 202,
@@ -141,7 +147,10 @@ axios.put.mockImplementation((url, data) => {
   const { id, endpoint } = normalize(url);
   return new Promise((resolve, reject) => {
     if (!(endpoint in api) || api[endpoint] === null) {
-      reject(`URL ${url} not in API`);
+      reject({
+        status: 404,
+        message: `URL ${url} not in API`,
+      });
     }
     resolve({
       status: 200,
@@ -154,7 +163,10 @@ axios.delete.mockImplementation((url) => {
   const { id, endpoint } = normalize(url);
   return new Promise((resolve, reject) => {
     if (!(endpoint in api) || api[endpoint] === null){
-      reject(`URL ${url} not in API`);
+      reject({
+        status: 404,
+        message: `URL ${url} not in API`,
+      });
     }
     resolve({
       status: 204,
@@ -192,11 +204,45 @@ const store = new Vuex.Store({
 });
 
 
-// tests
-// -----
-describe("store configuration", function () {
+// api
+// ---
+describe("api mock", () => {
 
-  it("extra constructs work", function () {
+  test("404", async () => {
+    try {
+      await axios.get('/missing');
+      assert.fail('Request returned response instead of 404.');
+    } catch (err) {
+      assert.equal(err.status, 404);
+    }
+  });
+
+  test("GET", async () => {
+    const res = await axios.get('/posts');
+    assert.equal(res.status, 200);
+    assert.equal(res.data.length, 2);
+  });
+
+  test("POST", async () => {
+    assert.isTrue(true);
+  });
+
+  test("PUT", async () => {
+    assert.isTrue(true);
+  });
+
+  test("DELETE", async () => {
+    assert.isTrue(true);
+  });
+
+});
+
+
+// setup
+// -----
+describe("store configuration", () => {
+
+  test("extra constructs work", () => {
       assert.equal(store.state.ping, null);
       store.commit('ping');
       assert.equal(store.state.ping, 'pong');
@@ -205,14 +251,8 @@ describe("store configuration", function () {
       });
   });
 
-  it("plugin registered", function () {
+  test("plugin registered", () => {
       assert.equal(store._subscribers.length, 1);
   });
 
-  it("api mocks return data", function() {
-      axios.get('/posts').then((response) => {
-        assert(response.status, 201);
-        assert(response.data.length, 2);
-      })
-  });
 });
