@@ -31,15 +31,15 @@ import _ from 'lodash';
 
 jest.mock('axios');
 
-// STOPPED HERE -- ISSUES WITH DESTRUCTURING OUTPUTS
+// STOPPED HERE -- WORKING ON BUILDING OUT SERVERLESS API MOCKS
 
 // helpers
 function model(name) {
   return {
-    get: (id) => { id: id, ...db[name][id] },
+    get: (id) => Object.assign({id: id}, db[name][id]),
     put: (id, data) => {
       Object.assign(db[name][id], data);
-      return { id: id, ...db[name][id] };
+      return Object.assign({id: id}, db[name][id]);
     },
     delete: (id) => {
       delete db[name][id];
@@ -49,7 +49,7 @@ function model(name) {
 
 function collection(name) {
   return {
-    get: () => Object.keys(db[name]).map(key => { id: key, ...db[name][key] }),
+    get: () => Object.keys(db[name]).map(key => Object.assign({id: key}, db[name][key])),
     post: (data) => {
       const id = _.max(Object.keys(db[name]));
       db[name][id] = data;
