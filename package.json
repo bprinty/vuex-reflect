@@ -20,13 +20,14 @@
   "scripts": {
     "build": "webpack",
     "build:dev": "webpack --mode=development",
-    "watch": "webpack --watch",
     "lint": "eslint src --fix",
     "test": "jest",
     "test:watch": "jest --watch",
-    "docs:api": "vuepress-jsdoc --source ./src/ --dist docs --folder api --title API --exclude *.test.js,exclude.js",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand --watch",
     "docs": "yarn docs:api && vuepress build docs",
+    "docs:api": "vuepress-jsdoc --source ./src/ --dist docs --folder api --title API --exclude *.test.js,exclude.js",
     "docs:dev": "vuepress dev docs",
+    "readme": "vuepress dev",
     "publish": "npm publish"
   },
   "main": [
@@ -39,6 +40,7 @@
     "core-js": "^2.6.5",
     "jest": "^25.1.0",
     "lodash": "^4.17.15",
+    "validator": "^12.2.0",
     "vue": "^2.6.10",
     "vuex": "^3.0.1"
   },
