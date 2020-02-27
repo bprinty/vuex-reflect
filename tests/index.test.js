@@ -111,20 +111,29 @@ axios.get.mockImplementation((url) => {
       reject(`URL ${url} not in API`);
     }
     if (id === null) {
-      resolve(api[endpoint].get());
+      resolve({
+        status: 200,
+        data: api[endpoint].get(),
+      });
     } else {
-      resolve(api[endpoint].get(id));
+      resolve({
+        status: 200,
+        data: api[endpoint].get(id),
+      });
     }
   });
 });
 
 axios.post.mockImplementation((url, data) => {
-  const endpoint = url;
+  const { id, endpoint } = normalize(url);
   return new Promise((resolve, reject) => {
     if (!(endpoint in api) || api[endpoint] === null) {
       reject(`URL ${url} not in API`);
     }
-    resolve(api[endpoint].post(data));
+    resolve({
+      status: (id === null) ? 201 : 202,
+      data: api[endpoint].post(data),
+    });
   });
 });
 
@@ -134,7 +143,10 @@ axios.put.mockImplementation((url, data) => {
     if (!(endpoint in api) || api[endpoint] === null) {
       reject(`URL ${url} not in API`);
     }
-    resolve(api[endpoint].put(id, data));
+    resolve({
+      status: 200,
+      data: api[endpoint].put(id, data),
+    });
   });
 });
 
@@ -144,7 +156,10 @@ axios.delete.mockImplementation((url) => {
     if (!(endpoint in api) || api[endpoint] === null){
       reject(`URL ${url} not in API`);
     }
-    resolve(api[endpoint].delete(id));
+    resolve({
+      status: 204,
+      data: api[endpoint].delete(id)
+    });
   });
 });
 
@@ -196,8 +211,8 @@ describe("store configuration", function () {
 
   it("api mocks return data", function() {
       axios.get('/posts').then((response) => {
-        console.log(response);
-        console.log(response.data);
+        assert(response.status, 201);
+        assert(response.data.length, 2);
       })
   });
 });
