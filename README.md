@@ -1,6 +1,6 @@
 # Vuex Reflect
 
-## Overview:
+## Overview
 
 Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
 
@@ -22,7 +22,7 @@ Because this module integrates with Vuex for storing data, it also integrates wi
 The name `Reflect` was chosen because this package essentially lets you reflect the data provided via an API into your store, with minimal configuration. There are many types of data reflection throughout a well-designed application - the UI reflects data from the frontend data store, the frontend store reflects data from the API, and the API reflects data from the database. This library covers one piece of that puzzle.
 
 
-## Installation:
+## Installation
 
 ### Install in Project
 
@@ -119,4 +119,4 @@ For contributors to this project, please submit improvements according to the fo
 
 ### Keeping up to Speed on the Project
 
-All development efforts for the project are tracked by the project [Kanban](https://github.com/bprinty/vuex-reflect/projects) board. Contributors use that board to communicate the status of pending, in-progress, or resolved development efforts. If you have a question about the Roadmap or current in-progress issues for the project, see that board.
+All development efforts for the project are tracked by the project [Kanban](https://github.com/bprinty/vuex-reflect/projects/1) board. Contributors use that board to communicate the status of pending, in-progress, or resolved development efforts. If you have a question about the Roadmap or current in-progress issues for the project, see that board.
