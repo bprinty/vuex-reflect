@@ -149,8 +149,4 @@ describe("store configuration", () => {
       });
   });
 
-  test("plugin registered", () => {
-      assert.equal(store._subscribers.length, 1);
-  });
-
 });
