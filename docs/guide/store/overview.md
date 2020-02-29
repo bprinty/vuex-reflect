@@ -134,9 +134,8 @@ import v from 'validator';
 * Author model for application.
 */
 const authors = {
-  default: [],
   api: {
-    query: '/authors',
+    fetch: '/authors',
     get: '/authors/:id',
     update: '/authors/:id',
   },
@@ -170,7 +169,7 @@ Instead of needing to define individual actions for updating data via `GET/POST/
 
 ```javascript
 // fetch all post data from api
-this.$store.dispatch('profile.query').then((data) => {
+this.$store.dispatch('profile.fetch').then((data) => {
   // do something with the data
 });
 
@@ -198,10 +197,9 @@ Let's look at how we might add in our `Post` model to this contract:
  * Post model for application.
  */
 const posts = {
-  default: [],
   api: {
     create: '/posts',
-    query: '/posts',
+    fetch: '/posts',
     update: '/posts/:id',
   },
   contract: {
@@ -233,6 +231,38 @@ const posts = {
 One new thing to note about this contract is the `link` keyword to the `author_id` property. This keyword is used to automatically use nested payloads to update a linked model tracked by the store. More information on how to use the `link` keyword is in the [Contract](/guide/store/contract.md) section of the documentation.
 
 > See the [Configuration](/guide/setup/configure.md) section of the documentation for details on how to register these definitions with the `Vuex` store.
+
+
+## Using Model/Collection Syntax
+
+In the `api` definitions for a model, you can also use a Model/Collection style syntax. For example, this definition:
+
+```javascript
+const item = {
+  api: {
+    model: '/authors/:id',
+    collection: '/authors',
+  }
+  ...
+}
+```
+
+Automatically translates to:
+
+```javascript
+const item = {
+  api: {
+    fetch: '/authors',
+    create: '/authors',
+    get: '/authors/:id',
+    update: '/authors/:id',
+    delete: '/authors/:id',
+  }
+  ...
+};
+```
+
+Using the `model` and `collection` definitions can help developers reduce boilerplate. For clarity on describing internal functionality, the rest of this documentation will not use this shorthand during explanations.
 
 
 ## Using Models in Components

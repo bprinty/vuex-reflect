@@ -42,7 +42,7 @@ class Author extends Model {
    */
   static api() {
     return {
-      query: '/authors',
+      fetch: '/authors',
       get: '/authors/:id',
       update: '/authors/:id',
     };
@@ -153,7 +153,7 @@ class Post extends Model {
   static api() {
     return {
       create: '/posts',
-      query: '/posts',
+      fetch: '/posts',
       update: '/posts/:id',
     };
   }
@@ -193,6 +193,46 @@ class Post extends Model {
 > See the [Configuration](/guide/setup/configure.md) section of the documentation for details on how to register these definitions with the `Vuex` store.
 
 
+## Using Model/Collection Syntax
+
+In the `api()` definitions for a Model, you can also use a Model/Collection style syntax. For example, this Model definition:
+
+```javascript
+class Item extends Model {
+
+  static api() {
+    return {
+      model: '/authors/:id',
+      collection: '/authors',
+    };
+  }
+
+  ...
+}
+```
+
+Automatically translates to:
+
+```javascript
+class Item extends Model {
+
+  static api() {
+    return {
+      fetch: '/posts',
+      create: '/posts',
+      get: '/posts/:id',
+      update: '/posts/:id',
+      delete: '/posts/:id',
+    };
+  }
+
+  ...
+}
+```
+
+Using the `model` and `collection` definitions can help developers reduce boilerplate. For clarity on describing internal functionality, the rest of this documentation will not use this shorthand during explanations.
+
+
 ## Using Models in Components
 
 Once these models have been defined and [registered](/guide/setup/configure.md), you can use them throughout your application. As a quick example, let's take a look at a component that interacts with data from the `Post` model. In this component, you'll see that we need to first fetch the data before using it in the component.
@@ -209,7 +249,7 @@ export default {
       return Post.query().all();
     },
     shortPosts() {
-      return Post.query.filter((x) => { x.body.length < 200 }).all();
+      return Post.query().filter((x) => { x.body.length < 200 }).all();
     },
   },
 }
