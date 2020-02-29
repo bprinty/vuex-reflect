@@ -4,14 +4,20 @@
 
 Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
 
+### Features
+
 It does this with two main features:
 
 1. An ORM with a declarative syntax for configuring data models. This ORM provides a) an easy way to connect models to an external API endpoint for CRUD actions, b) utilities for property mutations and validation, and c) a fluid query API for accessing data from the store.
 2. Automatic vuex-based data management for models tracked by this library. Vuex Relfect handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via the ORM (or from the store directly, if you're not a fan of ORMs).
 
+### Notes on Vuex
+
 Vuex is a fantastic library for doing exactly what it needs to do: manage state. The scope of Vuex was never to inherently manage data retrieval and updates via an API or other external data sources -- it simply (and elegantly) stores data and provides utilities for updating those data and propagating those updates to the components of your application. This package is a logical abstraction of that pattern, providing a more developer-friendly experience around interacting with data models and other external application data.
 
 Because this module integrates with Vuex for storing data, it also integrates with Vue's official devtools extension to provide advanced features such as zero-config time-travel debugging and state snapshot export/import. It was made with REST API reflection specifically in mind, but can be extended to reflect other types of data sources (i.e. GraphQL).
+
+### Why `Reflect`?
 
 The name `Reflect` was chosen because this package essentially lets you reflect the data provided via an API into your store, with minimal configuration. There are many types of data reflection throughout a well-designed application - the UI reflects data from the frontend data store, the frontend store reflects data from the API, and the API reflects data from the database. This library covers one piece of that puzzle.
 
@@ -64,9 +70,9 @@ class Todo extends Model {
   static api() {
     return {
       create: '/todos', // url for creating new todo items (POST)
-      query: '/todos', // url for querying with parameters (GET /todos?name.like=my-todo)
+      fetch: '/todos', // url for fetching data with parameters (GET /todos?name.like=my-todo)
       get: '/todos/:id', // url for getting data for a single todo (GET)
-      udpate: '/todos/:id', // url for updating a single todo (PUT)
+      update: '/todos/:id', // url for updating a single todo (PUT)
       delete: '/todos/:id', // url for deleting a single todo (DELETE)
     };
   }
