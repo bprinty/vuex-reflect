@@ -3,7 +3,6 @@
  * Abstract base class for Model definitions.
  */
 export default class Model {
-
   constructor(data) {
     this.contract = this.props();
     this.endpoints = this.api();
@@ -19,7 +18,7 @@ export default class Model {
       },
       set: (obj, prop, value) => {
         throw 'Cannot set properties directly on the store';
-      }
+      },
     });
   }
 
@@ -46,5 +45,4 @@ export default class Model {
   relationships() {
     return {};
   }
-
 }

@@ -10,6 +10,6 @@ import Reflect from './plugin';
 
 // exports
 export {
-    Model,
-    Reflect,
+  Model,
+  Reflect,
 };
