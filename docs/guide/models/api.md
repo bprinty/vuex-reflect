@@ -13,10 +13,22 @@ class MyModel extends Model {
   static api() {
     return {
       /**
-       * Endpoint for querying a group of models via API parameters.
+       * Endpoint for model collection actions. This property is automatically
+       * used for `fetch` and `create` in api definitions if those
+       * configuration items aren't specified.
+       */
+      collection: '/mymodel',
+      /**
+       * Endpoint for model instance actions. This property is automatically
+       * used for `get`, `update`, and `delete` in api definitions if those
+       * configuration items aren't specified.
+       */
+      model: '/mymodel/:id',
+      /**
+       * Endpoint for fetching a collection of models via API parameters.
        * This method is used whenever Model.fetch() is called.
        */
-      query: '/mymodel',
+      fetch: '/mymodel',
       /**
        * Endpoint for creating a single model via API.
        * This method is used whenever Model.commit() is used after
@@ -93,9 +105,10 @@ GET /authors/:id/posts/:tag // fetch posts from a specific author with a specifi
 
 The following request methods are used by default for each of the actions available in `api()` configuration:
 
+
 | Action      | Method   | Description                                                                 |
 |:------------|:---------|:----------------------------------------------------------------------------|
-| **query**   | `GET`    | Query data in bulk. Used with `Model.fetch()`.                              |
+| **fetch**   | `GET`    | Fetch a collection of models. Used with `Model.fetch()`.                    |
 | **create**  | `POST`   | Creating new item. Used with `new Model({}) and Model.commit()`.            |
 | **get**     | `GET`    | Fetch single item. Used with `Model.fetch(id)`.                             |
 | **update**  | `PUT`    | Update data for single item. Used with `Model.commit()` after data changes. |
@@ -114,9 +127,9 @@ class MyModel extends Model {
   static api() {
     return {
       update: '/mymodel/:id',
-      query: (params) => {
+      fetch: (params) => {
         return new Promise((resolve, reject) => {
-          // code for querying data with params
+          // code for fetching data with params
           const data = [
             { 'one': 1, 'two': 2 },
             { 'three': 3, 'four': 4 },
@@ -177,7 +190,7 @@ To accomplish this, we can overwrite API callables to reshape data before and af
       return result;
     });
   },
-  query: (params) => {
+  fetch: (params) => {
     // return promise for fetching and processing the data
     return this.axios.get('/mymodel', { params }).then((response) => {
 

@@ -6,13 +6,24 @@ The following code shows an analagous data structure for store API configuration
 
 ```javascript
 const myModels = {
-  default: [],
   api: {
     /**
-     * Endpoint for querying a group of models via API parameters.
+     * Endpoint for model collection actions. This property is automatically
+     * used for `fetch` and `create` in api definitions if those
+     * configuration items aren't specified.
+     */
+    collection: '/mymodel',
+    /**
+     * Endpoint for model instance actions. This property is automatically
+     * used for `get`, `update`, and `delete` in api definitions if those
+     * configuration items aren't specified.
+     */
+    model: '/mymodel/:id',
+    /**
+     * Endpoint for fetching a collection of models via API parameters.
      * This method is used whenever Model.fetch() is called.
      */
-    query: '/mymodel',
+    fetch: '/mymodel',
     /**
      * Endpoint for creating a single model via API.
      * This method is used whenever Model.commit() is used after
@@ -56,9 +67,9 @@ const state = {
 
 const actions = {
   /**
-   * Action for querying models (with optional parameters) via API.
+   * Action for fetching  a collection of models (with optional parameters) via API.
    */
-  'myModels.query': ({ commit }, params) => {
+  'myModels.fetch': ({ commit }, params) => {
     // 1. Issue request or execute callable with params to fetch data.
     // 2. Return promise with resulting JSON data from API.
     // 3. Promise automatically commits new data to the store before resolving.
@@ -85,7 +96,7 @@ The following table shows a full list of available actions created for model def
 
 | Mutation | Description |
 |-|-|
-| `<model>.query` | Issue a `GET` request to query model data. |
+| `<model>.fetch` | Issue a `GET` request to fetch model data. |
 | `<model>.create` | Issue a `POST` request to create a new model instance. |
 | `<model>.get` | Issue a `GET` request on a single model instance to retrieve data. |
 | `<model>.update` | Issue a `PUT` request to update metadata for an existing model. |
@@ -97,7 +108,7 @@ And the code below shows some examples of how to use these `actions`:
 
 ```javascript
 // fetch all myModel data from API
-store.dispatch('myModels.query').then((data) => {
+store.dispatch('myModels.fetch').then((data) => {
   // do something with the data
 });
 
@@ -125,12 +136,11 @@ Without declaring `Model` classes, you can still use similar configuration for c
 
 ```javascript
 const myModels = {
-  default: [],
   api: {
     update: '/mymodel/:id',
-    query: (params) => {
+    fetch: (params) => {
       return new Promise((resolve, reject) => {
-        // code for querying data with params
+        // code for fetching data with params
         const data = [
           { 'one': 1, 'two': 2 },
           { 'three': 3, 'four': 4 },
@@ -145,7 +155,7 @@ const myModels = {
 Using this strategy, the downstream API is the same:
 
 ```javascript
-store.dispatch('myModels.query', { foo: 1, bar: 2 }).then((results) => {
+store.dispatch('myModels.fetch', { foo: 1, bar: 2 }).then((results) => {
   // do something after data returns
 })
 ```
@@ -177,7 +187,6 @@ To accomplish this, we can overwrite API callables to reshape data before and af
 
 ```javascript
 const myModels = {
-  default: [],
   api: {
     update: (data) => {
       // parsing input for update action
@@ -192,7 +201,7 @@ const myModels = {
         return result;
       });
     },
-    query: (params) => {
+    fetch: (params) => {
       // return promise for fetching and processing the data
       return axios.get('/mymodel', { params }).then((response) => {
 
