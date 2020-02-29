@@ -6,7 +6,6 @@ The following code shows the data structure for declaring Model properties:
 
 ```javascript
 const myModels = {
-  default: [],
   api: { ... },
   contract: {
     /**
@@ -66,7 +65,6 @@ If you don't wish to specify detailed property-specific configuration, you can u
 
 ```javascript
 const myModels = {
-  default: [],
   api: { ... },
   contract: {
       prop1: null,
@@ -194,12 +192,10 @@ And you have two models defined for your store like so:
 
 ```javascript
 const authors = {
-  default: [],
   contract: { ... },
 };
 
 const posts = {
-  default: [],
   contract: {
     title: '',
     body: '',
