@@ -26,6 +26,16 @@ function normalize(url) {
   return { id, endpoint };
 }
 
+/**
+ * Wrap data object with ID key for payload responses.
+ *
+ * @param {number} id - Identifier for model.
+ * @param {object} data - Data structure to add identifer to.
+ */
+function indexed(id, data) {
+  return Object.assign({ id: Number(id)}, data);
+}
+
 
 // classes
 // -------
@@ -66,13 +76,13 @@ export class MockServer {
     return {
       get: () => {
         return Object.keys(this.db[name]).map((id) => {
-          return Object.assign({ id }, this.db[name][id]);
+          return indexed(id, this.db[name][id]);
         });
       },
       post: (data) => {
         const id = Number(_.max(Object.keys(this.db[name]))) + 1;
         this.db[name][id] = data;
-        return this.db[name][id];
+        return indexed(id, this.db[name][id]);
       },
     };
   }
@@ -90,7 +100,7 @@ export class MockServer {
       get: (id) => Object.assign({ id }, this.db[name][id]),
       put: (id, data) => {
         this.db[name][id] = Object.assign(this.db[name][id], data);
-        return Object.assign({ id }, this.db[name][id]);
+        return indexed(id, this.db[name][id]);
       },
       delete: (id) => {
         delete this.db[name][id];
