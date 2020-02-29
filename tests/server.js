@@ -7,6 +7,9 @@ class App extends MockServer {
 
   data() {
     return {
+      profile: {
+        username: 'admin',
+      },
       posts: [
         {
           title: 'Foo',
@@ -37,10 +40,11 @@ class App extends MockServer {
   api() {
     return {
       '/profile': {
-        get: () => {
-          return {
-            username: 'Current User',
-          };
+        get: () => this.db.profile,
+        put: (data) => {
+          console.log('put', data);
+          this.db.profile = Object.assign(this.db.profile, data);
+          return this.db.profile;
         },
       },
       '/posts': this.collection('posts'),
