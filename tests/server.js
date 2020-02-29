@@ -8,8 +8,24 @@ class App extends MockServer {
   data() {
     return {
       posts: [
-        { title: 'Foo', body: 'foo bar baz', author_id: 1 },
-        { title: 'Bar', body: 'bar baz', author_id: 1 },
+        {
+          title: 'Foo',
+          body: 'foo bar baz',
+          author: {
+            id: 1,
+            name: 'Jane Doe',
+            email: 'jane@doe.com',
+          }
+        },
+        {
+          title: 'Bar',
+          body: 'bar baz',
+          author: {
+            id: 1,
+            name: 'Jane Doe',
+            email: 'jane@doe.com',
+          }
+        },
       ],
       authors: [
         { name: 'Jane Doe', email: 'jane@doe.com' },
@@ -23,8 +39,7 @@ class App extends MockServer {
       '/profile': {
         get: () => {
           return {
-            name: 'Current User',
-            email: 'current@user.com',
+            username: 'Current User',
           };
         },
       },
