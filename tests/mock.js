@@ -37,6 +37,19 @@ function indexed(id, data) {
 }
 
 
+/**
+ * Generate promise response for missing resource.
+ *
+ * @param {string} url - Url to reject.
+ */
+function NotFound(url) {
+  return {
+    status: 404,
+    message: `URL ${url} not in API`,
+  };
+}
+
+
 // classes
 // -------
 /**
@@ -50,16 +63,24 @@ export class MockServer {
     this.name = name || 'mock-server';
     this.db = {};
 
-    // traverse data and format for easy storage
+    // reformat data for internal storage
     _.each(this.data(), (val, key) => {
 
       // reduce list into dictionary with indices
-      let idx = 1;
-      this.db[key] = val.reduce((obj, item) => {
-        obj[idx] = item
-        idx += 1;
-        return obj;
-      }, {});
+      if (_.isArray(val)) {
+        let idx = 1;
+        this.db[key] = val.reduce((obj, item) => {
+          obj[idx] = item
+          idx += 1;
+          return obj;
+        }, {});
+      }
+
+      // store singleton data
+      else {
+        this.db[key] = val;
+      }
+
     });
 
     this._api = this.api();
@@ -148,19 +169,22 @@ export class MockServer {
       const { id, endpoint } = normalize(url);
       return new Promise((resolve, reject) => {
 
-        // handle invalid url
+        // handle invalid urls
         if (!(endpoint in this._api) || this._api[endpoint] === null) {
-          reject({
-            status: 404,
-            message: `URL ${url} not in API`,
-          });
+          reject(NotFound(url));
+        }
+
+        // handle missing server methods
+        const method = this._api[endpoint].get;
+        if(method === undefined){
+          reject(NotFound(url));
         }
 
         // collection request
         if (id === null) {
           resolve({
             status: 200,
-            data: this._api[endpoint].get(),
+            data: method(),
           });
         }
 
@@ -168,7 +192,7 @@ export class MockServer {
         else {
 
           // reject on missing model
-          const result = this._api[endpoint].get(id);
+          const result = method(id);
           if (Object.keys(result).length === 1) {
             reject({
               status: 404,
@@ -192,19 +216,22 @@ export class MockServer {
       const { id, endpoint } = normalize(url);
       return new Promise((resolve, reject) => {
 
-        // handle invalid url
+        // handle invalid urls
         if (!(endpoint in this._api) || this._api[endpoint] === null) {
-          reject({
-            status: 404,
-            message: `URL ${url} not in API`,
-          });
+          reject(NotFound(url));
+        }
+
+        // handle missing server methods
+        const method = this._api[endpoint].post;
+        if(method === undefined){
+          reject(NotFound(url));
         }
 
         // collection request
         if (id === null) {
           resolve({
             status: 201,
-            data: this._api[endpoint].post(data),
+            data: method(data),
           });
         }
 
@@ -212,7 +239,7 @@ export class MockServer {
         else {
           resolve({
             status: 202,
-            data: this._api[endpoint].post(id, data),
+            data: method(id, data),
           });
         }
       });
@@ -223,18 +250,21 @@ export class MockServer {
       const { id, endpoint } = normalize(url);
       return new Promise((resolve, reject) => {
 
-        // handle invalid url
+        // handle invalid urls
         if (!(endpoint in this._api) || this._api[endpoint] === null) {
-          reject({
-            status: 404,
-            message: `URL ${url} not in API`,
-          });
+          reject(NotFound(url));
+        }
+
+        // handle missing server methods
+        const method = this._api[endpoint].put;
+        if(method === undefined){
+          reject(NotFound(url));
         }
 
         // call method
         resolve({
           status: 200,
-          data: this._api[endpoint].put(id, data),
+          data: method(id, data),
         });
       });
     });
@@ -244,12 +274,15 @@ export class MockServer {
       const { id, endpoint } = normalize(url);
       return new Promise((resolve, reject) => {
 
-        // handle invalid url
-        if (!(endpoint in this._api) || this._api[endpoint] === null){
-          reject({
-            status: 404,
-            message: `URL ${url} not in API`,
-          });
+        // handle invalid urls
+        if (!(endpoint in this._api) || this._api[endpoint] === null) {
+          reject(NotFound(url));
+        }
+
+        // handle missing server methods
+        const method = this._api[endpoint].delete;
+        if(method === undefined){
+          reject(NotFound(url));
         }
 
         // call method
