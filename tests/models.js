@@ -3,6 +3,35 @@
 import { Model } from '../src/index';
 import v from 'validator';
 
+
+/**
+ * Author model.
+ *
+ * @param {string} name - Author name.
+ * @param {string} email - Author email.
+ */
+class Profile extends Model {
+
+  api() {
+    return {
+      query: '/profile',
+    };
+  }
+
+  props() {
+    return {
+      /**
+      * Profile username
+      */
+      username: {
+        default: '<anonymous>',
+        type: String,
+      }
+    };
+  }
+}
+
+
 /**
  * Author model.
  *

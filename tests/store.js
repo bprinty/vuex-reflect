@@ -3,6 +3,28 @@
 import { Model } from '../src/index';
 import v from 'validator';
 
+
+/**
+ * Profile store model.
+ *
+ * @param {string} username - Profile username.
+ */
+const profile = {
+  api: {
+    query: '/profile',
+  },
+  contract: {
+    /**
+     * Profile username
+     */
+     username: {
+       default: '<anonymous>',
+       type: String,
+     }
+  }
+}
+
+
 /**
  * Author store model.
  *
@@ -10,7 +32,6 @@ import v from 'validator';
  * @param {string} email - Author email.
  */
 const authors = {
-  default: [],
   api: {
     query: '/authors',
     get: '/authors/:id',
@@ -48,7 +69,6 @@ const authors = {
  * @param {string} author_id - ID for linked post author.
  */
 const posts = {
-  default: [],
   api: {
      create: '/posts',
      query: '/posts',
@@ -81,6 +101,7 @@ const posts = {
 
 // exports
 export default {
+  profile,
   authors,
   posts,
 };
