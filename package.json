@@ -24,9 +24,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand --watch",
-    "docs": "yarn docs:api && vuepress build docs",
+    "docs": "vuepress build docs",
     "docs:api": "vuepress-jsdoc --source ./src/ --dist docs --folder api --title API --exclude *.test.js,exclude.js",
     "docs:dev": "vuepress dev docs",
+    "docs:deploy": "yarn docs && gsutil -m rsync -r docs/.vuepress/dist gs://atgtag/vuex-reflect",
     "readme": "vuepress dev",
     "publish": "npm publish"
   },
