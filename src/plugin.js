@@ -1,5 +1,6 @@
 
 
+import _ from 'lodash';
 import axios from 'axios';
 import getterFactory from './constructs/getters';
 import mutationFactory from './constructs/mutations';
@@ -20,9 +21,26 @@ export default function Reflect(models) {
   return (store) => {
     Object.keys(models).forEach((key) => {
       const config = models[key];
+
+      // sanitize contract inputs
+      _.each(config.contract, (spec, param) => {
+        if (_.has(spec, 'collapse') && _.isBoolean(spec.collapse)) {
+          spec.collapse = 'id';
+        }
+        if (!_.has(spec, 'validate') && _.has(spec, 'validation')) {
+          spec.validate = spec.validation;
+        }
+        if (!_.has(spec, 'mutate') && _.has(spec, 'mutation')) {
+          spec.mutate = spec.mutation;
+        }
+      });
+
+      // instantiate store constructs
       const get = getterFactory(config);
       const mutate = mutationFactory(config);
       const act = actionFactory(config);
+
+      // register constructs
       store.registerModule(key, {
         namespaced: false,
         state: {
