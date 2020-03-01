@@ -81,6 +81,15 @@ const posts = {
     model: '/posts/:id',
   },
   contract: {
+    // /**
+    //  * Local parameter (not sent to server but available in store)
+    //  */
+    // slug: {
+    //   default: 'my-post-title',
+    //   parse: value => _.lowerCase(value).replace(' ', '-'),
+    //   from: 'title',
+    //   send: false,
+    // },
     /**
      * Post title.
      */
@@ -99,9 +108,11 @@ const posts = {
     /**
      * Linked post author.
      */
-    author_id: {
+    author: {
       required: true,
-      parse: item => item.id,
+      type: 'authors',
+      send: 'author_id',
+      collapse: true,
     },
   },
 };
