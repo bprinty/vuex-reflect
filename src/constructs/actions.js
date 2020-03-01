@@ -70,12 +70,12 @@ function applyContract(contract, data) {
         }
       }
 
-      // cast type (if not model type)
-      if (_.has(spec, 'type')) {
-        if (!(spec.type instanceof String) && !(val instanceof spec.type)) {
-          val = spec.type(val);
-        }
-      }
+      // // cast type (if not model type)
+      // if (_.has(spec, 'type')) {
+      //   if (!(spec.type instanceof String) && !(val instanceof spec.type)) {
+      //     val = spec.type(val);
+      //   }
+      // }
 
       // mutation
       if (_.has(spec, 'mutate')) {
