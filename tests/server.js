@@ -42,9 +42,11 @@ class App extends MockServer {
       '/profile': {
         get: () => this.db.profile,
         put: (data) => {
-          console.log('put', data);
           this.db.profile = Object.assign(this.db.profile, data);
           return this.db.profile;
+        },
+        delete: () => {
+          this.db.profile = { username: 'admin' };
         },
       },
       '/posts': this.collection('posts'),
