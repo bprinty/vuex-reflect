@@ -119,10 +119,60 @@ describe("model.actions", () => {
 
 describe("model.invalid.actions", () => {
   let err;
+  let model;
 
-  test("holder", async () => {
-    assert.isTrue(true);
+  test("model.invalid.create", async () => {
+    // check validation
+    try {
+      await store.dispatch("authors.create", { name: 'a', email: 'a' });
+      assert.fail('Create with invalid data should have failed.');
+    } catch(err) {
+      assert.equal(err, "`a` is not a valid email.");
+    }
+
+    // check mutation
+    model = await store.dispatch("posts.create", { title: 'aaa', body: 'a', author_id: 1 });
+    assert.equal(model.body, '<div>a</div>');
+
+    // check required
+    try {
+      await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
+      assert.fail('Required check on create operation failed.');
+    } catch(err) {
+      assert.equal(err, "Key `author_id` is required for create and update actions.");
+    }
   });
+
+  test("model.invalid.update", async () => {
+    await store.dispatch('authors.fetch');
+    await store.dispatch('posts.fetch');
+
+    // check validation
+    try {
+      model = store.getters.authors(1);
+      model.email = 'a';
+      await store.dispatch("authors.update", model);
+      assert.fail('Create with invalid data should have failed.');
+    } catch(err) {
+      assert.equal(err, "`a` is not a valid email.");
+    }
+
+    // // check mutation
+    // model = store.getters.posts(1);
+    // model.body = 'a'
+    // console.log(model);
+    // model = await store.dispatch("posts.update", model);
+    // assert.equal(model.body, '<div>a</div>');
+
+    // // check required
+    // try {
+    //   await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
+    //   assert.fail('Required check on create operation failed.');
+    // } catch(err) {
+    //   assert.equal(err, "Key `author_id` is required for create and update actions.");
+    // }
+  });
+
 });
 
 
@@ -143,50 +193,50 @@ describe("singleton.actions", () => {
     assert.equal(obj.username, 'admin');
   });
 
-  // 
-  // test("singleton.update", async () => {
-  //   // fetch collection
-  //   await store.dispatch("profile.fetch");
-  //
-  //   // verify existing
-  //   obj = store.getters.profile();
-  //   assert.equal(obj.username, 'admin');
-  //
-  //   // update
-  //   obj.username = 'other';
-  //   obj = await store.dispatch("profile.update", obj);
-  //   assert.equal(obj.username, 'other');
-  //
-  //   // verify store update
-  //   obj = store.getters.profile();
-  //   assert.equal(obj.username, 'other');
-  // });
 
-  // test("singleton.get", async () => {
-  //   // fetch item
-  //   model = await store.dispatch("authors.get", 1);
-  //   assert.equal(model.name, 'Jane Doe');
-  //
-  //   // verify getter
-  //   model = store.getters.authors(1);
-  //   assert.equal(model.name, 'Jane Doe');
-  // });
-  //
-  // test("singleton.delete", async () => {
-  //   // fetch collection
-  //   await store.dispatch("authors.fetch");
-  //
-  //   // verify existing
-  //   model = store.getters.authors(2);
-  //   assert.equal(model.name, 'John Doe');
-  //
-  //   // delete
-  //   await store.dispatch("authors.delete", 2);
-  //
-  //   // verify store update
-  //   model = store.getters.authors(2);
-  //   assert.isUndefined(model);
-  // });
+  test("singleton.update", async () => {
+    // fetch collection
+    await store.dispatch("profile.fetch");
+
+    // verify existing
+    obj = store.getters.profile();
+    assert.equal(obj.username, 'admin');
+
+    // update
+    obj.username = 'other';
+    obj = await store.dispatch("profile.update", obj);
+    assert.equal(obj.username, 'other');
+
+    // verify store update
+    obj = store.getters.profile();
+    assert.equal(obj.username, 'other');
+  });
+
+  test("singleton.get", async () => {
+    // get singleton
+    obj = await store.dispatch("profile.get");
+    assert.equal(obj.username, 'admin');
+
+    // singleton getter
+    obj = store.getters.profile();
+    assert.equal(obj.username, 'admin');
+  });
+
+  test("singleton.delete", async () => {
+    // fetch collection
+    await store.dispatch("profile.fetch");
+
+    // verify existing
+    obj = store.getters.profile();
+    assert.equal(obj.username, 'admin');
+
+    // delete
+    await store.dispatch("profile.delete");
+
+    // verify store update
+    obj = store.getters.profile();
+    assert.isEmpty(obj);
+  });
 
 });
 
