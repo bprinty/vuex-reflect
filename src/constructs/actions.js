@@ -6,6 +6,89 @@
 import _ from 'lodash';
 import axios from 'axios';
 
+// config
+_.templateSettings.interpolate = /\${([\s\S]+?)}/g;
+
+/**
+ * Helper function for processing data payload according
+ * to contract spec. This function will traverse data entries,
+ * applying both validation and mutations specified in the
+ * contract definition. Validation failures will throw a validation
+ * error.
+ *
+ * @param {object} contract - Contract specifying how data should
+ *     be processed.
+ * @param {object} data - Data to process.
+ */
+function applyContract(contract, data) {
+  data = _.clone(data);
+
+  // collapse nested data
+  Object.keys(contract).map((key) => {
+    const spec = contract[key];
+
+    // if collapse is specified and the data has the key
+    if (_.has(spec, 'collapse') && _.has(data, key) && _.isObject(data[key])) {
+
+      // input doesn't have collapseable data
+      if (!_.has(data[key], spec.collapse)) {
+        msg = _.template('Could not collapse input for `${key}` using key `${collapse}` from data `${value}`');
+        throw msg({ collapse: spec.collapse, key: key, value: val });
+      }
+
+      // collapse and remove original data
+      data[spec.collapse] = data[key][spec.collapse];
+      delete data[key];
+    }
+  });
+
+  // get full key list
+  const params = _.union(Object.keys(contract), Object.keys(data));
+
+  // process contract
+  const values = params.map((key) => {
+    let val = data[key] || contract[key].default || null;
+
+    // process entry if key in contract
+    if (_.has(contract, key)) {
+      const spec = contract[key];
+
+      // required
+      if (spec.required) {
+        if (!_.has(data, key)) {
+          const msg = _.template('Key `${key}` is required for create and update actions.');
+          throw msg({ value: val, key: key });
+        }
+      }
+
+      // validation
+      if (_.has(spec, 'validate')){
+        const check = spec.validate.check || spec.validate;
+        const message = _.template(spec.validate.message || 'Value ${value} for key ${key} did not pass validation.');
+        if (!check(val)) {
+          throw message({ value: val, key: key });
+        }
+      }
+
+      // cast type (if not model type)
+      if (_.has(spec, 'type')) {
+        if (!(spec.type instanceof String) && !(val instanceof spec.type)) {
+          val = spec.type(val);
+        }
+      }
+
+      // mutation
+      if (_.has(spec, 'mutate')) {
+        val = spec.mutate(val);
+      }
+
+    }
+    return val;
+  });
+
+  return _.zipObject(params, values);
+}
+
 
 /**
  * Action for fetching model data and committing
@@ -91,9 +174,12 @@ function createModel(context, config, model, data) {
     throw `Model '${model}' has no configuration for 'create' option.`;
   }
 
+  // process inputs and apply mutations
+  const payload = applyContract(config.contract, data);
+
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.post(action, data).then(response => response.data);
+    action = axios.post(action, payload).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -159,13 +245,13 @@ function updateModel(context, config, model, data) {
     throw `Model '${model}' has no configuration for 'update' option.`;
   }
 
-  // run data validation
-  // TODO
+  // process inputs and apply mutations
+  const payload = applyContract(config.contract, data);
 
   // use axios if no promise specified
   if (_.isString(action)) {
     action = action.replace(':id', data.id)
-    action = axios.put(action, data).then(response => response.data);
+    action = axios.put(action, payload).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -195,17 +281,16 @@ function updateSingleton(context, config, model, data) {
     throw `Singleton '${model}' has no configuration for 'update' option.`;
   }
 
-  // run data validation
-  // TODO
+  // process inputs and apply mutations
+  const payload = applyContract(config.contract, data);
 
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.put(action, data).then(response => response.data);
+    action = axios.put(action, payload).then(response => response.data);
   }
 
   // commit data after promise resolves with data
   return action.then((data) => {
-    console.log(data);
     context.commit(`${model}.sync`, data);
     return context.state[model];
   });
