@@ -108,7 +108,7 @@ const posts = {
     /**
      * Linked post author.
      */
-    author: {
+    author_id: {
       required: true,
       type: 'authors',
       send: 'author_id',
