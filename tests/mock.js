@@ -228,7 +228,7 @@ export class MockServer {
         }
 
         // collection request
-        if (id === null) {
+        if (!id) {
           resolve({
             status: 201,
             data: method(data),
@@ -261,11 +261,22 @@ export class MockServer {
           reject(NotFound(url));
         }
 
-        // call method
-        resolve({
-          status: 200,
-          data: method(id, data),
-        });
+
+        // model request
+        if (id) {
+          resolve({
+            status: 200,
+            data: method(id, data),
+          });
+        }
+
+        // singleton request
+        else {
+          resolve({
+            status: 200,
+            data: method(data),
+          });
+        }
       });
     });
 
