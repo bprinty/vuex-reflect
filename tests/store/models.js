@@ -17,6 +17,7 @@ const profile = {
   api: {
     fetch: '/profile',
     update: '/profile',
+    delete: '/profile',
   },
   contract: {
     /**
@@ -39,6 +40,7 @@ const profile = {
 const authors = {
   api: {
     fetch: '/authors',
+    create: '/authors',
     get: '/authors/:id',
     update: '/authors/:id',
   },
@@ -57,7 +59,7 @@ const authors = {
     email: {
       default: null,
       type: String,
-      validation: {
+      validate: {
         check: v.isEmail,
         message: '`${value}` is not a valid email.',
       },
@@ -92,13 +94,14 @@ const posts = {
      */
     body: {
       type: String,
-      mutation: value => `<div>${value}</div>`,
+      mutate: value => `<div>${value}</div>`,
     },
     /**
      * Linked post author.
      */
     author_id: {
-      link: 'authors',
+      required: true,
+      parse: item => item.id,
     },
   },
 };

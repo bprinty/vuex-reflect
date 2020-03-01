@@ -81,9 +81,9 @@ class Author extends Model {
   relationships() {
     return {
       /**
-       * All todo items for a single author.
+       * All post items for a single author.
        */
-      todos: {
+       posts: {
         type: Array,
         model: Post,
         url: '/authors/:id/posts',
@@ -132,6 +132,7 @@ class Post extends Model {
       * Linked post author.
       */
       author: {
+        required: true,
         type: Author,
         collapse: 'author_id',
       },
