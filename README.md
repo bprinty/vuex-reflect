@@ -99,11 +99,18 @@ To have Jest automatically watch for changes to code for re-running tests in an 
 yarn test:watch
 ```
 
+To run or watch a specific test during development, use:
+
+```bash
+yarn test:watch -t model.update
+```
+
 Or, you can invoke `jest` directly:
 
 ```bash
 jest
 jest --watch
+jest --watch -t model.update
 ```
 
 ### Submiting Feature Requests

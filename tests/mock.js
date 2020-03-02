@@ -84,6 +84,30 @@ export class MockServer {
     });
 
     this._api = this.api();
+    this._relationships = this.relationships();
+  }
+
+  /**
+   * Get model data for specified id, accounting for relationship
+   * definitions between models.
+   *
+   * @param {string} model - Model name.
+   * @param {integer} id - Model key/identifier.
+   */
+  get(model, id) {
+    let data = _.clone(this.db[model][id]);
+
+    // nest related data based on relationships spec
+    if (_.has(this._relationships, model)) {
+      const mapping = _.isArray(this._relationships[model]) ? this._relationships[model] : [this._relationships[model]];
+      mapping.forEach((spec) => {
+        const collection = _.isString(spec.collection) ? this.db[spec.collection] : spec.collection;
+        data[spec.to] = indexed(data[spec.from], collection[data[spec.from]]);
+        delete data[spec.from];
+      });
+    }
+
+    return data;
   }
 
   /**
@@ -92,18 +116,20 @@ export class MockServer {
    *
    * @param {object} table - MockServer database table to
    *     generate urls for.
+   * @param {object} relationships - Relationships to other
+   *     models. Takes the form {id_key: this.db.relatedModel}
    */
   collection(name) {
     return {
       get: () => {
         return Object.keys(this.db[name]).map((id) => {
-          return indexed(id, this.db[name][id]);
+          return indexed(id, this.get(name, id));
         });
       },
       post: (data) => {
         const id = Number(_.max(Object.keys(this.db[name]))) + 1;
         this.db[name][id] = data;
-        return indexed(id, this.db[name][id]);
+        return indexed(id, this.get(name, id));
       },
     };
   }
@@ -118,10 +144,10 @@ export class MockServer {
    */
   model(name) {
     return {
-      get: (id) => Object.assign({ id }, this.db[name][id]),
-      put: (id, data) => {
-        this.db[name][id] = Object.assign(this.db[name][id], data);
-        return indexed(id, this.db[name][id]);
+      get: (id) => indexed(id, this.get(name, id)),
+      put: (id, payload) => {
+        this.db[name][id] = Object.assign(this.db[name][id], payload);
+        return indexed(id, this.get(name, id));
       },
       delete: (id) => {
         delete this.db[name][id];
