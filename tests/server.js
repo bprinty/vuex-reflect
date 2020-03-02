@@ -14,20 +14,12 @@ class App extends MockServer {
         {
           title: 'Foo',
           body: 'foo bar baz',
-          author: {
-            id: 1,
-            name: 'Jane Doe',
-            email: 'jane@doe.com',
-          }
+          author_id: 1,
         },
         {
           title: 'Bar',
           body: 'bar baz',
-          author: {
-            id: 1,
-            name: 'Jane Doe',
-            email: 'jane@doe.com',
-          }
+          author_id: 1,
         },
       ],
       authors: [
@@ -35,6 +27,16 @@ class App extends MockServer {
         { name: 'John Doe', email: 'john@doe.com' },
       ],
     };
+  }
+
+  relationships() {
+    return {
+      posts: {
+        from: 'author_id',
+        to: 'author',
+        collection: 'authors',
+      }
+    }
   }
 
   api() {
