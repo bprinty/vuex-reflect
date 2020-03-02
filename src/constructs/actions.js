@@ -3,11 +3,14 @@
  */
 
 
+// imports
 import _ from 'lodash';
 import axios from 'axios';
 
+
 // config
 _.templateSettings.interpolate = /\${([\s\S]+?)}/g;
+
 
 /**
  * Helper function for processing data payload according
@@ -20,73 +23,105 @@ _.templateSettings.interpolate = /\${([\s\S]+?)}/g;
  *     be processed.
  * @param {object} data - Data to process.
  */
-function applyContract(contract, data) {
-  data = _.clone(data);
+function formatPush(contract, data) {
+  return _.reduce(contract, (result, spec, key) => {
 
-  // collapse nested data
-  Object.keys(contract).map((key) => {
-    const spec = contract[key];
+    // check if data required
+    if (_.has(spec, 'required') && spec.required) {
+      if (!_.has(result, key) && !_.has(result, spec.to)) {
+        const msg = _.template('Key `${key}` is required for create and update actions.');
+        throw msg({ key: spec.to || key });
+      }
+    }
+
+    // return if contract param not in data
+    if (!_.has(result, key)) {
+      return result;
+    }
+    let value = result[key];
 
     // if collapse is specified and the data has the key
-    if (_.has(spec, 'collapse') && _.has(data, key) && _.isObject(data[key])) {
+    if (_.has(spec, 'collapse') && _.isObject(value)) {
 
       // input doesn't have collapseable data
-      if (!_.has(data[key], spec.collapse)) {
-        msg = _.template('Could not collapse input for `${key}` using key `${collapse}` from data `${value}`');
-        throw msg({ collapse: spec.collapse, key: key, value: val });
+      if (!_.has(value, spec.collapse)) {
+        const msg = _.template('Could not collapse input for `${key}` using key `${collapse}` from data `${value}`');
+        throw msg({ key, value, collapse: spec.collapse });
       }
 
       // collapse and remove original data
-      data[spec.collapse] = data[key][spec.collapse];
-      delete data[key];
+      value = value[spec.collapse]
+      result[key] = value;
     }
-  });
 
-  // get full key list
-  const params = _.union(Object.keys(contract), Object.keys(data));
-
-  // process contract
-  const values = params.map((key) => {
-    let val = data[key] || contract[key].default || null;
-
-    // process entry if key in contract
-    if (_.has(contract, key)) {
-      const spec = contract[key];
-
-      // required
-      if (spec.required) {
-        if (!_.has(data, key)) {
-          const msg = _.template('Key `${key}` is required for create and update actions.');
-          throw msg({ value: val, key: key });
-        }
+    // validate inputs
+    if (_.has(spec, 'validate')){
+      const check = spec.validate.check || spec.validate;
+      const msg = _.template(spec.validate.message || 'Value `${value}` for key `${key}` did not pass validation.');
+      if (!check(value)) {
+        throw msg({ value, key });
       }
-
-      // validation
-      if (_.has(spec, 'validate')){
-        const check = spec.validate.check || spec.validate;
-        const message = _.template(spec.validate.message || 'Value ${value} for key ${key} did not pass validation.');
-        if (!check(val)) {
-          throw message({ value: val, key: key });
-        }
-      }
-
-      // // cast type (if not model type)
-      // if (_.has(spec, 'type')) {
-      //   if (!(spec.type instanceof String) && !(val instanceof spec.type)) {
-      //     val = spec.type(val);
-      //   }
-      // }
-
-      // mutation
-      if (_.has(spec, 'mutate')) {
-        val = spec.mutate(val);
-      }
-
     }
-    return val;
-  });
 
-  return _.zipObject(params, values);
+    // // cast type (if not model type)
+    // if (_.has(spec, 'type')) {
+    //   if (!(spec.type instanceof String) && !(val instanceof spec.type)) {
+    //     val = spec.type(val);
+    //   }
+    // }
+
+    // mutation
+    if (_.has(spec, 'mutate')) {
+      value = spec.mutate(value);
+      result[key] = value;
+    }
+
+    // rename request param via `to` configuration
+    if (_.has(spec, 'to')) {
+      result[spec.to] = value;
+      delete result[key];
+      key = spec.to;
+    }
+
+    return result;
+  }, _.clone(data));
+}
+
+
+/**
+ * Helper function for processing data payload according
+ * to contract spec. This function will apply parsing rules
+ * and name remapping logic to data received from requests..
+ *
+ * @param {object} contract - Contract specifying how data should
+ *     be processed.
+ * @param {object} data - Data to process.
+ */
+function formatPull(contract, data) {
+
+  // construct rename mapping
+  const mapping = _.reduce(contract, (result, spec, param) => {
+    result[spec.from || param] = param;
+    return result;
+  }, {});
+
+  // process payload from defaults
+  const processed = _.reduce(data, (result, value, key) =>{
+
+    // process from
+    const target = mapping[key] || key;
+
+    // parse result
+    if (_.has(contract[target], 'parse')) {
+      value = contract[target].parse(value);
+    }
+
+    // store reformatted result
+    result[target] = value;
+    return result;
+  }, _.mapValues(contract, 'default'));
+
+   return processed;
 }
 
 
@@ -114,10 +149,11 @@ function fetchCollection(context, config, model) {
   }
 
   // commit data after promise resolves with data
-  return action.then((data) => {
-    return data.map((item) => {
-      context.commit(`${model}.sync`, item);
-      return context.state[model][item.id];
+  return action.then((collection) => {
+    return collection.map((data) => {
+      const processed = formatPull(config.contract, data);
+      context.commit(`${model}.sync`, processed);
+      return context.state[model][data.id];
     });
   });
 
@@ -148,7 +184,8 @@ function fetchSingleton(context, config, model) {
 
   // commit data after promise resolves with data
   return action.then((data) => {
-    context.commit(`${model}.sync`, data);
+    const processed = formatPull(config.contract, data);
+    context.commit(`${model}.sync`, processed);
     return context.state[model];
   });
 
@@ -175,7 +212,7 @@ function createModel(context, config, model, data) {
   }
 
   // process inputs and apply mutations
-  const payload = applyContract(config.contract, data);
+  const payload = formatPush(config.contract, data);
 
   // use axios if no promise specified
   if (_.isString(action)) {
@@ -184,7 +221,8 @@ function createModel(context, config, model, data) {
 
   // commit data after promise resolves with data
   return action.then((data) => {
-    context.commit(`${model}.sync`, data);
+    const processed = formatPull(config.contract, data);
+    context.commit(`${model}.sync`, processed);
     return context.state[model][data.id];
   });
 }
@@ -217,7 +255,8 @@ function getModel(context, config, model, id) {
 
   // commit data after promise resolves with data
   return action.then((data) => {
-    context.commit(`${model}.sync`, data);
+    const processed = formatPull(config.contract, data);
+    context.commit(`${model}.sync`, processed);
     return context.state[model][id];
   });
 }
@@ -246,7 +285,7 @@ function updateModel(context, config, model, data) {
   }
 
   // process inputs and apply mutations
-  const payload = applyContract(config.contract, data);
+  const payload = formatPush(config.contract, data);
 
   // use axios if no promise specified
   if (_.isString(action)) {
@@ -256,7 +295,8 @@ function updateModel(context, config, model, data) {
 
   // commit data after promise resolves with data
   return action.then((data) => {
-    context.commit(`${model}.sync`, data);
+    const processed = formatPull(config.contract, data);
+    context.commit(`${model}.sync`, processed);
     return context.state[model][data.id];
   });
 }
@@ -282,7 +322,7 @@ function updateSingleton(context, config, model, data) {
   }
 
   // process inputs and apply mutations
-  const payload = applyContract(config.contract, data);
+  const payload = formatPush(config.contract, data);
 
   // use axios if no promise specified
   if (_.isString(action)) {
@@ -291,7 +331,8 @@ function updateSingleton(context, config, model, data) {
 
   // commit data after promise resolves with data
   return action.then((data) => {
-    context.commit(`${model}.sync`, data);
+    const processed = formatPull(config.contract, data);
+    context.commit(`${model}.sync`, processed);
     return context.state[model];
   });
 }
