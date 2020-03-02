@@ -24,7 +24,10 @@ const profile = {
      * Profile username
      */
      username: {
+       required: true,
        default: '<anonymous>',
+       validate: value => !/\s/g.test(value),
+       mutate: value => value.toLowerCase(),
        type: String,
      }
   }
@@ -81,15 +84,15 @@ const posts = {
     model: '/posts/:id',
   },
   contract: {
-    // /**
-    //  * Local parameter (not sent to server but available in store)
-    //  */
-    // slug: {
-    //   default: 'my-post-title',
-    //   parse: value => _.lowerCase(value).replace(' ', '-'),
-    //   from: 'title',
-    //   send: false,
-    // },
+    /**
+     * Local parameter (not sent to server but available in store)
+     */
+    slug: {
+      default: 'post-slug',
+      parse: value => value.toLowerCase().replace(' ', '-'),
+      from: 'title',
+      to: false,
+    },
     /**
      * Post title.
      */
@@ -106,12 +109,14 @@ const posts = {
       mutate: value => `<div>${value}</div>`,
     },
     /**
-     * Linked post author.
+     * Linked post author. On the client side, this property
+     * will contain a nested Author model. During post requests,
+     * this property will collapse the nested model into `author_id`.
      */
-    author_id: {
+    author: {
       required: true,
       type: 'authors',
-      send: 'author_id',
+      to: 'author_id',
       collapse: true,
     },
   },

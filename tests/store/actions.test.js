@@ -125,7 +125,7 @@ describe("model.invalid.actions", () => {
     // check validation
     try {
       await store.dispatch("authors.create", { name: 'a', email: 'a' });
-      assert.fail('Create with invalid data should have failed.');
+      throw 'Create with invalid data should have failed.';
     } catch(err) {
       assert.equal(err, "`a` is not a valid email.");
     }
@@ -137,7 +137,7 @@ describe("model.invalid.actions", () => {
     // check required
     try {
       await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
-      assert.fail('Required check on create operation failed.');
+      throw 'Required check on create operation failed.';
     } catch(err) {
       assert.equal(err, "Key `author_id` is required for create and update actions.");
     }
@@ -152,25 +152,24 @@ describe("model.invalid.actions", () => {
       model = store.getters.authors(1);
       model.email = 'a';
       await store.dispatch("authors.update", model);
-      assert.fail('Create with invalid data should have failed.');
+      throw 'Create with invalid data should have failed.';
     } catch(err) {
       assert.equal(err, "`a` is not a valid email.");
     }
 
-    // // check mutation
-    // model = store.getters.posts(1);
-    // model.body = 'a'
-    // console.log(model);
-    // model = await store.dispatch("posts.update", model);
-    // assert.equal(model.body, '<div>a</div>');
+    // check mutation
+    model = store.getters.posts(1);
+    model.body = 'a'
+    model = await store.dispatch("posts.update", model);
+    assert.equal(model.body, '<div>a</div>');
 
-    // // check required
-    // try {
-    //   await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
-    //   assert.fail('Required check on create operation failed.');
-    // } catch(err) {
-    //   assert.equal(err, "Key `author_id` is required for create and update actions.");
-    // }
+    // check required
+    try {
+      await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
+      throw 'Required check on create operation failed.';
+    } catch(err) {
+      assert.equal(err, "Key `author_id` is required for create and update actions.");
+    }
   });
 
 });
@@ -243,8 +242,33 @@ describe("singleton.actions", () => {
 
 describe("singleton.invalid.actions", () => {
   let err;
+  let obj;
 
-  test("holder", async () => {
-    assert.isTrue(true);
+  test("singleton.invalid.update", async () => {
+    await store.dispatch('profile.fetch');
+
+    // check validation
+    obj = store.getters.profile();
+    obj.username = ' ';
+    try {
+      await store.dispatch("profile.update", obj);
+      assert.fail('Create with invalid data should have failed.');
+    } catch(err) {
+      assert.equal(err, "Value ` ` for key `username` did not pass validation.");
+    }
+
+    // check mutation
+    obj = store.getters.profile();
+    obj.username = 'NewUser';
+    obj = await store.dispatch("profile.update", obj);
+    assert.equal(obj.username, 'newuser');
+
+    // check required
+    try {
+      await store.dispatch("profile.update", {});
+      assert.fail('Required check on update operation failed.');
+    } catch(err) {
+      assert.equal(err, "Key `username` is required for create and update actions.");
+    }
   });
 });
