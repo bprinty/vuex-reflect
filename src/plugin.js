@@ -20,7 +20,17 @@ export default function Reflect(models) {
 
   return (store) => {
     Object.keys(models).forEach((key) => {
-      const config = models[key];
+      let config;
+      if(!_.isPlainObject(models[key])) {
+        config = {
+          api: models[key].api(),
+          contract: models[key].props(),
+        }
+        models[key].__store__ = store;
+        models[key].__name__ = key;
+      } else {
+        config = models[key];
+      }
 
       // sanitize contract inputs
       _.each(config.contract, (spec, param) => {
@@ -49,6 +59,7 @@ export default function Reflect(models) {
         getters: {
           [`${key}`]: state => input => get.base(state, key, input),
           [`${key}.sample`]: state => n => get.sample(state, key, n),
+          [`${key}.template`]: state => () => get.template(config.contract),
         },
         mutations: {
           [`${key}.sync`]: (state, data) => mutate.sync(state, config, key, data),
