@@ -3,7 +3,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import v from 'validator';
+import _ from 'lodash';
 import { Model, Reflect } from '../../src/index';
+import { profile, posts, authors } from '../store/models';
 
 
 /**
@@ -12,25 +14,14 @@ import { Model, Reflect } from '../../src/index';
  * @param {string} name - Author name.
  * @param {string} email - Author email.
  */
-class Profile extends Model {
+export class Profile extends Model {
 
-  api() {
-    return {
-      fetch: '/profile',
-      update: '/profile',
-    };
+  static api() {
+    return profile.api;
   }
 
-  props() {
-    return {
-      /**
-      * Profile username
-      */
-      username: {
-        default: '<anonymous>',
-        type: String,
-      }
-    };
+  static props() {
+    return profile.contract;
   }
 }
 
@@ -41,44 +32,20 @@ class Profile extends Model {
  * @param {string} name - Author name.
  * @param {string} email - Author email.
  */
-class Author extends Model {
+export class Author extends Model {
 
   // api
-  api() {
-    return {
-      fetch: '/authors',
-      get: '/authors/:id',
-      update: '/authors/:id',
-    };
+  static api() {
+    return authors.api;
   }
 
   // props
-  props() {
-    return {
-      /**
-      * Author name.
-      */
-      name: {
-        default: null,
-        required: true,
-        type: String,
-      },
-      /**
-      * Author email.
-      */
-      email: {
-        default: null,
-        type: String,
-        validation: {
-          check: v.isEmail,
-          message: '`${value}` is not a valid email.',
-        },
-      },
-    };
+  static props() {
+    return authors.contract;
   }
 
   // relationships
-  relationships() {
+  static relationships() {
     return {
       /**
        * All post items for a single author.
@@ -100,43 +67,18 @@ class Author extends Model {
  * @param {string} body - Post body text.
  * @param {string} author_id - ID for linked post author.
  */
-class Post extends Model {
+export class Post extends Model {
 
   // api
-  api() {
-    return {
-      collection: '/posts',
-      model: '/posts/:id',
-    };
+  static api() {
+    return posts.api;
   }
 
   // properties
-  props() {
-    return {
-      /**
-      * Post title.
-      */
-      title: {
-        default: 'My Post Title',
-        required: true,
-        type: String,
-      },
-      /**
-      * Post body
-      */
-      body: {
-        type: String,
-        mutation: value => `<div>${value}</div>`,
-      },
-      /**
-      * Linked post author.
-      */
-      author: {
-        required: true,
-        type: Author,
-        collapse: 'author_id',
-      },
-    };
+  static props() {
+    const data = _.clone(posts.contract);
+    data.author.model = Author;
+    return data;
   }
 }
 
@@ -145,9 +87,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [
     Reflect({
-      Profile,
-      Author,
-      Post,
+      profile: Profile,
+      authors: Author,
+      posts: Post,
     })
   ],
 });
