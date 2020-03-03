@@ -20,13 +20,15 @@ beforeEach(() => {
 
 // tests
 // -----
-describe("model.actions", () => {
+describe("store.actions", () => {
   let collection;
   let model;
 
-  test("model.fetch", async () => {
+  test("store.fetch", async () => {
     // assert pre-fetch
     collection = store.getters.posts();
+    assert.equal(collection.length, 0);
+    collection = store.getters.authors();
     assert.equal(collection.length, 0);
 
     // fetch collection
@@ -39,12 +41,21 @@ describe("model.actions", () => {
     assert.equal(collection.length, 2);
     assert.equal(collection[0].id, 1);
 
+    // TODO: BELOW
+    // // get nested payloads
+    // collection = store.getters.authors();
+    // assert.equal(collection.length, 1);
+    // assert.equal(collection[0].id, 1);
+
+    // check nested payloads
+    assert.equal(collection[0].author.id, 1);
+
     // get single post
     model = store.getters.posts(1);
     assert.equal(model.id, 1);
   });
 
-  test("model.create", async () => {
+  test("store.create", async () => {
     // fetch collection
     await store.dispatch("posts.fetch");
 
@@ -52,7 +63,7 @@ describe("model.actions", () => {
     collection = store.getters.posts();
     assert.equal(collection.length, 2);
 
-    // create new item
+    // create new item with id
     model = await store.dispatch("posts.create", {
       title: 'a',
       body: 'aaa',
@@ -60,6 +71,7 @@ describe("model.actions", () => {
     });
     assert.equal(model.id, 3);
     assert.equal(model.title, 'a');
+    assert.equal(model.author.id, 1);
 
     // get item count
     collection = store.getters.posts();
@@ -68,9 +80,30 @@ describe("model.actions", () => {
     // get single item
     model = store.getters.posts(3);
     assert.equal(model.title, 'a');
+    assert.equal(model.author.id, 1);
+
+    // create new item with nested data
+    model = await store.dispatch("posts.create", {
+      title: 'b',
+      body: 'bbb',
+      author: { id: 1 },
+    });
+    assert.equal(model.id, 4);
+    assert.equal(model.title, 'b');
+    assert.equal(model.author.id, 1);
+
+    // get item count
+    collection = store.getters.posts();
+    assert.equal(collection.length, 4);
+
+    // get single item
+    model = store.getters.posts(4);
+    assert.equal(model.title, 'b');
+    assert.equal(model.author.id, 1);
+
   });
 
-  test("model.update", async () => {
+  test("store.update", async () => {
     // fetch collection
     await store.dispatch("authors.fetch");
 
@@ -86,19 +119,57 @@ describe("model.actions", () => {
     // verify store update
     model = store.getters.authors(1);
     assert.equal(model.name, 'a');
+
+    // create new item with id
+    model = await store.dispatch("posts.create", {
+      title: 'a',
+      body: 'aaa',
+      author_id: 1,
+    });
+    assert.equal(model.id, 3);
+    assert.equal(model.title, 'a');
+    assert.equal(model.author.id, 1);
+
+    // get single item
+    model = store.getters.posts(3);
+    assert.equal(model.title, 'a');
+
+    // create new item with nested data
+    model = await store.dispatch("posts.create", {
+      title: 'b',
+      body: 'bbb',
+      author: { id: 1 },
+    });
+    assert.equal(model.id, 4);
+    assert.equal(model.title, 'b');
+
+    // get single item
+    model = store.getters.posts(4);
+    assert.equal(model.title, 'b');
+    assert.equal(model.author.id, 1);
   });
 
-  test("model.get", async () => {
+  test("store.get", async () => {
     // fetch item
-    model = await store.dispatch("authors.get", 1);
-    assert.equal(model.name, 'Jane Doe');
+    model = await store.dispatch("authors.get", 2);
+    assert.equal(model.name, 'John Doe');
 
     // verify getter
-    model = store.getters.authors(1);
-    assert.equal(model.name, 'Jane Doe');
+    model = store.getters.authors(2);
+    assert.equal(model.name, 'John Doe');
+
+    // fetch nested item
+    model = await store.dispatch("posts.get", 1);
+    assert.equal(model.title, 'Foo');
+    assert.equal(model.author.id, 1);
+
+    // TODO: BELOW
+    // // get nested payloads
+    // model = store.getters.authors(1);
+    // assert.equal(model.id, 1);
   });
 
-  test("model.delete", async () => {
+  test("store.delete", async () => {
     // fetch collection
     await store.dispatch("posts.fetch");
 
@@ -117,11 +188,11 @@ describe("model.actions", () => {
 });
 
 
-describe("model.invalid.actions", () => {
+describe("store.invalid.actions", () => {
   let err;
   let model;
 
-  test("model.invalid.create", async () => {
+  test("store.invalid.create", async () => {
     // check validation
     try {
       await store.dispatch("authors.create", { name: 'a', email: 'a' });
@@ -143,7 +214,7 @@ describe("model.invalid.actions", () => {
     }
   });
 
-  test("model.invalid.update", async () => {
+  test("store.invalid.update", async () => {
     await store.dispatch('authors.fetch');
     await store.dispatch('posts.fetch');
 
@@ -175,10 +246,10 @@ describe("model.invalid.actions", () => {
 });
 
 
-describe("singleton.actions", () => {
+describe("store.singleton.actions", () => {
   let obj;
 
-  test("singleton.fetch", async () => {
+  test("store.singleton.fetch", async () => {
     // assert pre-fetch
     obj = store.getters.profile();
     assert.isEmpty(obj);
@@ -193,7 +264,7 @@ describe("singleton.actions", () => {
   });
 
 
-  test("singleton.update", async () => {
+  test("store.singleton.update", async () => {
     // fetch collection
     await store.dispatch("profile.fetch");
 
@@ -211,7 +282,7 @@ describe("singleton.actions", () => {
     assert.equal(obj.username, 'other');
   });
 
-  test("singleton.get", async () => {
+  test("store.singleton.get", async () => {
     // get singleton
     obj = await store.dispatch("profile.get");
     assert.equal(obj.username, 'admin');
@@ -221,7 +292,7 @@ describe("singleton.actions", () => {
     assert.equal(obj.username, 'admin');
   });
 
-  test("singleton.delete", async () => {
+  test("store.singleton.delete", async () => {
     // fetch collection
     await store.dispatch("profile.fetch");
 
@@ -240,11 +311,11 @@ describe("singleton.actions", () => {
 });
 
 
-describe("singleton.invalid.actions", () => {
+describe("store.singleton.invalid.actions", () => {
   let err;
   let obj;
 
-  test("singleton.invalid.update", async () => {
+  test("store.singleton.invalid.update", async () => {
     await store.dispatch('profile.fetch');
 
     // check validation

@@ -11,7 +11,7 @@ import { Model, Reflect } from '../../src/index';
  *
  * @param {string} username - Profile username.
  */
-const profile = {
+export const profile = {
   singleton: true,
   default: {},
   api: {
@@ -40,7 +40,7 @@ const profile = {
  * @param {string} name - Author name.
  * @param {string} email - Author email.
  */
-const authors = {
+export const authors = {
   api: {
     fetch: '/authors',
     create: '/authors',
@@ -78,7 +78,7 @@ const authors = {
  * @param {string} body - Post body text.
  * @param {string} author_id - ID for linked post author.
  */
-const posts = {
+export const posts = {
   api: {
     collection: '/posts',
     model: '/posts/:id',
@@ -88,7 +88,6 @@ const posts = {
      * Local parameter (not sent to server but available in store)
      */
     slug: {
-      default: 'post-slug',
       parse: value => value.toLowerCase().replace(' ', '-'),
       from: 'title',
       to: false,
@@ -109,13 +108,20 @@ const posts = {
       mutate: value => `<div>${value}</div>`,
     },
     /**
+     * Local parameter for testing defaults.
+     */
+    footer: {
+      default: 'footer',
+      to: false,
+    },
+    /**
      * Linked post author. On the client side, this property
      * will contain a nested Author model. During post requests,
      * this property will collapse the nested model into `author_id`.
      */
     author: {
       required: true,
-      type: 'authors',
+      model: 'authors',
       to: 'author_id',
       collapse: true,
     },
