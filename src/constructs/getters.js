@@ -75,6 +75,15 @@ export function getSingleton(state, model) {
 
 
 /**
+ * Getter for model template, using contract for defaults.
+ */
+export function getTemplate(contract) {
+  return _.mapValues(contract, 'default');
+}
+
+
+
+/**
  * Getter factory function for returning get methods based
  * on model config.
  */
@@ -82,5 +91,6 @@ export default function getterFactory(config) {
   return {
     base: config.singleton ? getSingleton : getCollection,
     sample: config.singleton ? getSingleton : getCollectionSample,
+    template: getTemplate,
   };
 }
