@@ -63,12 +63,13 @@ function formatPush(contract, data) {
       }
     }
 
-    // // cast type (if not model type)
-    // if (_.has(spec, 'type')) {
-    //   if (!(spec.type instanceof String) && !(val instanceof spec.type)) {
-    //     val = spec.type(val);
-    //   }
-    // }
+    // cast type (if not model type)
+    if (_.has(spec, 'type')) {
+      if (_.isFunction(spec.type)) {
+        // TODO: ADD NESTED PAYLOAD TO THE STORE see Post.author
+        value = spec.type(value);
+      }
+    }
 
     // mutation
     if (_.has(spec, 'mutate')) {
@@ -99,9 +100,10 @@ function formatPush(contract, data) {
  */
 function formatPull(contract, data) {
 
-  // construct rename mapping
+  // expand data with contract renaming
   const mapping = _.reduce(contract, (result, spec, param) => {
     result[spec.from || param] = param;
+    data[param] = data[spec.from || param] || spec.default;
     return result;
   }, {});
 
