@@ -27,7 +27,7 @@ export function getCollection(state, model, input) {
   }
 
   // all
-  else if ( _.isUndefined(input) ) {
+  else if (_.isUndefined(input) || _.isNull(input)) {
     return _.values(state[model]);
   }
 

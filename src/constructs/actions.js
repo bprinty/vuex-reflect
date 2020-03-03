@@ -54,20 +54,20 @@ function formatPush(contract, data) {
       result[key] = value;
     }
 
+    // cast type (if not model type)
+    if (_.has(spec, 'type')) {
+      if (_.isFunction(spec.type)) {
+        // TODO: ADD NESTED PAYLOAD TO THE STORE see Post.author
+        value = spec.type(value);
+      }
+    }
+
     // validate inputs
     if (_.has(spec, 'validate')){
       const check = spec.validate.check || spec.validate;
       const msg = _.template(spec.validate.message || 'Value `${value}` for key `${key}` did not pass validation.');
       if (!check(value)) {
         throw msg({ value, key });
-      }
-    }
-
-    // cast type (if not model type)
-    if (_.has(spec, 'type')) {
-      if (_.isFunction(spec.type)) {
-        // TODO: ADD NESTED PAYLOAD TO THE STORE see Post.author
-        value = spec.type(value);
       }
     }
 
@@ -79,7 +79,9 @@ function formatPush(contract, data) {
 
     // rename request param via `to` configuration
     if (_.has(spec, 'to')) {
-      result[spec.to] = value;
+      if (spec.to) {
+        result[spec.to] = value;
+      }
       delete result[key];
       key = spec.to;
     }
