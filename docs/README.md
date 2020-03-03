@@ -1,5 +1,17 @@
 # Vuex Reflect
 
+::: danger TODO
+
+* Consolidate `Model.query().all()` vs `Model.query.all()` syntax.
+* Consolidate `Model.get` vs `Model.fetch` syntax for getting remotely vs from store.
+* Consolidate `type` vs `model` definition in contract for nested payloads.
+* Documentation for `singleton` models.
+* Documentation for `store.getters['model.template']()`.
+* Documentation for how to declare `Model.name`.
+
+:::
+
+
 ## Introduction
 
 Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
