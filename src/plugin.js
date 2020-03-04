@@ -58,6 +58,8 @@ export default function Reflect(models) {
         },
         getters: {
           [`${key}`]: state => input => get.base(state, key, input),
+          [`${key}.one`]: state => input => get.base(state, key, input),
+          [`${key}.all`]: state => input => get.base(state, key, input),
           [`${key}.sample`]: state => n => get.sample(state, key, n),
           [`${key}.template`]: state => () => get.template(config.contract),
         },

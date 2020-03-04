@@ -8,6 +8,8 @@
 * Documentation for `singleton` models.
 * Documentation for `store.getters['model.template']()`.
 * Documentation for how to declare `Model.name`.
+* Add `await` or `then` syntax before any `commit()` actions (clarity).
+* Add `await` or `then` syntax before any `delete()` actions (clarity).
 
 :::
 
