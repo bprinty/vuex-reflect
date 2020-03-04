@@ -79,6 +79,7 @@ describe("model.actions", () => {
       author: { id: author.id },
     });
     assert.isUndefined(model.id);
+    // here
     assert.equal(model.author.id, 1);
     assert.equal(model.author.name, 'Jane Doe');
     await model.commit();
@@ -105,7 +106,8 @@ describe("model.actions", () => {
   test("model.update", async () => {
 
     // verify existing
-    model = await Author.get(1);
+    await Author.fetch()
+    model = Author.query(1);
     assert.equal(model.name, 'Jane Doe');
     assert.equal(model.$.name, 'Jane Doe');
 
@@ -132,7 +134,6 @@ describe("model.actions", () => {
     assert.equal(model.$.title, 'Foo');
     assert.equal(model.author.id, 2);
     assert.equal(model.$.author.id, 1);
-    console.log('in!');
     await model.commit();
     assert.equal(model.title, 'a');
     assert.equal(model.$.title, 'a');
@@ -152,12 +153,12 @@ describe("model.actions", () => {
     assert.equal(model.title, 'b');
     assert.equal(model.$.title, 'Bar');
     assert.equal(model.author.id, 2);
-    // assert.equal(model.$.author.id, 1);
+    assert.equal(model.$.author.id, 1);
     await model.commit();
     assert.equal(model.title, 'b');
     assert.equal(model.$.title, 'b');
     assert.equal(model.author.id, 2);
-    // assert.equal(model.$.author.id, 2);
+    assert.equal(model.$.author.id, 2);
   });
 
   test("model.get", async () => {
@@ -185,7 +186,7 @@ describe("model.actions", () => {
 
     // verify store update
     model = Post.query(2);
-    assert.isUndefined(model.id);
+    assert.isUndefined(model);
   });
 
 });
