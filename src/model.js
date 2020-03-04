@@ -2,60 +2,30 @@
 import _ from 'lodash';
 
 
-function setContractValue(spec, key, value) {
+function parseModel(model, value) {
 
-  // cast type
-  if (_.has(spec, 'type')) {
-    if (_.isFunction(spec.type)) {
-      value = spec.type(value);
+  // cast nested data into object
+  if (_.isPlainObject(value)) {
+    if (_.isNil(value.id)) {
+      throw `Nested inputs for property \`${key}\` must have \`id\` property.`;
+    }
+    if (Object.keys(value).length === 1) {
+      value = value.id;
+    } else {
+      value = new model(value);
     }
   }
 
-  // cast model
-  if (_.has(spec, 'model')) {
-
-    // cast nested data into object
-    if (_.isPlainObject(value)) {
-      if (_.isNil(value.id)) {
-        throw `Nested inputs for property \`${key}\` must have \`id\` property.`;
-      }
-      if (Object.keys(value).length == 1) {
-        value = value.id;
-      } else {
-        value = new spec.model(value);
-      }
-    }
-
-    // cast id input into object from store or empty shell
-    if (_.isInteger(value)) {
-      value = spec.model.query(value) || { id: value };
-    }
-
-    // invalid input to nested model
-    else if (!(value instanceof spec.model)) {
-      throw `Invalid input for \`${key}\` property.`;
-    }
-  }
-
-  // validate inputs
-  if (_.has(spec, 'validate')){
-    const check = spec.validate.check || spec.validate;
-    const msg = _.template(spec.validate.message || 'Value `${value}` for key `${key}` did not pass validation.');
-    if (!check(value)) {
-      throw msg({ value, key });
-    }
-  }
-
-  // mutation
-  if (_.has(spec, 'mutate')) {
-    value = spec.mutate(value);
+  // cast id input into object from store or empty shell
+  if (_.isInteger(value)) {
+    value = model.query(value) || { id: value };
   }
 
   return value;
 }
 
 
-function applyContract(contract, data) {
+function normalizeInputs(contract, data) {
   return _.reduce(contract, (result, spec, key) => {
     let value = result[key] || result[spec.to || key];
     result[key] = setContractValue(spec, key, value);
@@ -75,13 +45,33 @@ export default class Model {
    * @param {object} data - Data to instantiate model with.
    */
   constructor(data) {
+    data = data || {};
 
-    // if no data applied, use template
+    // setup
     this.__contract__ = this.constructor.props();
     this.__template__ = this.constructor.__getter__('template');
-    data = Object.assign(_.clone(this.__template__), data);
-    data = applyContract(this.__contract__, data);
     this.id = data.id;
+
+    // build nested model mapping
+    this.__remap__ = _.reduce(this.__contract__, (result, spec, key) => {
+      if (_.has(spec, 'to') && spec.to) {
+        result[spec.to] = key;
+      }
+      return result;
+    }, {});
+
+    // set up local store, accounting for nested models
+    this._ = _.reduce(data, (result, value, prop) => {
+      if (_.has(this.__remap__, prop)) {
+        result[prop] = value;
+        prop = this.__remap__[prop];
+      }
+      if (_.has(this.__contract__[prop], 'model')) {
+        value = parseModel(this.__contract__[prop].model, value);
+      }
+      result[prop] = value;
+      return result;
+    }, this.__template__);
 
     // set up store proxy
     this.$ = new Proxy({}, {
@@ -89,7 +79,11 @@ export default class Model {
         if (_.isNil(this.id)) {
           return undefined;
         }
-        return this.constructor.__getter__('one', this.id)[prop];
+        const state = this.constructor.__getter__('one', this.id);
+        if (_.isNil(state)) {
+          return undefined;
+        }
+        return state[prop];
       },
       set: (obj, prop, value) => {
         throw 'Cannot set properties directly on the store';
@@ -97,7 +91,6 @@ export default class Model {
     });
 
     // return local proxy
-    this._ = Object.assign({}, data);
     return new Proxy(this, {
       get: (obj, prop) => {
         // if id for model, get it directly
@@ -128,8 +121,12 @@ export default class Model {
 
         // everything else
         else {
-          if (_.has(this.__contract__, prop)) {
-            value = setContractValue(this.__contract__[prop], prop, value);
+          // account for nested model mapping
+          if (_.has(this.__remap__, prop)) {
+            prop = this.__remap__[prop];
+          }
+          if (_.has(this.__contract__[prop], 'model')) {
+            value = parseModel(this.__contract__[prop].model, value);
           }
           obj._[prop] = value;
         }
@@ -260,7 +257,7 @@ export default class Model {
       });
     } else {
       return this.constructor.__dispatch__('update', payload).then((data) => {
-        this.update(data);
+        this.update(_.pick(data, Object.keys(payload)));
       });
     }
   }
@@ -283,7 +280,7 @@ export default class Model {
    * @param {object} data - Object with data to update model with.
    */
   update(data) {
-    data = applyContract(this.__contract__, data);
+    // leverage proxy setters to update data
     _.reduce(data, (result, value, param) => {
       this[param] = value;
     }, {});
