@@ -40,142 +40,156 @@ describe("model.actions", () => {
     assert.equal(collection.length, 2);
     assert.equal(collection[0].id, 1);
 
-    // // check nested payloads
-    // assert.equal(collection[0].author.id, 1);
-    //
-    // // get single post
-    // model = Post.query(1);
-    // assert.equal(model.id, 1);
+    // check nested payloads
+    assert.equal(collection[0].author.id, 1);
+
+    // get single post
+    model = Post.query(1);
+    assert.equal(model.id, 1);
   });
-  //
-  // test("model.create", async () => {
-  //   // fetch collection
-  //   await store.dispatch("posts.fetch");
-  //
-  //   // get item count
-  //   collection = store.getters.posts();
-  //   assert.equal(collection.length, 2);
-  //
-  //   // create new item with id
-  //   model = await store.dispatch("posts.create", {
-  //     title: 'a',
-  //     body: 'aaa',
-  //     author_id: 1,
-  //   });
-  //   assert.equal(model.id, 3);
-  //   assert.equal(model.title, 'a');
-  //   assert.equal(model.author.id, 1);
-  //
-  //   // get item count
-  //   collection = store.getters.posts();
-  //   assert.equal(collection.length, 3);
-  //
-  //   // get single item
-  //   model = store.getters.posts(3);
-  //   assert.equal(model.title, 'a');
-  //   assert.equal(model.author.id, 1);
-  //
-  //   // create new item with nested data
-  //   model = await store.dispatch("posts.create", {
-  //     title: 'b',
-  //     body: 'bbb',
-  //     author: { id: 1 },
-  //   });
-  //   assert.equal(model.id, 4);
-  //   assert.equal(model.title, 'b');
-  //   assert.equal(model.author.id, 1);
-  //
-  //   // get item count
-  //   collection = store.getters.posts();
-  //   assert.equal(collection.length, 4);
-  //
-  //   // get single item
-  //   model = store.getters.posts(4);
-  //   assert.equal(model.title, 'b');
-  //   assert.equal(model.author.id, 1);
-  //
-  // });
-  //
-  // test("model.update", async () => {
-  //   // fetch collection
-  //   await store.dispatch("authors.fetch");
-  //
-  //   // verify existing
-  //   model = store.getters.authors(1);
-  //   assert.equal(model.name, 'Jane Doe');
-  //
-  //   // update
-  //   model.name = 'a';
-  //   model = await store.dispatch("authors.update", model);
-  //   assert.equal(model.name, 'a');
-  //
-  //   // verify store update
-  //   model = store.getters.authors(1);
-  //   assert.equal(model.name, 'a');
-  //
-  //   // create new item with id
-  //   model = await store.dispatch("posts.create", {
-  //     title: 'a',
-  //     body: 'aaa',
-  //     author_id: 1,
-  //   });
-  //   assert.equal(model.id, 3);
-  //   assert.equal(model.title, 'a');
-  //   assert.equal(model.author.id, 1);
-  //
-  //   // get single item
-  //   model = store.getters.posts(3);
-  //   assert.equal(model.title, 'a');
-  //
-  //   // create new item with nested data
-  //   model = await store.dispatch("posts.create", {
-  //     title: 'b',
-  //     body: 'bbb',
-  //     author: { id: 1 },
-  //   });
-  //   assert.equal(model.id, 4);
-  //   assert.equal(model.title, 'b');
-  //
-  //   // get single item
-  //   model = store.getters.posts(4);
-  //   assert.equal(model.title, 'b');
-  //   assert.equal(model.author.id, 1);
-  // });
-  //
-  // test("model.get", async () => {
-  //   // fetch item
-  //   model = await store.dispatch("authors.get", 1);
-  //   assert.equal(model.name, 'Jane Doe');
-  //
-  //   // verify getter
-  //   model = store.getters.authors(1);
-  //   assert.equal(model.name, 'Jane Doe');
-  //
-  //   // fetch nested item
-  //   model = await store.dispatch("posts.get", 1);
-  //   assert.equal(model.title, 'Foo');
-  //   assert.equal(model.author.id, 1);
-  // });
-  //
-  // test("model.delete", async () => {
-  //   // fetch collection
-  //   await store.dispatch("posts.fetch");
-  //
-  //   // verify existing
-  //   model = store.getters.posts(2);
-  //   assert.equal(model.title, 'Bar');
-  //
-  //   // delete
-  //   await store.dispatch("posts.delete", 2);
-  //
-  //   // verify store update
-  //   model = store.getters.posts(2);
-  //   assert.isUndefined(model);
-  // });
+
+  test("model.create", async () => {
+    const author = await Author.get(1);
+
+    // create new item with id
+    model = new Post({
+      title: 'a',
+      body: 'aaa',
+      author_id: author.id,
+    });
+    assert.isUndefined(model.id);
+    assert.isUndefined(model.$.title);
+    assert.equal(model.title, 'a');
+    assert.equal(model.footer, 'footer');
+    assert.equal(model.author_id, 1);
+    assert.equal(model.author.id, 1);
+    assert.equal(model.author.name, 'Jane Doe');
+    await model.commit();
+    assert.equal(model.id, 3);
+    assert.equal(model.$.title, 'a');
+    assert.equal(model.title, 'a');
+    assert.equal(model.footer, 'footer');
+    assert.equal(model.author.id, 1);
+    assert.equal(model.author.name, 'Jane Doe');
+
+    // create new item with nested data
+    model = new Post({
+      title: 'b',
+      body: 'bbb',
+      author: { id: author.id },
+    });
+    assert.isUndefined(model.id);
+    assert.equal(model.author.id, 1);
+    assert.equal(model.author.name, 'Jane Doe');
+    await model.commit();
+    assert.equal(model.id, 4);
+    assert.equal(model.author.id, 1);
+    assert.equal(model.author.name, 'Jane Doe');
+
+    // create new item with nested object
+    model = new Post({
+      title: 'b',
+      body: 'bbb',
+      author: author,
+    });
+    assert.isUndefined(model.id);
+    assert.equal(model.author.id, 1);
+    assert.equal(model.author.name, 'Jane Doe');
+    await model.commit();
+    assert.equal(model.id, 5);
+    assert.equal(model.author.id, 1);
+    assert.equal(model.author.name, 'Jane Doe');
+
+  });
+
+  test("model.update", async () => {
+
+    // verify existing
+    model = await Author.get(1);
+    assert.equal(model.name, 'Jane Doe');
+    assert.equal(model.$.name, 'Jane Doe');
+
+    // update
+    model.name = 'a';
+    assert.equal(model.name, 'a');
+    assert.equal(model.$.name, 'Jane Doe');
+    await model.commit();
+    assert.equal(model.name, 'a');
+    assert.equal(model.$.name, 'a');
+
+    // update nested item with id
+    model = await Post.get(1);
+    assert.equal(model.title, 'Foo')
+    assert.equal(model.$.title, 'Foo')
+    assert.equal(model.author.id, 1);
+    assert.equal(model.$.author.id, 1);
+    model.update({
+      title: 'a',
+      body: 'aaa',
+      author_id: 2,
+    });
+    assert.equal(model.title, 'a');
+    assert.equal(model.$.title, 'Foo');
+    assert.equal(model.author.id, 2);
+    assert.equal(model.$.author.id, 1);
+    console.log('in!');
+    await model.commit();
+    assert.equal(model.title, 'a');
+    assert.equal(model.$.title, 'a');
+    assert.equal(model.author.id, 2);
+    assert.equal(model.$.author.id, 2);
+
+
+    // update nested item with model instance
+    model = await Post.get(2);
+    assert.equal(model.title, 'Bar')
+    assert.equal(model.$.title, 'Bar')
+    model.update({
+      title: 'b',
+      body: 'bbb',
+      author: Author.query(2),
+    });
+    assert.equal(model.title, 'b');
+    assert.equal(model.$.title, 'Bar');
+    assert.equal(model.author.id, 2);
+    // assert.equal(model.$.author.id, 1);
+    await model.commit();
+    assert.equal(model.title, 'b');
+    assert.equal(model.$.title, 'b');
+    assert.equal(model.author.id, 2);
+    // assert.equal(model.$.author.id, 2);
+  });
+
+  test("model.get", async () => {
+    // fetch item
+    model = await Author.get(1);
+    assert.equal(model.name, 'Jane Doe');
+
+    // fetch nested item
+    model = await Post.get(1);
+    assert.equal(model.title, 'Foo');
+    assert.equal(model.author.id, 1);
+  });
+
+  test("model.delete", async () => {
+    // fetch collection
+    await Post.fetch();
+
+    // verify existing
+    model = Post.query(2);
+    assert.equal(model.id, 2);
+    assert.equal(model.title, 'Bar');
+
+    // delete
+    await model.delete();
+
+    // verify store update
+    model = Post.query(2);
+    assert.isUndefined(model.id);
+  });
 
 });
-//
-//
+
 // describe("model.invalid.actions", () => {
 //   let err;
 //   let model;
