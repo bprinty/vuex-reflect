@@ -146,7 +146,8 @@ export class MockServer {
     return {
       get: (id) => indexed(id, this.get(name, id)),
       put: (id, payload) => {
-        this.db[name][id] = Object.assign(this.db[name][id], payload);
+        const keys = Object.keys(this.db[name][id]);
+        this.db[name][id] = Object.assign(this.db[name][id], _.pick(payload, keys));
         return indexed(id, this.get(name, id));
       },
       delete: (id) => {
