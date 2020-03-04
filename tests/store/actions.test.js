@@ -120,33 +120,28 @@ describe("store.actions", () => {
     model = store.getters.authors(1);
     assert.equal(model.name, 'a');
 
-    // create new item with id
-    model = await store.dispatch("posts.create", {
+    // update new item with id
+    model = await store.dispatch("posts.update", {
+      id: 1,
       title: 'a',
       body: 'aaa',
       author_id: 1,
     });
-    assert.equal(model.id, 3);
+    assert.equal(model.id, 1);
     assert.equal(model.title, 'a');
     assert.equal(model.author.id, 1);
 
-    // get single item
-    model = store.getters.posts(3);
-    assert.equal(model.title, 'a');
-
-    // create new item with nested data
+    // update new item with nested data
     model = await store.dispatch("posts.create", {
+      id: 2,
       title: 'b',
       body: 'bbb',
       author: { id: 1 },
     });
-    assert.equal(model.id, 4);
-    assert.equal(model.title, 'b');
-
-    // get single item
-    model = store.getters.posts(4);
+    assert.equal(model.id, 2);
     assert.equal(model.title, 'b');
     assert.equal(model.author.id, 1);
+
   });
 
   test("store.get", async () => {
