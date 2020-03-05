@@ -82,6 +82,19 @@ export function getTemplate(contract) {
 }
 
 
+/**
+ * Getter for model template, using contract for defaults.
+ */
+export function getDefaults(contract) {
+  return _.reduce(contract, (result, spec, key) => {
+    if (_.has(spec, 'default')) {
+      result[key] = spec.default;
+    }
+    return result;
+  }, {});
+}
+
+
 
 /**
  * Getter factory function for returning get methods based
@@ -92,5 +105,6 @@ export default function getterFactory(config) {
     base: config.singleton ? getSingleton : getCollection,
     sample: config.singleton ? getSingleton : getCollectionSample,
     template: getTemplate,
+    defaults: getDefaults,
   };
 }
