@@ -4,84 +4,153 @@
 
 // imports
 // -------
-import _ from 'lodash';
 import { assert } from 'chai';
-import server from '../server';
 import store from './models';
+import { Profile, Post, Author } from './models';
+import server from '../server';
 
 
 // config
 // ------
 jest.mock('axios');
 server.init();
-beforeEach(() => {
-  server.reset();
+server.reset();
+beforeAll(async (done) => {
+  await Post.fetch();
+  await Author.fetch();
+  done();
 });
 
 
 // tests
 // -----
-let res;
+let result;
 
-test("querying.placeholder", async () => {
-  assert.isTrue(true);
+describe("query.base", () => {
+
+  test("query.one", async () => {
+    result = Post.query(1);
+    assert.equal(result.id, 1);
+  });
+
+  test("query.several", async () => {
+    result = Post.query([1, 2]);
+    assert.equal(result[0].id, 1);
+    assert.equal(result[1].id, 2);
+  });
+
 });
 
+describe("query.filters", () => {
 
-// test("getters.model", async () => {
-//   // fetch collection
-//   await store.dispatch("authors.fetch");
-//
-//   // all
-//   res = store.getters.authors();
-//   assert.equal(res.length, 2);
-//   assert.equal(res[0].name, 'Jane Doe');
-//
-//   // subset by id
-//   res = store.getters.authors([2]);
-//   assert.equal(res.length, 1);
-//   assert.equal(res[0].name, 'John Doe');
-//   res = store.getters.authors([1, 2]);
-//   assert.equal(res.length, 2);
-//   assert.equal(res[0].name, 'Jane Doe');
-//
-//   // one
-//   res = store.getters.authors(2);
-//   assert.equal(res.name, 'John Doe');
-//
-//   // missing
-//   res = store.getters.authors(9000);
-//   assert.isUndefined(res);
-//
-// });
-//
-// test("getters.sample", async () => {
-//   // fetch collection
-//   await store.dispatch("authors.fetch");
-//
-//   // one
-//   res = store.getters['authors.sample']();
-//   assert.isTrue('name' in res);
-//
-//   // some
-//   res = store.getters['authors.sample'](2);
-//   assert.equal(res.length, 2);
-//   assert.isTrue('name' in res[0]);
-// });
-//
-// test("getters.template", async () => {
-//   res = store.getters['profile.template']();
-//   assert.isTrue(_.isEqual(res, { username: '<anonymous>' }));
-//
-//   res = store.getters['authors.template']();
-//   assert.isTrue(_.isEqual(res, { name: null, email: null }));
-//
-//   res = store.getters['posts.template']();
-//   assert.isTrue(_.isEqual(res, {
-//     slug: undefined,
-//     title: 'My Post Title',
-//     body: undefined,
-//     footer: 'footer',
-//     author: undefined
-//   }));
-// });
+  test("query.filter", async () => {
+
+    // single input
+    result = Post.query().filter({ title: 'Bar' }).one();
+    assert.equal(result.id, 2);
+
+    // multiple inputs
+    result = Post.query().filter({ title: 'Bar', body: false }).one();
+    assert.isUndefined(result);
+    result = Post.query().filter({ title: 'Bar', body: 'bar baz' }).one();
+    assert.equal(result.id, 2);
+
+    // regular expression
+    result = Post.query().filter({ body: /ba[rz]/ }).all();
+    assert.equal(result.length, 2);
+    result = Post.query().filter({ body: /foo/ }).all();
+    assert.equal(result.length, 1);
+    assert.equal(result[0].id, 1);
+
+    // callable
+    result = Post.query().filter(x => x.title === 'Bar').one();
+    assert.equal(result.id, 2)
+
+    // chained
+    result = Post.query().filter({ body: /ba[rz]/ }).filter(x => x.title === 'Bar').one();
+    assert.equal(result.id, 2)
+
+  });
+
+  test("query.has", async () => {
+    result = Post.query().has('footer').all();
+    assert.equal(result.length, 2);
+
+    await Post.query(1).update({ body: undefined }).commit();
+    result = Post.query().has('body').all();
+    assert.equal(result.length, 1);
+  });
+
+  test("query.offset", async () => {
+    result = Post.query().offset(1).first();
+    assert.equal(result.id, 2);
+  });
+
+  test("query.limit", async () => {
+    result = Post.query().limit(1).all();
+    assert.equal(result.length, 1);
+    assert.equal(result[0].id, 1);
+  });
+
+  test("query.order", async () => {
+    // single key
+    result = Post.query().order('title').first();
+    assert.equal(result.id, 2);
+
+    // multiple keys
+    result = Post.query().order(['footer', 'title']).first();
+    assert.equal(result.id, 2);
+
+    // comparator function
+    result = Post.query().order((a, b) => {
+      if (a.title < b.title) {
+        return -1;
+      } else if (a.title > b.title) {
+        return 1;
+      }
+      return 0;
+    }).first();
+    assert.equal(result.id, 2);
+  });
+
+});
+
+describe("query.resolvers", () => {
+
+  test("query.all", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.first", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.last", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.random", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.sample", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.count", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.sum", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.min", async () => {
+    assert.isTrue(true);
+  });
+
+  test("query.max", async () => {
+    assert.isTrue(true);
+  });
+
+});
