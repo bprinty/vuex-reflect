@@ -26,11 +26,10 @@ _.templateSettings.interpolate = /\${([\s\S]+?)}/g;
 function formatPush(contract, data) {
   return _.reduce(contract, (result, spec, key) => {
 
-    // check if data required
+    // check required keys
     if (_.has(spec, 'required') && spec.required) {
-      if (!_.has(result, key) && !_.has(result, spec.to)) {
-        const msg = _.template('Key `${key}` is required for create and update actions.');
-        throw msg({ key: spec.to || key });
+      if (_.isNil(result[key] || result[spec.to])) {
+        throw `Key \`${key}\` is required for create and update actions.`;
       }
     }
 
