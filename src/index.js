@@ -4,12 +4,13 @@
 
 
 // imports
-import Model from './model';
+import { Model, Singleton } from './model';
 import Reflect from './plugin';
 
 
 // exports
 export {
   Model,
+  Singleton,
   Reflect,
 };

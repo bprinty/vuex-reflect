@@ -37,7 +37,7 @@ function normalizeInputs(contract, data) {
 /**
  * Abstract base class for Model definitions.
  */
-export default class Model {
+export class Model {
 
   /**
    * Model constructor.
@@ -48,8 +48,8 @@ export default class Model {
     data = data || {};
 
     // setup
+    this.__actions__ = this.constructor.api();
     this.__contract__ = this.constructor.props();
-    this.__template__ = this.constructor.__getter__('template');
     this.id = data.id;
 
     // build nested model mapping
@@ -71,14 +71,11 @@ export default class Model {
       }
       result[prop] = value;
       return result;
-    }, this.__template__);
+    }, this.constructor.__getter__('defaults'));
 
     // set up store proxy
     this.$ = new Proxy({}, {
       get: (obj, prop) => {
-        if (_.isNil(this.id)) {
-          return undefined;
-        }
         const state = this.constructor.__getter__('one', this.id);
         if (_.isNil(state)) {
           return undefined;
@@ -133,6 +130,12 @@ export default class Model {
 
         return true;
       },
+      deleteProperty: (obj, prop) => {
+        if (_.has(obj._, prop)) {
+          delete obj._[prop];
+        }
+        return true;
+      }
     });
   }
 
@@ -161,6 +164,19 @@ export default class Model {
       throw 'Model must be registered with Vuex store for data management.';
     }
     return this.__store__.dispatch(`${this.__name__}.${method}`, ...args);
+  }
+
+  /**
+   * Proxy for using registered store mutations for specific model.
+   *
+   * @param {string} method - Action method to access.
+   * @param {array} args - Extra arguments to pass to downstream callables.
+   */
+  static __mutate__(method, ...args) {
+    if (_.isUndefined(this.__store__) || _.isUndefined(this.__name__)) {
+      throw 'Model must be registered with Vuex store for data management.';
+    }
+    return this.__store__.commit(`${this.__name__}.${method}`, ...args);
   }
 
   /**
@@ -252,14 +268,11 @@ export default class Model {
     const payload = this.json();
     if (_.isNil(this.id)) {
       delete payload.id;
-      return this.constructor.__dispatch__('create', payload).then((data) => {
-        this.update(data);
-      });
-    } else {
-      return this.constructor.__dispatch__('update', payload).then((data) => {
-        this.update(_.pick(data, Object.keys(payload)));
-      });
     }
+    const action = _.has(self.__actions__, 'update') ? 'update' : 'create';
+    return this.constructor.__dispatch__(action, payload).then((data) => {
+      this.update(data);
+    });
   }
 
   /**
@@ -287,6 +300,13 @@ export default class Model {
   }
 
   /**
+   * Remove model instance from store.
+   */
+  remove() {
+    this.constructor.__mutate__('remove', this.id);
+  }
+
+  /**
    * Return Object representing current model and nested configuration
    * ... TODO
    */
@@ -294,3 +314,54 @@ export default class Model {
     return _.clone(this._);
   }
 }
+
+export class Singleton extends Model {
+
+  constructor() {
+    super();
+    this.update(this.constructor.__getter__('one'));
+  }
+
+  /**
+   * Dispatch fetch action to retrieve singleton data. This returns
+   * a collection of new objects of a model's type.
+   *
+   * @param {object} params - URL parameters for fetch operations.
+   */
+  static fetch(params) {
+    return this.__dispatch__('fetch', params).then(data => new this(data));
+  }
+
+
+  /**
+   * Dispatch fetch action to retrieve singleton data. This returns
+   * a collection of new objects of a model's type.
+   */
+  static get() {
+    return this.fetch();
+  }
+
+  /**
+   * Commit data to external API and update store to reflect
+   * data updates.
+   */
+  commit() {
+    const payload = this.json();
+    return this.constructor.__dispatch__('update', payload).then((data) => {
+      this.update(data);
+    });
+  }
+
+  /**
+   * Issue delete action and update store to reflect updates.
+   */
+  delete() {
+    return this.constructor.__dispatch__('delete');
+  }
+
+}
+
+export default {
+  Singleton,
+  Model,
+};
