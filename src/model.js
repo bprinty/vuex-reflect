@@ -1,5 +1,6 @@
 
 import _ from 'lodash';
+import { operator } from './querying';
 
 
 function parseModel(model, value) {
@@ -189,11 +190,11 @@ export class Model {
     const data = this.__getter__('all', id);
 
     // return object if query has inputs
-    if (!_.isUndefined(id)) {
+    if (!_.isNil(id)) {
 
       // if id was integer, return the data or undefined
       if (_.isInteger(id)) {
-        return _.isNil(data) ? undefined : new this(data);
+        return _.isPlainObject(data) ? new this(data) : undefined;
       }
 
       // otherwise, make a collection of objects
@@ -203,12 +204,8 @@ export class Model {
 
     }
 
-    // return resolvers
-    return {
-      all: () => data.map(item => new this(item)),
-      first: () => new this(data[0]),
-      last: () => new this(data[data.length]),
-    };
+    // return query operator on data
+    return operator(this, data);
   }
 
   /**
@@ -230,6 +227,13 @@ export class Model {
    */
   static get(id) {
     return this.__dispatch__('get', id).then(data => new this(data));
+  }
+
+  /**
+   * Remove all model instances from vuex store.
+   */
+  static clear() {
+    this.constructor.__mutate__('clear');
   }
 
   /**
@@ -272,6 +276,7 @@ export class Model {
     const action = _.has(self.__actions__, 'update') ? 'update' : 'create';
     return this.constructor.__dispatch__(action, payload).then((data) => {
       this.update(data);
+      return this;
     });
   }
 
@@ -297,6 +302,7 @@ export class Model {
     _.reduce(data, (result, value, param) => {
       this[param] = value;
     }, {});
+    return this;
   }
 
   /**
@@ -304,11 +310,12 @@ export class Model {
    */
   remove() {
     this.constructor.__mutate__('remove', this.id);
+    return this;
   }
 
   /**
-   * Return Object representing current model and nested configuration
-   * ... TODO
+   * Return javascript Object representing current model and nested
+   * configuration.
    */
   json() {
     return _.clone(this._);
@@ -349,6 +356,7 @@ export class Singleton extends Model {
     const payload = this.json();
     return this.constructor.__dispatch__('update', payload).then((data) => {
       this.update(data);
+      return this;
     });
   }
 
