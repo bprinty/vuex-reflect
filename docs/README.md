@@ -10,9 +10,23 @@
 * Documentation for how to declare `Model.name`.
 * Add `await` or `then` syntax before any `commit()` actions (clarity).
 * Add `await` or `then` syntax before any `delete()` actions (clarity).
+* Evaluate if related models can be accessed via store with `model.$.relatedModel` syntax.
+* Documentation for how to register non-model items registered with declarative syntax.
+* Store mutation section of docs to include new clear (and other) mutations.
+* Add note in store mutation documentation about avoiding the use of mutations directly.
+* Change all refs using `link` parameter in store configuration.
+* Clean up use of `...` in configuration and overview documentation (in favor of explicit comments).
+* Change usage of `ORM` throughout documentation - this library really isn't an ORM and is meant to reflect an application api.
 
 :::
 
+::: danger TESTS NEEDED
+
+* Testing for clearing collection via `model.clear` mutation and `Model.clear()`
+* Testing for defining models with namespaced modules
+* Testing for using declarative syntax outside of model definitions.
+
+:::
 
 ## Introduction
 
