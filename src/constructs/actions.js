@@ -55,7 +55,7 @@ function formatPush(contract, data) {
 
     // cast type (if not model type)
     if (_.has(spec, 'type')) {
-      if (_.isFunction(spec.type)) {
+      if (_.isFunction(spec.type) && !_.isUndefined(value)) {
         // TODO: ADD NESTED PAYLOAD TO THE STORE see Post.author
         value = spec.type(value);
       }
@@ -72,8 +72,10 @@ function formatPush(contract, data) {
 
     // mutation
     if (_.has(spec, 'mutate')) {
-      value = spec.mutate(value);
-      result[key] = value;
+      if (!_.isUndefined(value)) {
+        value = spec.mutate(value);
+        result[key] = value;
+      }
     }
 
     // rename request param via `to` configuration
