@@ -2,6 +2,7 @@
 
 import _ from 'lodash';
 import axios from 'axios';
+import { Singleton } from './model';
 import getterFactory from './constructs/getters';
 import mutationFactory from './constructs/mutations';
 import actionFactory from './constructs/actions';
@@ -23,6 +24,7 @@ export default function Reflect(models) {
       let config;
       if(!_.isPlainObject(models[key])) {
         config = {
+          singleton: models[key].prototype instanceof Singleton,
           api: models[key].api(),
           contract: models[key].props(),
         }
@@ -62,6 +64,7 @@ export default function Reflect(models) {
           [`${key}.all`]: state => input => get.base(state, key, input),
           [`${key}.sample`]: state => n => get.sample(state, key, n),
           [`${key}.template`]: state => () => get.template(config.contract),
+          [`${key}.defaults`]: state => () => get.defaults(config.contract),
         },
         mutations: {
           [`${key}.sync`]: (state, data) => mutate.sync(state, config, key, data),
