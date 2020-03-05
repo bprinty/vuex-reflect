@@ -22,6 +22,8 @@ export default function Reflect(models) {
   return (store) => {
     Object.keys(models).forEach((key) => {
       let config;
+
+      // configuration from models
       if(!_.isPlainObject(models[key])) {
         config = {
           singleton: models[key].prototype instanceof Singleton,
@@ -30,7 +32,10 @@ export default function Reflect(models) {
         }
         models[key].__store__ = store;
         models[key].__name__ = key;
-      } else {
+      }
+
+      // configuration for store directly
+      else {
         config = models[key];
       }
 
@@ -67,6 +72,7 @@ export default function Reflect(models) {
           [`${key}.defaults`]: state => () => get.defaults(config.contract),
         },
         mutations: {
+          [`${key}.clear`]: (state, data) => mutate.clear(state, config, key, data),
           [`${key}.sync`]: (state, data) => mutate.sync(state, config, key, data),
           [`${key}.reset`]: (state, id) => mutate.reset(state, config, key, id),
           [`${key}.remove`]: (state, id) => mutate.remove(state, config, key, id),
