@@ -1,20 +1,169 @@
 
+import _ from 'lodash';
 
 /**
- * Clojure for fluid query API.
+ * Factory function for creating filter callable using
+ * specified filter parameters.
  */
-export default function query(data) {
-  // use fluid api for query syntax (see d3 for details)
-  this.data = data;
-  return {
-    filter: (params) => query(filter(params, this.data)),
-    first: () => this.data[0],
-    last: () => this.data[this.data.length - 1],
-    all: () => this.data,
-  };
+function filterFactory(params) {
+  return (input) => {
+    let match = true;
+    _.map(params, (value, key) => {
+      if (_.has(input, key)) {
+        if(value instanceof RegExp) {
+          match &= value.test(input[key]);
+        } else {
+          match &= input[key] === value;
+        }
+      }
+    });
+    return Boolean(match);
+  }
 }
 
 
-function filter(params, data) {
-  return data;
+/**
+ * Factory function for creating sort callable using
+ * specified sort parameters.
+ */
+function sortFactory(params) {
+  return (a, b) => {
+    let diff = 0;
+    _.transform(params, (result, key) => {
+      if (a[key] < b[key]) {
+        diff = -1;
+      } else if (a[key] > b[key]) {
+        diff = 1;
+      }
+      return diff == 0;
+    }, 0);
+    return diff;
+  }
+}
+
+
+
+/**
+ * Query clojure operator that allows for a fluid query API.
+ *
+ * @param {Model} model - Model class to instantiate results with.
+ * @param {array} data - Array of query results to operate on.
+ */
+export function operator(model, data) {
+  const cls = model;
+  let current = data;
+
+  function operate() {}
+
+  /**
+   * Filter data with specified object or filter function.
+   *
+   * @param {object, function} filter - Filter to apply to data.
+   */
+  operate.filter = (filter) => {
+    // convert input to filter function
+    if (_.isPlainObject(filter)) {
+      filter = filterFactory(filter);
+    }
+
+    // process data
+    if (_.isFunction(filter)) {
+      current = current.filter(filter);
+    }
+
+    // unknown filter
+    else {
+      throw `No rule for filtering data with input \`${filter}\``;
+    }
+
+    return operate;
+  };
+
+  /**
+   * Filter data that has defined data for specified keys.
+   *
+   * @param {string, array} keys - Key or array of keys to check
+   *     for in model instances.
+   */
+  operate.has = (keys) => {
+    if (!_.isArray(keys)) {
+      keys = [keys];
+    }
+    current = current.filter((item) => {
+      let match = true;
+      _.map(keys, (key) => {
+          match &= !_.isUndefined(item[key]);
+      });
+      return Boolean(match);
+    });
+    return operate;
+  }
+
+  /**
+   * Offset current query by a specified number of records.
+   *
+   * @param {integer} n - Number of records to offset query by.
+   */
+  operate.offset = (n) => {
+    current = current.slice(n, current.length);
+    return operate;
+  };
+
+  /**
+   * Limit current query by specified number of records.
+   *
+   * @param {integer} n - Number of records to limit query by.
+   */
+  operate.limit = (n) => {
+    current = current.slice(0, n);
+    return operate;
+  };
+
+  /**
+   * Sort current query records using keys or comparator function.
+   *
+   * @param {string, array, function} comparator - Key, array of keys,
+   *     or comparator function to sort records with.
+   */
+  operate.order = (comparator) => {
+    if (!_.isFunction(comparator)) {
+      if (!_.isArray(comparator)) {
+        comparator = [comparator];
+      }
+      comparator = sortFactory(comparator);
+    }
+    current.sort(comparator);
+    return operate;
+  };
+
+  /**
+   * Resolve query with all data.
+   */
+  operate.all = () => {
+    return current.map(item => new cls(item));
+  };
+
+  /**
+   * Resolve query with first item in dataset.
+   */
+  operate.first = () => {
+    if (!current.length) {
+      return undefined;
+    }
+    return new cls(current[0]);
+  };
+
+  operate.one = operate.first;
+
+  /**
+   * Resolve query with last item in dataset.
+   */
+  operate.last = () => {
+    if (!current.length) {
+      return undefined;
+    }
+    return new cls(current[current.length - 1]);
+  };
+
+  return operate;
 }
