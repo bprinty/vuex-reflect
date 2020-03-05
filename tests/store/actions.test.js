@@ -205,7 +205,7 @@ describe("store.invalid.actions", () => {
       await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
       throw 'Required check on create operation failed.';
     } catch(err) {
-      assert.equal(err, "Key `author_id` is required for create and update actions.");
+      assert.equal(err, "Key `author` is required for create and update actions.");
     }
   });
 
@@ -231,10 +231,12 @@ describe("store.invalid.actions", () => {
 
     // check required
     try {
-      await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
+      model = store.getters.posts(1);
+      delete model.author;
+      await store.dispatch("posts.update", model);
       throw 'Required check on create operation failed.';
     } catch(err) {
-      assert.equal(err, "Key `author_id` is required for create and update actions.");
+      assert.equal(err, "Key `author` is required for create and update actions.");
     }
   });
 
@@ -288,7 +290,7 @@ describe("store.singleton.actions", () => {
   });
 
   test("store.singleton.delete", async () => {
-    // fetch collection
+    // fetch singleton
     await store.dispatch("profile.fetch");
 
     // verify existing

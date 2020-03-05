@@ -69,7 +69,7 @@ test("getters.template", async () => {
   assert.isTrue(_.isEqual(res, { username: '<anonymous>' }));
 
   res = store.getters['authors.template']();
-  assert.isTrue(_.isEqual(res, { name: null, email: null }));
+  assert.isTrue(_.isEqual(res, { name: null, email: undefined }));
 
   res = store.getters['posts.template']();
   assert.isTrue(_.isEqual(res, {
