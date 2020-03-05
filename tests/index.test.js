@@ -36,15 +36,19 @@ const store = new Vuex.Store({
 
 // tests
 // -----
-describe("store configuration", () => {
+describe("config", () => {
 
-  test("extra constructs work", () => {
-      assert.equal(store.state.ping, null);
-      store.commit('ping');
-      assert.equal(store.state.ping, 'pong');
-      store.dispatch('ping').then((data) => {
-        assert.equal(data, 'pong');
-      });
+  test("config.constructs", () => {
+    assert.equal(store.state.ping, null);
+    store.commit('ping');
+    assert.equal(store.state.ping, 'pong');
+    store.dispatch('ping').then((data) => {
+      assert.equal(data, 'pong');
+    });
+  });
+
+  test("config.axios", () => {
+    assert.isTrue(true);
   });
 
 });
