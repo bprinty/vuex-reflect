@@ -60,7 +60,6 @@ export const authors = {
      * Author email.
      */
     email: {
-      default: null,
       type: String,
       validate: {
         check: v.isEmail,

@@ -4,7 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import v from 'validator';
 import _ from 'lodash';
-import { Model, Reflect } from '../../src/index';
+import { Model, Singleton, Reflect } from '../../src/index';
 import { profile, posts, authors } from '../store/models';
 
 
@@ -14,7 +14,7 @@ import { profile, posts, authors } from '../store/models';
  * @param {string} name - Author name.
  * @param {string} email - Author email.
  */
-export class Profile extends Model {
+export class Profile extends Singleton {
 
   static api() {
     return profile.api;

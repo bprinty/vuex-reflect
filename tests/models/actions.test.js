@@ -189,160 +189,195 @@ describe("model.actions", () => {
     assert.isUndefined(model);
   });
 
+  test("model.remove", async () => {
+    // fetch collection
+    await Post.fetch();
+
+    // verify existing
+    model = Post.query(2);
+    assert.equal(model.id, 2);
+    assert.equal(model.title, 'Bar');
+
+    // delete
+    await model.remove();
+
+    // verify store update
+    model = Post.query(2);
+    assert.isUndefined(model);
+  });
+
 });
 
-// describe("model.invalid.actions", () => {
-//   let err;
-//   let model;
-//
-//   test("model.invalid.create", async () => {
-//     // check validation
-//     try {
-//       await store.dispatch("authors.create", { name: 'a', email: 'a' });
-//       throw 'Create with invalid data should have failed.';
-//     } catch(err) {
-//       assert.equal(err, "`a` is not a valid email.");
-//     }
-//
-//     // check mutation
-//     model = await store.dispatch("posts.create", { title: 'aaa', body: 'a', author_id: 1 });
-//     assert.equal(model.body, '<div>a</div>');
-//
-//     // check required
-//     try {
-//       await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
-//       throw 'Required check on create operation failed.';
-//     } catch(err) {
-//       assert.equal(err, "Key `author_id` is required for create and update actions.");
-//     }
-//   });
-//
-//   test("model.invalid.update", async () => {
-//     await store.dispatch('authors.fetch');
-//     await store.dispatch('posts.fetch');
-//
-//     // check validation
-//     try {
-//       model = store.getters.authors(1);
-//       model.email = 'a';
-//       await store.dispatch("authors.update", model);
-//       throw 'Create with invalid data should have failed.';
-//     } catch(err) {
-//       assert.equal(err, "`a` is not a valid email.");
-//     }
-//
-//     // check mutation
-//     model = store.getters.posts(1);
-//     model.body = 'a'
-//     model = await store.dispatch("posts.update", model);
-//     assert.equal(model.body, '<div>a</div>');
-//
-//     // check required
-//     try {
-//       await store.dispatch("posts.create", { title: 'aaa', body: 'a' });
-//       throw 'Required check on create operation failed.';
-//     } catch(err) {
-//       assert.equal(err, "Key `author_id` is required for create and update actions.");
-//     }
-//   });
-//
-// });
-//
-//
-// describe("singleton.actions", () => {
-//   let obj;
-//
-//   test("singleton.fetch", async () => {
-//     // assert pre-fetch
-//     obj = store.getters.profile();
-//     assert.isEmpty(obj);
-//
-//     // fetch singleton
-//     obj = await store.dispatch("profile.fetch");
-//     assert.equal(obj.username, 'admin');
-//
-//     // get singleton
-//     obj = store.getters.profile();
-//     assert.equal(obj.username, 'admin');
-//   });
-//
-//
-//   test("singleton.update", async () => {
-//     // fetch collection
-//     await store.dispatch("profile.fetch");
-//
-//     // verify existing
-//     obj = store.getters.profile();
-//     assert.equal(obj.username, 'admin');
-//
-//     // update
-//     obj.username = 'other';
-//     obj = await store.dispatch("profile.update", obj);
-//     assert.equal(obj.username, 'other');
-//
-//     // verify store update
-//     obj = store.getters.profile();
-//     assert.equal(obj.username, 'other');
-//   });
-//
-//   test("singleton.get", async () => {
-//     // get singleton
-//     obj = await store.dispatch("profile.get");
-//     assert.equal(obj.username, 'admin');
-//
-//     // singleton getter
-//     obj = store.getters.profile();
-//     assert.equal(obj.username, 'admin');
-//   });
-//
-//   test("singleton.delete", async () => {
-//     // fetch collection
-//     await store.dispatch("profile.fetch");
-//
-//     // verify existing
-//     obj = store.getters.profile();
-//     assert.equal(obj.username, 'admin');
-//
-//     // delete
-//     await store.dispatch("profile.delete");
-//
-//     // verify store update
-//     obj = store.getters.profile();
-//     assert.isEmpty(obj);
-//   });
-//
-// });
-//
-//
-// describe("singleton.invalid.actions", () => {
-//   let err;
-//   let obj;
-//
-//   test("singleton.invalid.update", async () => {
-//     await store.dispatch('profile.fetch');
-//
-//     // check validation
-//     obj = store.getters.profile();
-//     obj.username = ' ';
-//     try {
-//       await store.dispatch("profile.update", obj);
-//       assert.fail('Create with invalid data should have failed.');
-//     } catch(err) {
-//       assert.equal(err, "Value ` ` for key `username` did not pass validation.");
-//     }
-//
-//     // check mutation
-//     obj = store.getters.profile();
-//     obj.username = 'NewUser';
-//     obj = await store.dispatch("profile.update", obj);
-//     assert.equal(obj.username, 'newuser');
-//
-//     // check required
-//     try {
-//       await store.dispatch("profile.update", {});
-//       assert.fail('Required check on update operation failed.');
-//     } catch(err) {
-//       assert.equal(err, "Key `username` is required for create and update actions.");
-//     }
-//   });
-// });
+describe("model.invalid.actions", () => {
+  let err;
+  let model;
+
+  test("model.invalid.create", async () => {
+    // check validation
+    try {
+      model = new Author({ name: 'a', email: 'a' });
+      model.commit();
+      assert.fail('Create with invalid data should have failed.');
+    } catch(err) {
+      assert.equal(err, "`a` is not a valid email.");
+    }
+
+    // check mutation
+    model = new Post({ title: 'aaa', body: 'a', author_id: 1 });
+    await model.commit();
+    assert.equal(model.body, '<div>a</div>');
+
+    // check required
+    try {
+      model = new Post({ title: 'aaa', body: 'a' });
+      model.commit();
+      assert.fail('Required check on create operation failed.');
+    } catch(err) {
+      assert.equal(err, "Key `author` is required for create and update actions.");
+    }
+  });
+
+  test("model.invalid.update", async () => {
+    await Author.fetch();
+    await Post.fetch();
+
+    // check validation
+    try {
+      model = Author.query(1);
+      model.email = 'a';
+      await model.commit();
+      throw 'Create with invalid data should have failed.';
+    } catch(err) {
+      assert.equal(err, "`a` is not a valid email.");
+    }
+
+    // check mutation
+    model = Post.query(1);
+    model.body = 'a'
+    await model.commit();
+    assert.equal(model.body, '<div>a</div>');
+
+    // check required
+    try {
+      model = Post.query(1);
+      delete model.author;
+      await model.commit();
+      throw 'Required check on create operation failed.';
+    } catch(err) {
+      assert.equal(err, "Key `author` is required for create and update actions.");
+    }
+  });
+
+});
+
+
+describe("model.singleton.actions", () => {
+  let obj;
+
+  test("model.singleton.fetch", async () => {
+    // assert pre-fetch
+    obj = new Profile();
+    assert.equal(obj.username, '<anonymous>');
+
+    // fetch singleton
+    obj = await Profile.fetch();
+    assert.equal(obj.username, 'admin');
+
+    // get singleton
+    obj = new Profile();
+    assert.equal(obj.username, 'admin');
+  });
+
+
+  test("singleton.update", async () => {
+    // fetch collection
+    obj = await Profile.fetch();
+    assert.equal(obj.username, 'admin');
+    assert.equal(obj.$.username, 'admin');
+
+    // update
+    obj.username = 'other';
+    assert.equal(obj.username, 'other');
+    assert.equal(obj.$.username, 'admin');
+    await obj.commit();
+    assert.equal(obj.username, 'other');
+    assert.equal(obj.$.username, 'other');
+
+    // verify store update
+    obj = new Profile();
+    assert.equal(obj.username, 'other');
+    assert.equal(obj.$.username, 'other');
+  });
+
+  test("singleton.get", async () => {
+    // get singleton
+    obj = await Profile.get();
+    assert.equal(obj.username, 'admin');
+
+    // singleton getter
+    obj = new Profile();
+    assert.equal(obj.username, 'admin');
+  });
+
+  test("singleton.delete", async () => {
+    // fetch singleton
+    obj = await Profile.fetch();
+    assert.equal(obj.username, 'admin');
+
+    // delete
+    await obj.delete();
+
+    // verify store update
+    obj = new Profile();
+    assert.equal(obj.username, '<anonymous>');
+  });
+
+  test("singleton.remove", async () => {
+    // fetch singleton
+    obj = await Profile.fetch();
+    assert.equal(obj.username, 'admin');
+
+    // remove from store
+    obj.remove();
+
+    // verify store update
+    obj = new Profile();
+    assert.equal(obj.username, '<anonymous>');
+  });
+
+});
+
+describe("singleton.invalid.actions", () => {
+  let err;
+  let obj;
+
+  test("singleton.invalid.update", async () => {
+    await Profile.fetch();
+
+    // check validation
+    obj = new Profile();
+    obj.username = ' ';
+    try {
+      await obj.commit();
+      assert.fail('Create with invalid data should have failed.');
+    } catch(err) {
+      assert.equal(err, "Value ` ` for key `username` did not pass validation.");
+    }
+
+    // check mutation
+    obj = new Profile();
+    obj.username = 'NewUser';
+    await obj.commit();
+    assert.equal(obj.username, 'newuser');
+
+    // check required
+    try {
+      obj = new Profile();
+      delete obj.username;
+      await obj.commit();
+      assert.fail('Required check on update operation failed.');
+    } catch(err) {
+      assert.equal(err, "Key `username` is required for create and update actions.");
+    }
+  });
+});
