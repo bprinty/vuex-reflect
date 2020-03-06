@@ -118,39 +118,63 @@ describe("query.filters", () => {
 describe("query.resolvers", () => {
 
   test("query.all", async () => {
-    assert.isTrue(true);
+    result = Post.query().all();
+    assert.equal(result.length, 2);
+    assert.isTrue(result[0] instanceof Post);
   });
 
   test("query.first", async () => {
-    assert.isTrue(true);
+    result = Post.query().first();
+    assert.equal(result.id, 1);
+    assert.isTrue(result instanceof Post);
   });
 
   test("query.last", async () => {
-    assert.isTrue(true);
+    result = Post.query().last();
+    assert.equal(result.id, 2);
+    assert.isTrue(result instanceof Post);
   });
 
   test("query.random", async () => {
-    assert.isTrue(true);
+    result = Post.query().random();
+    assert.isTrue(result instanceof Post);
   });
 
   test("query.sample", async () => {
-    assert.isTrue(true);
+    result = Post.query().sample(1);
+    assert.equal(result.length, 1);
+    assert.isTrue(result[0] instanceof Post);
+  });
+
+  test("query.shuffle", async () => {
+    result = Post.query().shuffle();
+    assert.equal(result.length, 2);
+    assert.isTrue(result[0] instanceof Post);
   });
 
   test("query.count", async () => {
-    assert.isTrue(true);
+    result = Post.query().count();
+    assert.equal(result, 2);
+    result = Post.query().filter({ title: 'Bar' }).count();
+    assert.equal(result, 1);
   });
 
   test("query.sum", async () => {
-    assert.isTrue(true);
+    result = Post.query(1);
+    result = Post.query().sum('hits');
+    assert.equal(result, 300);
   });
 
   test("query.min", async () => {
-    assert.isTrue(true);
+    result = Post.query(1);
+    result = Post.query().min('hits');
+    assert.equal(result, 100);
   });
 
   test("query.max", async () => {
-    assert.isTrue(true);
+    result = Post.query(1);
+    result = Post.query().max('hits');
+    assert.equal(result, 200);
   });
 
 });
