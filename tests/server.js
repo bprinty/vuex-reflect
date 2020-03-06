@@ -14,11 +14,13 @@ class App extends MockServer {
         {
           title: 'Foo',
           body: 'foo bar baz',
+          hits: 100,
           author_id: 1,
         },
         {
           title: 'Bar',
           body: 'bar baz',
+          hits: 200,
           author_id: 1,
         },
       ],
