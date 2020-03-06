@@ -165,5 +165,60 @@ export function operator(model, data) {
     return new cls(current[current.length - 1]);
   };
 
+  /**
+   * Resolve query by sampling number of records.
+   *
+   * @param {integer} n - Number of records to sample.
+   */
+  operate.sample = (n) => {
+    return _.sampleSize(current, n).map(item => new cls(item));
+  }
+
+  /**
+   * Resolve query by randomly sampling a single record.
+   */
+   operate.random = () => {
+     const result = _.sample(current);
+     if (_.isUndefined(result)) {
+       return undefined;
+     }
+     return new cls(result);
+   };
+
+   /**
+    * Resolve query by shuffling records and returning results.
+    */
+   operate.shuffle = () => {
+     return _.sampleSize(current, current.length).map(item => new cls(item));
+   }
+
+   /**
+    * Resolve query by returning count of results.
+    */
+   operate.count = () => {
+     return current.length;
+   }
+
+   /**
+    * Resolve query by returning count of results.
+    */
+   operate.sum = (name) => {
+     return _.sum(_.values(_.mapValues(current, name)));
+   }
+
+   /**
+    * Resolve query by returning count of results.
+    */
+   operate.max = (name) => {
+     return _.max(_.values(_.mapValues(current, name)));
+   }
+
+   /**
+    * Resolve query by returning count of results.
+    */
+   operate.min = (name) => {
+     return _.min(_.values(_.mapValues(current, name)));
+   }
+
   return operate;
 }
