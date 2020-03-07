@@ -8,8 +8,8 @@ Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the con
 
 It does this with two main features:
 
-1. An ORM with a declarative syntax for configuring data models. This ORM provides a) an easy way to connect models to an external API endpoint for CRUD actions, b) utilities for property mutations and validation, and c) a fluid query API for accessing data from the store.
-2. Automatic vuex-based data management for models tracked by this library. Vuex Relfect handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via the ORM (or from the store directly, if you're not a fan of ORMs).
+1. A declarative syntax for defining and configuring data models. This feature provides a) an easy way to connect models to an external API endpoint for CRUD actions, b) utilities for property mutations and validation, and c) a fluid query API for accessing data from the store.
+2. Automatic vuex-based data management for models tracked by this library. Vuex Relfect handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via class-based model definitions (or from the store directly, if you're not a fan of ES6 classes).
 
 ### Notes on Vuex
 
@@ -37,7 +37,7 @@ For more detailed documentation about how to define and configure data models us
 
 For explanations/context about how data are managed behind-the-scenes using vuex, see the [Store](/guide/models/store.md) section of the documentation.
 
-> **Note:** If you're not a fan of ORMs, see the [Store](/guide/store/overview.md) section of this documentation. This package can still be used to reflect application state without defining models - you can use the store directly, fully leveraging the ability to connect to an external api for fetching data.
+> **Note:** If you're not a fan of ES6 classes, see the [Store](/guide/store/overview.md) section of this documentation. This package can still be used to reflect application state without defining models - you can use the store directly, fully leveraging the ability to connect to an external api for fetching data.
 
 For additional examples of how to use this module in a project, see the [Examples](/guide/examples/todo.md) section of the documentation.
 
@@ -147,7 +147,7 @@ To see all of the data fetched, you can access the store directly:
 }
 ```
 
-Or, you can use the ORM to access the data:
+Or, you can use the model classes to access the data:
 
 ```javascript
 // result of: Todo.all().map((x) => x.json())
@@ -276,7 +276,7 @@ export default {
 </script>
 ```
 
-Above, you can see more examples of querying data using the ORM, along with the `Todo.fetch()` method for fetching data from an external datasource and putting it into the vuex store. For more detail on how to use this library, proceed to the [Models](/guide/models/overview.md) section of the documentation.
+Above, you can see more examples of querying data using class-based models, along with the `Todo.fetch()` method for fetching data from an external datasource and putting it into the Vuex store. For more detail on how to use this library, proceed to the [Models](/guide/models/overview.md) section of the documentation.
 
 
 ## Table of Contents

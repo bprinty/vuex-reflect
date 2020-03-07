@@ -1,6 +1,6 @@
 # Overview
 
-Let's take a top-down approach to understanding how models work with Vuex Reflect. Throughout this section of the documentation, let's focus on building a content management application with two related models: `Posts` and `Authors`. Using the ORM from this library, we want to define Models to help us traverse our data and reflect a backend API. Additionally, we'll be defining relationships between our Models. First, let's start with `Author`. The API providing `Author` data has the following endpoints:
+Let's take a top-down approach to understanding how models work with Vuex Reflect. Throughout this section of the documentation, let's focus on building a content management application with two related models: `Posts` and `Authors`. Using tools from this library, we want to define Models to help us traverse our data and reflect a backend API. Additionally, we'll be defining relationships between our Models. First, let's start with `Author`. The API providing `Author` data has the following endpoints:
 
 ```
 /authors
@@ -76,7 +76,7 @@ class Author extends Model {
   }
 
   /**
-   * Relationships to other objects tracked by the orm.
+   * Relationships to other objects tracked by the library.
    */
   static relations() {
     return {
@@ -151,7 +151,7 @@ The `Post` records from this API take the shape:
 ]
 ```
 
-Note that `Post` data from the API contains nested information about related `Author` data. This is a commonly used pattern in web development, and the ORM from this library is built to support that pattern accordingly (by saving nested `Author` objects in the Vuex store automatically).
+Note that `Post` data from the API contains nested information about related `Author` data. This is a commonly used pattern in web development, and this library is built to support that pattern accordingly (by saving nested `Author` objects in the Vuex store automatically).
 
 In the `Post` model definition below, note how the nested `Author` configuration is represented as an entry in the `props()` definition:
 
@@ -290,7 +290,7 @@ export default {
 }
 ```
 
-This hints at an important principle you need to understand when using this library: the ORM **will only query data currently in the store**. It's up to developers to ensure that their store is in-sync with the data they want to have available. Fetching data from the API and into the store is easily done with `Model.fetch()`.
+This hints at an important principle you need to understand when using this library: **only data currently from the store can be queried**. It's up to developers to ensure that their store is in-sync with the data they want to have available. Fetching data from the API and into the store is easily done with `Model.fetch()`.
 
 The [Store](/guide/store/overview.md) section provides more detail about how data flow into and out of the store. Technically, you don't even need models to use the API reflection functionality provided by this library. All Models in this module use getters and mutations from the store when accessing data.
 
@@ -453,5 +453,5 @@ This overview covered several of the high-level features provided by this librar
 1. [API](/guide/models/api.md) - Information about configuring API endpoints for fetching, updating, and querying data.
 2. [Properties](/guide/models/properties.md) - Information about declaring model properties, along with mechanisms for validation and property mutations.
 3. [Relationships](/guide/models/relationships.md) - Information about configuring relationships between models, including API endpoints for fetching nested data.
-4. [Querying](/guide/models/querying.md) - Information about querying data via the ORM.
+4. [Querying](/guide/models/querying.md) - Information about querying data via model classes.
 5. [Customization](/guide/models/customization.md) - Information about customizing models with custom methods.

@@ -2,15 +2,15 @@
 
 Once data are fetched by this library, they are automatically reflected onto the frontend store and available to access throughout the application.
 
-The [ORM](/guide/models/querying.md) provided by this module has several methods designed to make querying data from the store a simpler process with minimal boilerplate. If developers choose to not use the ORM with this module, they can still query data, but must define their own mechanisms for filtering the data.
+The [Querying](/guide/models/querying.md) section of the documentation outlined several ways to query store data using class-based model definitions. If developers choose to not use class-based model definitions, they can still query data, but must define their own mechanisms for filtering the data.
 
 ::: tip
 
-If you plan on doing a lot of complex querying throughout your application, it is recommended you use the ORM for defining models, because it will produce a more readable and maintainable code base.
+If you plan on doing a lot of complex querying throughout your application, it is recommended you use the class-based syntax for defining models, because it will produce a more readable and maintainable code base.
 
 :::
 
-The examples below mirror some of the examples in the ORM guide, but for querying store data directly:
+The examples below mirror some of the examples in the querying guide, but highlight how to query store data directly:
 
 ```javascript
 // filter
@@ -32,10 +32,10 @@ state.todos[state.todos.length - 1]
 state.todos.slice(state.todos.length - 5, state.todos.length)
 
 // random
-_.sample(state.todos, 1)
+_.sample(_.values(state.todos), 1)
 
 // sample
-_.sample(state.todos, 20)
+_.sampleSize(_.values(state.todos), 20)
 
 // count
 state.todos.filter(obj => obj.done).length
@@ -49,6 +49,8 @@ _.max(state.todos.filter(obj => obj.done).map(obj => obj.priority))
 state.todos.slice(50, 100)
 
 // order
-[...arr].sort((a, b) => a.text > b.text)[state.todos.length - 1]
-[...arr].sort((a, b) => a.id > b.id)[state.todos.length - 1]
+_.values(state.todos).sort((a, b) => b.id - a.id)[state.todos.length - 1]
+
+// shuffle
+_.sampleSize(_.values(state.todos), state.todos.length)
 ```
