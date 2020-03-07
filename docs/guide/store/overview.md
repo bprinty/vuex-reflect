@@ -4,7 +4,7 @@ In a previous section of the documentation, we discussed the ORM and how to defi
 
 ::: tip Disclaimer
 
-This section is only relevant if you wish to understand how the ORM functions in the application or develop configuration for the store directly (bypass using the ORM). If you plan to use the ORM with this plugin, simply follow the guidelines in the [Models](/guide/models/overview.md) section of the documentation.
+This section is only relevant if you wish to understand how class-based definitions work or develop configuration for the store directly (bypass using class-based model definitions). If you plan to use the ORM with this plugin, simply follow the guidelines in the [Models](/guide/models/overview.md) section of the documentation.
 
 :::
 
@@ -18,7 +18,12 @@ Similarly to the previous section, let's take a top-down approach to understandi
 /authors/:id
   GET - Get the metadata for a single author.
   PUT - Update data for a single author.
+
+/authors/:id/posts
+  GET - Query all or a subset of posts for a single author.
 ```
+
+> Note that a nested endpoint exists `/authors/:id/posts` for querying all posts for a specific author. This can be represented in our Model definition via `relations()` configuraton.
 
 The `Author` records from this API take the shape:
 
@@ -41,7 +46,18 @@ And here are endpoints for the `Post` model:
   GET - Get the metadata for a single post.
   PUT - Update data for a single post.
   DELETE - Delete a specific post.
+
+/posts/:id/author
+  GET - Get metadata for the author of a post.
+
+/posts/:id/archive
+  POST - Archive a post.
+
+/posts/:id/history
+  GET - Get the change history for a single post.
 ```
+
+> Note that several nested endpoints exist for the `posts` model. These are represented in our Model definition via `relations`, `actions`, and `queries` configuration.
 
 The `Post` records from this API take the shape:
 
@@ -160,10 +176,19 @@ const authors = {
       },
     },
   },
+  relations: {
+    /**
+     * All posts for a single author.
+     */
+    posts: {
+      model: 'posts',
+      url: '/authors/:id/posts',
+    },
+  },
 };
 ```
 
-This declarative syntax allows developers to **only worry about API contracts** and not how data are managed. Well-designed APIs are generally constructed in a consistent way, and this library leans on assumptions of that consistency to remove a ton of the boilerplate necessary for maintaining store objects.
+This declarative syntax allows developers to **only worry about defining API contracts** and not how data are managed. Well-designed APIs are generally constructed in a consistent way, and this library leans on assumptions of that consistency to remove a ton of the boilerplate necessary for maintaining store objects.
 
 Instead of needing to define individual actions for updating data via `GET/POST/PUT/DELETE` requests, this module automatically creates those constructs so you can simply use them if the state property you're declaring has an associated `api` block:
 
@@ -224,6 +249,19 @@ const posts = {
     author_id: {
       link: 'authors',
     },
+  },
+  relations: {
+    author: {
+      model: 'authors',      
+      url: '/posts/:id/author',
+    },
+  },
+  actions: {
+    archive: '/posts/:id/archive',
+    history: '/posts/:id/history',
+  },
+  queries: {
+    history: '/posts/:id/history',
   },
 };
 ```
@@ -320,128 +358,54 @@ This will automatically `POST` data to the application API and commit the result
 For more information on the `Vuex` constructs automatically created by this library, see the [Querying](/guide/store/querying.md) section of the documentation.
 
 
-## Declarative Store Syntax
+## Querying Relations
 
-You can also use this declarative mechanism for other Vuex state properties as well (even if you're not connecting to an external API):
-
-```javascript
-/**
-* Simple counter state property for counting something.
-*/
-const counter = {
-  default: 0,
-  mutations: {
-    increment: value => value + 1,
-  },
-}
-```
-
-Using this way of defining state properties, mutations for updating the data are automatically created for the store, along with any additional mutations provided for the property:
+If you've defined `relations` with your model, you can query them just like other models:
 
 ```javascript
-// using it in the store
-store.state.counter; // get the state for counter
-store.commit('counter', 2); // set the counter value to `2`
-store.commit('increment'); // increment the counter
+const post = store.getters['posts'](1);
+
+// fetch author payload
+store.dispatch('posts.author.fetch', post.id).then((author) => {
+  // do something with author object
+});
+
+// update author model
+const otherAuthor = store.getters['authors'](1);
+await store.dispatch('posts.author.update', post.id, otherAuthor);
+
+// fetch posts for related author
+const posts = await store.dispatch('authors.posts.fetch', otherAuthor.id);
 ```
 
-This may seem like a trivial syntactic pivot for non-API operations, but it becomes more useful when you're dealing with many state properties with lots of complexity. It also helps for maintainability to see all mutations/actions associated with a specific state property in the same block of code. Take the following code for example:
+Each of these actions will automatically insert the `id` of the current model into the nested url, so the nested operation is fully contextualized. Inputs to actions (when required) should be other objects, and return values are objects of the Model type referenced in the relation configuration.
 
+See the [Relationships](/guide/models/relationships.md) section for more information on defining nested model relations.
+
+
+## Nested Actions
+
+When nested `actions` or `queries` are defined, you can utilize them directly from model instances with the following syntax:
 
 ```javascript
-/**
- * Simple counter state property for counting something.
- */
-const counter = {
-  default: 0,
-  type: Number,
-  mutations: {
-    increment: value => value + 1,
-    incrementBy: (value, extra) => value + extra,
-    decrement: value => value - 1,
-  },
-  actions: {
-    incrementAsync({ commit }) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          commit('increment');
-        }, 1000);
-      });
-    }),
-    incrementAndAdd({ commit }, value) {
-      commit('increment');
-      commit('incrementBy', value);
-    },
-  }
-}
+const obj = store.getters['posts'](1);
 
-/**
- * Other dummy property for example.
- */
-const otherProperty = {
-  default: 'foo',
-  type: String,
-  mutations: {
-    addBar: value => `${value}bar`,
-  },
-  actions: {
-    postBar({ commit }) {
-      return axios.post('/api/bar');
-    }
-  }
-}
+// archive post
+await store.dispatch('posts.archive', obj.id);
 
-...
+// query history
+const history = await store.dispatch('posts.history.fetch', obj.id);
+
+// send data to nested history url
+await store.dispatch('posts.history.update', obj.id, {
+  action: 'updating history',
+  time: 'now'
+});
 ```
 
-This might be preferable (easier to understand/maintain) compared to how Vuex constructs are normally declared:
+When the same key is used multiple times for a nested action (across actions and queries), the key is automatically set up as an object that can dispatch to the `fetch/get/create/update/delete` interface available throughout the rest of this library. Otherwise, it is configured as a callable that returns a promise containing request data.
 
-```javascript
-const store = {
-  counter: 0,
-  otherProperty: 'foo',
-};
-
-const mutations = {
-  counter(state, value) {
-    state.counter = Number(value);
-  },
-  increment(state) {
-    state.count++;
-  },
-  incrementBy(state, extra) {
-    state.count + extra;
-  },
-  decrement(state){
-    state.count--;
-  },
-  otherProperty(state, value) {
-    state.otherProperty = String(value);
-  },
-  addBar(state) {
-    state.value = `${value}bar`;
-  },
-};
-
-const actions = {
-  incrementAsync({ commit }) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        commit('increment');
-      }, 1000);
-    });
-  }),
-  incrementAndAdd({ commit }, value) {
-    commit('increment');
-    commit('incrementBy', value);
-  },
-  postBar({ commit }) {
-    return axios.post('/api/bar');
-  }
-};
-```
-
-Obviously, syntactic preference is a subjective thing and changes based on differences in background and individual coding style. The main reason for introducing this more declarative syntax is because it is used for defining models for API endpoints.
+See the [Relationships](/guide/store/relationships.md) section for more information on defining nested model actions and queries. The configuration for nested actions can be complex enough to accommodate most needs.
 
 
 ## Clearing Store Data

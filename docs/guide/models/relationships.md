@@ -1,4 +1,4 @@
-# relationships
+# Relationships
 
 Nested resource API designs are a commonly used pattern for providing contextualized data in a very readable way. Below are examples where a nested resource design can be used within an application:
 
@@ -6,7 +6,7 @@ Nested resource API designs are a commonly used pattern for providing contextual
 /posts/:id/author   // author of post
 /posts/:id/comments // all comments for single post
 /posts/:id/archive  // send POST request to archive post
-/posts/:id/history  // send GET request to retrieve post history
+/posts/:id/history  // send GET request to retrieve post
 ```
 
 This library supports declaring those types of relations in models via the `relations()` configuration in Model definitions, allowing developers to access any number of nested Models from a model instance directly. The following code shows the data structure for declaring Model relations:
@@ -34,37 +34,49 @@ class MyModel extends Model {
        * Nested collection of models.
        */
       relatedCollection: {
-        collection: RelatedModel,
+        model: RelatedModel,
         url: '/mymodel/:id/relatedcollection',
       },
     }
   }
 
   static actions() {
-    /**
-    * Nested action for model.
-    */
-    relatedAction: {
+    return {
       /**
-       * Request method to use for action.
-       */
-      method: 'POST',
+      * Nested action for model.
+      */
+      relatedAction: {
+        /**
+         * Request method to use for GET-ing action data.
+         */
+        fetch: '/mymodel/:id/action',
+        /**
+         * Request method to use for POST-ing action data.
+         */
+        create: '/mymodel/:id/action',
+        /**
+         * Request method to use for PUT-ing action data.
+         */
+        update: '/mymodel/:id/action',
+        /**
+         * Request method to use for DELETE-ing action data.
+         */
+        delete: '/mymodel/:id/action',
+        /**
+         * Whether or not to refresh the current model after
+         * create/update/delete actions resolve.
+         */
+        refresh: true,
+      },
+    };
+  }
+
+  static queries() {
+    return {
       /**
-       * Whether or not to refresh the current model after
-       * the action resolves.
-       */
-      refresh: true,
-      /**
-       * URL to use for nested action.
-       */
-      url: '/mymodel/:id/action',
-    },
-    /**
-    * Nested query for model.
-    */
-    relatedQuery: {
-      method: 'GET',
-      url: '/mymodel/:id/query',
+      * Nested query for model.
+      */
+      relatedQuery: '/mymodel/:id/query',
     },
   }
 
@@ -103,10 +115,23 @@ class Post extends Model {
   static relations() {
     return {
       comments: {
-        collection: Comment,
+        model: Comment,
         fetch: '/posts/:id/comments',
       }
     }
+  }
+
+  static actions() {
+    return {
+      archive: '/posts/:id/archive',
+      history: '/posts/:id/history',
+    },
+  }
+
+  static queries() {
+    return {
+      history: '/posts/:id/history',
+    };
   }
 }
 ```
@@ -116,7 +141,8 @@ We could utilize that relationship in a component that takes a `Post` model as a
 ```html
 <template>
   <h1>{{ post.$.name }}</h1>
-  <small v-for="comment in post.comments" v-key="comment.id">{{ comment.$.text }}</small>
+  <button @click="this.post.archive">Archive Post</button>
+  <small v-for="comment in comments" v-key="comment.id">{{ comment.$.text }}</small>
 </template>
 <script>
 export default {
@@ -161,7 +187,7 @@ class Post extends Model {
         url: '/posts/:id/author',
       },
       comments: {
-        collection: Comment,
+        model: Comment,
         url: '/posts/:id/comments',
       },
     };
@@ -231,25 +257,23 @@ class Post extends Model {
         url: '/posts/:id/author',
       },
       comments: {
-        collection: Comment,
+        model: Comment,
         url: '/posts/:id/comments',
       },
     };
   }
 
-}
+  static actions() {
+    return {
+      archive: '/posts/:id/archive',
+      history: '/posts/:id/history',
+    };
+  }
 
-static actions() {
-  return {
-    archive: {
-      method: 'POST',
-      url: '/posts/:id/archive',
-      refresh: true,
-    },
-    history: {
-      method: 'GET',
-      url: '/posts/:id/history',
-    }
+  static queries() {
+    return {
+      history: '/posts/:id/history',
+    };
   }
 }
 ```
@@ -265,3 +289,130 @@ await post.archive();
 // get history data
 const history = await post.history();
 ```
+
+Under-the-hood, the `queries()` syntax above is syntactic sugar for adding `fetch/get` configuration in the `actions()` block. When store actions are configured, each element in `queries()` configuration is added to the `actions()` configuration with `fetch` and `get` nested actions pre-defined. For example, the above definition is equivalent to:
+
+```javascript
+class Post extends Model {
+
+  ...
+
+  static actions() {
+    return {
+      archive: '/posts/:id/archive',
+      history: {
+        fetch: '/posts/:id/history',
+        get: '/posts/:id/history',
+        create: '/posts/:id/history',
+        update: '/posts/:id/history',
+        delete: '/posts/:id/history',
+      },
+    };
+  }
+}
+```
+
+When the store is set up and configuration is resolved for the `action()` block, items without nested configuration are configured as callables that return a promise with request data. If nested configuration is defined for actions, the nested property allows developers to dispatch those specific actions. You can see this in the examples above.
+
+
+## Complex Action Configuration
+
+As referenced above, action configuration can be defined abstractly or in a granular way. When defining an action that only has one type of purpose, you just need to specify a url:
+
+```javascript
+class Post extends Model {
+
+  ...
+
+  static actions() {
+    return {
+      archive: '/posts/:id/archive',
+    };
+  }
+
+  static queries() {
+    return {
+      history: '/posts/:id/history',
+    };
+  }
+}
+```
+
+And you can dispatch the action directly:
+
+```javascript
+const post = Post.get(1);
+await post.archive();
+const history = await post.history();
+```
+
+But, sometimes it's useful to have a nested url that can receive multiple request types. For this type of configuration, you can more specifically define urls for different request actions:
+
+```javascript
+class Post extends Model {
+
+  ...
+
+  static actions() {
+    return {
+      history: {
+        fetch: '/posts/:id/history',
+        get: '/posts/:id/history/summary',
+        create: '/posts/:id/history/add',
+        delete: '/posts/:id/history',
+      },
+    };
+  }
+
+  static queries() {
+    return {
+      history: '/posts/:id/history',
+    };
+  }
+}
+```
+
+When can then be used with the following syntax:
+
+```javascript
+const post = Post.get(1);
+const history = await post.history.fetch();
+await post.history.create({ action: 'test', time: 'now' });
+await post.history.delete();
+```
+
+
+## Custom Actions
+
+Along with specifying nested urls to dispatch to in `actions()` configuration, you can customize the methods available on each action by setting configuration keys equal to callables:
+
+```javascript
+class Post extends Model {
+
+  ...
+
+  static actions() {
+    return {
+      archive: {
+        post: '/posts/:id/archive',
+        notify: () => {
+          return new Promise((resolve, reject) => {
+            // code to notify external service
+          });
+        },  
+      },
+    };
+  }
+}
+```
+
+These are available from model instances with a similar API:
+
+```javascript
+const post = Post.get(1);
+post.archive.post().then(() => {
+  post.archive.notify();
+});
+```
+
+This allows developers to accommodate most complex REST patterns for nested configuration.

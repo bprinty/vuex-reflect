@@ -14,7 +14,7 @@ Let's take a top-down approach to understanding how models work with Vuex Reflec
   GET - Query all or a subset of posts for a single author.
 ```
 
-> Note that a targeted endpoint exists `/authors/:id/posts` for querying all posts for a specific author. This can be represented in our Model definition via `relationship()` configuraton.
+> Note that a nested endpoint exists `/authors/:id/posts` for querying all posts for a specific author. This can be represented in our Model definition via `relations()` configuraton.
 
 The `Author` records from this API take the shape:
 
@@ -108,7 +108,19 @@ Now that we've defined our `Author` Model, let's define our `Post` Model. The AP
   GET - Get the metadata for a single post.
   PUT - Update data for a single post.
   DELETE - Delete a specific post.
+
+/posts/:id/author
+  GET - Get metadata for the author of a post.
+
+/posts/:id/archive
+  POST - Archive a post.
+
+/posts/:id/history
+  GET - Get the change history for a single post.
+  POST - Add new item to post change history.
 ```
+
+> Note that several nested endpoints exist for the `Post` model. These are represented in our Model definition via `relations()`, `actions()`, and `queries()` configuration.
 
 The `Post` records from this API take the shape:
 
@@ -187,6 +199,29 @@ class Post extends Model {
       },
     };
   }
+
+  static relations() {
+    return {
+      author: {
+        model: Author,
+        url: '/posts/:id/author',
+      },
+    };
+  }
+
+  static actions() {
+    return {
+      archive: '/posts/:id/archive',
+      history: '/posts/:id/history',
+    },
+  }
+
+  static queries() {
+    return {
+      history: '/posts/:id/history',
+    };
+  }
+};
 }
 ```
 
@@ -328,6 +363,33 @@ Without setting the `collapse` property, the full `Author` json is sent in the r
   },
 }
 ```
+
+## Querying Relations
+
+If you've defined `relations()` with your model, you can query them just like other models:
+
+```javascript
+const post = Post.query().one();
+
+// fetch author payload
+post.author.fetch().then((author) => {
+  // do something with author object
+});
+
+// update author model
+const otherAuthor = Author.get(1);
+await post.author.update(otherAuthor);
+
+// fetch posts for related author
+const posts = await otherAuthor.posts.fetch();
+```
+
+In each of these relations, inputs to actions (when required) should be other objects, and return values are objects of the type referenced in the relation.
+
+
+## Nested Actions
+
+
 
 
 ## Clearing Store Data
