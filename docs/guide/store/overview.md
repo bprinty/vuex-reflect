@@ -1,10 +1,10 @@
 # Overview
 
-In a previous section of the documentation, we discussed the ORM and how to define front-end models for your application that can represent data from an external API. This section of the documentation will cover how data are organized in the Vuex store when you define models, along with the Vuex constructs used for accessing and mutating data within this library.
+In a previous section of the documentation, we discussed how class-based model definitions can represent data from an external API. This section of the documentation will cover how data are organized in the Vuex store when you define models, along with the Vuex constructs used for accessing and mutating data within this library.
 
 ::: tip Disclaimer
 
-This section is only relevant if you wish to understand how class-based definitions work or develop configuration for the store directly (bypass using class-based model definitions). If you plan to use the ORM with this plugin, simply follow the guidelines in the [Models](/guide/models/overview.md) section of the documentation.
+This section is only relevant if you wish to understand how class-based definitions work or develop configuration for the store directly (bypass using class-based model definitions). If you plan to use the class-based syntax from this library, follow the guidelines in the [Models](/guide/models/overview.md) section of the documentation.
 
 :::
 
@@ -410,7 +410,7 @@ See the [Relationships](/guide/store/relationships.md) section for more informat
 
 ## Clearing Store Data
 
-We showed in the [Models](/guide/models/overview.md) section of the documentation how to use models to clear data from the store when a component is destroyed. Here is some code showing how you might do the same thing without using the ORM from this library:
+We showed in the [Models](/guide/models/overview.md) section of the documentation how to use models to clear data from the store when a component is destroyed. Here is some code showing how you might do the same thing without using ES6 classes:
 
 ```html
 <template></template>

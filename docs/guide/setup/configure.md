@@ -42,7 +42,7 @@ Creating Models to register via this library is detailed in the [Models](/guide/
 
 ## Registering Store Configuration
 
-The second is for users who don't want to use an ORM in their application (they wish to use the store directly). To register Vuex Reflect configuration directly with the Store, use:
+The second is for developers who don't want to extend ES6 classes when defining models for their application (they wish to use the store directly). To register Vuex Reflect configuration directly with the Store, use:
 
 ```javascript
 import Vue from 'vue';

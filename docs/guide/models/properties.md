@@ -1,6 +1,6 @@
 # Properties
 
-Most (if not all) ORMs require some type of specification for Model properties so that assumptions can be made about how data should be available externally and processed internally. This section will detail how to explicitly declare properties for a model.
+Most (if not all) front-end data management libraries require some type of specification for Model properties so that assumptions can be made about how data should be available externally and processed internally. This section will detail how to explicitly declare properties for a model.
 
 The following code shows the data structure for declaring Model properties:
 

@@ -1,6 +1,6 @@
 # Contract
 
-Similarly to the [ORM](/guide/models/properties.md) syntax for defining an API contract, this library allows developers to explicitly provide a specification for model properties so that assumptions can be made about how data should be managed. This section will detail how to explicitly declare a contract for models you define in your store.
+Similarly to the [class-based](/guide/models/properties.md) syntax for defining an API contract, this library allows developers to explicitly provide a specification for model properties so that assumptions can be made about how data should be managed. This section will detail how to explicitly declare a contract for models you define in your store.
 
 The following code shows the data structure for declaring Model properties:
 
