@@ -73,6 +73,7 @@ module.exports = {
                 '/guide/store/overview',
                 '/guide/store/api',
                 '/guide/store/contract',
+                '/guide/store/relationships',
                 '/guide/store/querying',
                 '/guide/store/debugging',
               ],
