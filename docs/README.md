@@ -1,33 +1,5 @@
 # Vuex Reflect
 
-::: danger TODO
-
-* Consolidate `Model.query().all()` vs `Model.query.all()` syntax.
-* Consolidate `Model.get` vs `Model.fetch` syntax for getting remotely vs from store.
-* Consolidate `type` vs `model` definition in contract for nested payloads.
-* Documentation for `singleton` models.
-* Documentation for `store.getters['model.template']()`.
-* Documentation for how to declare `Model.name`.
-* Add `await` or `then` syntax before any `commit()` actions (clarity).
-* Add `await` or `then` syntax before any `delete()` actions (clarity).
-* Evaluate if related models can be accessed via store with `model.$.relatedModel` syntax.
-* Documentation for how to register non-model items registered with declarative syntax.
-* Store mutation section of docs to include new clear (and other) mutations.
-* Add note in store mutation documentation about avoiding the use of mutations directly.
-* Change all refs using `link` parameter in store configuration.
-* Clean up use of `...` in configuration and overview documentation (in favor of explicit comments).
-* Change usage of `ORM` throughout documentation - this library really isn't an ORM and is meant to reflect an application api.
-
-:::
-
-::: danger TESTS NEEDED
-
-* Testing for clearing collection via `model.clear` mutation and `Model.clear()`
-* Testing for defining models with namespaced modules
-* Testing for using declarative syntax outside of model definitions.
-
-:::
-
 ## Introduction
 
 Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
@@ -150,7 +122,6 @@ const db = Reflect({
 const store = new Vuex.Store({
   state: { ... },
   mutations: { ... },
-  ...
   plugins: [db],
 })
 ```
@@ -191,8 +162,8 @@ Other api methods available on models include static methods for querying models
 
 ```javascript
 // get an existing todo by id
-const todo = Todo.get(1);
-const todo = Todo.get({ text: /part of todo text/ }); // or by other properties
+const todo = Todo.query(1);
+const todo = Todo.query().filter({ text: /part of todo text/ }).first(); // or by other properties
 
 // count all completed todos
 const doneTodos = Todo.query().filter({ done: true }).count();
@@ -299,7 +270,7 @@ export default {
   },
   computed: {
     list: () => Todo.all(),
-    done: () => Todo.query().filter({done: true}).count(),
+    done: () => Todo.query().filter({ done: true }).count(),
   },
 }
 </script>

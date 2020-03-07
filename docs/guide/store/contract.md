@@ -13,45 +13,79 @@ const myModels = {
     */
     myProp: {
       /**
-      * Default value for property.
-      */
+       * Default value for property.
+       */
       default: null,
       /**
-      * Default type for the property. If no `mutate` configuration
-      * is set, the type specified here will be used to mutate the object.
-      */
+       * Default type for the property. If no `mutate` configuration
+       * is set, the type specified here will be used to mutate the object.
+       */
       type: String,
       /**
-      * Mutation function for processing property on update.
-      * @param value - Value passed to property on update.
-      * @returns Mutated value to set as model property.
-      */
+       * Parse value from server. This is useful for reformatting back-end
+       * data into a format that is more useful for front-end operations.
+       * This is different than the `mutate` property because it
+       * defines how the contract will be parsed **after** data is returned
+       * from the back-end.
+       * @param value - Value passed to property after fetching data.
+       * @returns Parsed value to use for property on front-end.
+       */
+      parse: function(value) {
+        ...
+        return parsedValue;
+      },
+      /**
+       * Mutation function for processing property before create/update
+       * actions. This is different than the `parse` property because it
+       * defines how the contract will be mutated **before** data is sent to
+       * the backend.
+       * @param value - Value passed to property on update.
+       * @returns Mutated value to set as model property.
+       */
       mutate: function(value) {
         ...
         return newValue;
       },
       /**
-      * Validation function for ensuring property is valid.
-      * @param value - Un-mutated value passed to property on update.
-      * @returns Boolean describing if value is valid or not.
-      */
+       * Validation function for ensuring property is valid.
+       * @param value - Un-mutated value passed to property on update.
+       * @returns Boolean describing if value is valid or not.
+       */
       validate: function(value) {
         ...
         return isValid;
       },
       /**
-      * Parse the `id` property from nested models as the value that
-      * is stored for this parameter. By setting the `link` property,
-      * nested models will automatically be added to the store
-      */
-      link: 'linkedModels',
-      /**
-      * Shorthand for easily renaming a model property. In this case,
-      * `originalName` in the payload for this model will be cast to
-      * `myProp` when the model is used and casted back to `originalName`
-      * when data are sent back to the application API.
-      */
-      from: 'originalName',
+       * Collapse nested models into a single property for API
+       * update actions (POST or PUT). This value is only relevant if
+       * the property is an Object type or a linked Model instance. If
+       * a boolean `true` is applied here, 'id' will be used as the collapse
+       * property.
+       */
+       collapse: 'linkedPropId',
+       /**
+        * Function for retrieving property data. Properties that
+        * instrument this property are not saved in the store for models,
+        * and instead accessed using the function specified below. This
+        * is primarily useful for adding linked models that aren't nested
+        * in response data.
+        * @returns Value accessible via Model.<prop>
+        */
+        get: () => {},
+        /**
+         * Shorthand for easily renaming a model property when data is
+         * received **from** the API. In this case, `originalName` in
+         * the payload for this model will be cast to `myProp` when the
+         * model is used and casted back to `originalName` when data are
+         * sent back to the application API.
+         */
+        from: 'originalName',
+        /**
+         * Shorthand for easily renaming a model property when data is sent
+         * to the API. In this case, the model property will be renamed to
+         * `apiName` when requests are sent to the application API.
+         */
+        to: 'apiName',
     },
     ...
   },
@@ -87,28 +121,33 @@ const state = {
 
 const mutations = {
   /**
-   * Add existing instance(s) to the store
+   * Clear all instances of model from store.
    */
-  'myModels.add': (state, data) => {
-    // 1. Validate data for each key using `validate` callback
-    // 2. Mutate data for each key using `mutate` callback
-    // 3. Add resulting data to store
+  'myModels.clear': (state) => {
+    // 1. Find all model instances in store.
+    // 2. Remove them from the store.
   },
   /**
-   * Action for creating a single model instance via API.
+   * Sync a single model instance with the store.
    */
-  'myModels.update': (state, data) => {
-    // 1. Validate data for each key using `validate` callback
-    // 2. Mutate data for each key using `mutate` callback
-    // 3. Search for existing records in the store
-    // 4. Update existing records with new data
+  'myModels.sync': (state, data) => {
+    // 1. Search for existing records in the store.
+    // 2. Update existing records with new data.
+    // 3. If no record exists, create a new one.
+  },
+  /**
+   * Action for resetting model properties to contract defaults.
+   */
+  'myModels.reset': (state, id) => {
+    // 1. Search for existing record in the store.
+    // 2. Reset model properties to contract defaults.
   },
   /**
    * Action for fetching a single model instance by ID.
    */
   'myModels.remove': (state, id) => {
-    // 1. Search for existing record in the store
-    // 2. Remove existing record from the store
+    // 1. Search for existing record in the store.
+    // 2. Remove existing record from the store.
   },
 
 }
@@ -123,27 +162,28 @@ The following table shows a full list of available mutations created for model d
 
 | Mutation | Description |
 |-|-|
-| `<model>.add` | Add existing instance(s) to the store |
-| `<model>.update` | Update existing instance(s) in the store |
-| `<model>.remove` | Remove existing instance from the store |
+| `<model>.clear` | Clear all records for model from the store. |
+| `<model>.sync` | Add or update existing instance(s) to/in the store. |
+| `<model>.reset` | Reset instance properties to contract defauts. |
+| `<model>.remove` | Remove existing instance from the store. |
 
 And the code below shows some examples of how to use these mutations:
 
 ```javascript
 // add new instance to the store
-store.commit('myModels.add', { id: 5, foo: 'foo', bar: 'bar' });
+store.commit('myModels.sync', { id: 5, foo: 'foo', bar: 'bar' });
 
 // add several new instances to the store
-store.commit('myModels.add', [
+store.commit('myModels.sync', [
     { id: 7, foo: 'foo', bar: 'bar' },
     { id: 8, foo: 'foo', bar: 'bar' }
 ]);
 
 // update the data for an existing instance
-store.commit('myModels.update', { id: 5, foo: 'baz' });
+store.commit('myModels.sync', { id: 5, foo: 'baz' });
 
 // update the data for several existing instance
-store.commit('myModels.update', [
+store.commit('myModels.sync', [
     { id: 7, foo: 'baz' },
     { id: 8, bar: 'baz' },
 ]);
@@ -151,9 +191,18 @@ store.commit('myModels.update', [
 // remove an existing instance from the store
 store.commit('myModels.remove', 5);
 store.commit('myModels.remove', { id: 5, foo: 'foo', bar: 'bar' });
+
+// clear all instances from store
+store.commit('myModels.clear');
 ```
 
 See the [API](/guide/store/api.md) section of the documentation for information on the other Vuex constructs defined by this module. This section of the documentation only describes the `state parameters`, and `mutations` created, but other Vuex `actions` are used to manage the API connection.
+
+::: warning
+
+Although developers can use mutations directly for interacting with the data, it is strongly recommended that you leave data updates to the actions automatically added to the store. For example, `update` actions will automatically call mutations to update state for tracked model instances, so there's no need to commit mutations directly.
+
+:::
 
 ## Linked Models
 
@@ -202,7 +251,7 @@ const posts = {
     author_id: {
       from 'author',
       mutate: data => data.id,
-      link: 'authors',
+      model: 'authors',
     },
   },
 };
@@ -213,7 +262,7 @@ Then this library will automatically commit `authors` information to the store o
 ```javascript
 store.authors  // []
 store.posts  // []
-store.dispatch('posts.query').then((data) => {
+store.dispatch('posts.fetch').then((data) => {
   store.posts // [{id: 1, title: 'foo', body: 'bar', author_id: 1}, ...]
   store.authors // [{id: 1, name: 'foobar'}, ...]
 });

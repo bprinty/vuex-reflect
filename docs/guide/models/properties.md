@@ -28,7 +28,23 @@ class MyModel extends Model {
            */
           type: String,
           /**
-           * Mutation function for processing property on update.
+           * Parse value from server. This is useful for reformatting back-end
+           * data into a format that is more useful for front-end operations.
+           * This is different than the `mutate` property because it
+           * defines how the contract will be parsed **after** data is returned
+           * from the back-end.
+           * @param value - Value passed to property after fetching data.
+           * @returns Parsed value to use for property on front-end.
+           */
+          parse: function(value) {
+            ...
+            return parsedValue;
+          },
+          /**
+           * Mutation function for processing property before create/update
+           * actions. This is different than the `parse` property because it
+           * defines how the contract will be mutated **before** data is sent to
+           * the backend.
            * @param value - Value passed to property on update.
            * @returns Mutated value to set as model property.
            */
@@ -48,7 +64,9 @@ class MyModel extends Model {
           /**
            * Collapse nested models into a single property for API
            * update actions (POST or PUT). This value is only relevant if
-           * the property is an Object type or a linked Model instance.
+           * the property is an Object type or a linked Model instance. If
+           * a boolean `true` is applied here, 'id' will be used as the collapse
+           * property.
            */
            collapse: 'linkedPropId',
            /**
@@ -61,12 +79,19 @@ class MyModel extends Model {
             */
             get: () => {},
             /**
-             * Shorthand for easily renaming a model property. In this case,
-             * `originalName` in the payload for this model will be cast to
-             * `myProp` when the model is used and casted back to `originalName`
-             * when data are sent back to the application API.
+             * Shorthand for easily renaming a model property when data is
+             * received **from** the API. In this case, `originalName` in
+             * the payload for this model will be cast to `myProp` when the
+             * model is used and casted back to `originalName` when data are
+             * sent back to the application API.
              */
             from: 'originalName',
+            /**
+             * Shorthand for easily renaming a model property when data is sent
+             * to the API. In this case, the model property will be renamed to
+             * `apiName` when requests are sent to the application API.
+             */
+            to: 'apiName',
         },
     };
   }
@@ -74,7 +99,6 @@ class MyModel extends Model {
   ...
 
 }
-
 ```
 
 > Note that `props()` must be a `static` method on your class. If it is not declared as a static method, the model **will not work according to expectations**.
@@ -102,7 +126,7 @@ There are several logical processes that happen behind the scenes when a value i
 ```javascript
 const obj = new MyModel({ myProp: null });
 obj.myProp = 1;
-obj.commit();
+await obj.commit();
 console.log(obj.myProp) // 1
 ```
 
@@ -115,10 +139,10 @@ obj.myProp = 1; // 1. Validate input using validate function
                 // 2. Mutate data using mutate function
                 // 3. Store data on instance (not in Vuex store until commit)
 
-obj.commit();   // Dispatch Vuex store action that will:
-                //   1. Make axios request to update data, return promise
-                //   2. Wait for response
-                //   3. Update new value in Vuex store
+await obj.commit();   // Dispatch Vuex store action that will:
+                      //   1. Make axios request to update data, return promise
+                      //   2. Wait for response
+                      //   3. Update new value in Vuex store
 
 console.log(obj.myProp); // Use Vuex getter to pull property from store for instance.
 ```
@@ -141,7 +165,7 @@ After setting the `mutation` key on a property definition, any attempts to set t
 
 ```javascript
 // on instantiation
-const obj = MyModel({ divWrappedProperty: 'foo' })
+const obj = MyModel({ divWrappedProperty: 'foo' });
 console.log(obj.divWrappedProperty); // '<div>foo</div>'
 
 // after instantiation
@@ -183,12 +207,14 @@ After setting the `validation` key on a property definition, any attempts to set
 
 ```javascript
 // valid property values, no errors thrown:
-const obj = MyModel({ specificValue: 3 })
+const obj = MyModel({ specificValue: 3 });
 obj.specificValue = 2;
+obj.commit();
 
-// invalid property values, errors thrown with message:
-const obj = MyModel({ specificValue: 5 })
+// invalid property values, errors thrown with message on commit
+const obj = MyModel({ specificValue: 5 });
 obj.specificValue = 6;
+obj.commit();
 ```
 
 See [lodash](https://lodash.com/docs) and [validator](https://github.com/validatorjs/validator.js) for libraries that can provide validation for different types of data.
@@ -237,7 +263,7 @@ class Post extends Model {
       title: '',
       body: '',
       author: {
-        type: Author,
+        model: Author,
       },
     };
   }
@@ -247,7 +273,7 @@ class Post extends Model {
 The configuration above will enable this library to automatically store `Author` objects in the store once they're fetched via the `/posts` endpoint. Additionally, `Author` models will be directly available from the `Post` instances, so you can traverse the model data like so:
 
 ```javascript
-const post = Post.get(1) // get post with id `1` from the store
+const post = await Post.get(1) // get post with id `1` from API
 post.author.id     // 1
 post.author.title  // Post 1
 ```
@@ -255,7 +281,7 @@ post.author.title  // Post 1
 By default, on update actions, all of the author information will be sent in the `PUT` or `POST` payload:
 
 ```javascript
-const post = Post.get(1); // get post with id `1` from the store
+const post = Post.query(1); // get post with id `1` from the store
 post.title = 'new title';
 post.commit(); // see below for payload
 ```
@@ -295,14 +321,15 @@ class Post extends Model {
       body: '',
       author: {
         type: Author,
-        collapse: 'author_id',
+        collapse: true,
+        to: 'author_id',
       },
     };
   }
 }
 ```
 
-Similarly, `collapse` can take a callable that will accept the property data as input and return an object that will be added to the payload.
+Similarly, `collapse` can take a string that will be used to pull a value from nested objects to include in the payload.
 
 Explicitly declaring how models are related can assume many different types of patterns, and this library was built to accommodate as many as possible. For instance, sometimes related models are declared in the API using a key reference:
 
@@ -337,7 +364,7 @@ However, this requires that the `Author` data being referenced is already in the
 
 ```javascript
 Post.fetch().then(() => {
-  const post = Post.get(1);
+  const post = Post.query(1);
   post.author.id
 });
 ```

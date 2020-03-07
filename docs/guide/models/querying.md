@@ -50,6 +50,7 @@ The list of available query operators is as follows:
 |**offset**  | Remove the first `n` records from the query                            |
 |**limit**   | Limit query to the first `n` records                                   |
 |**order**   | Order query results by a Model property                                |
+|**shuffle** | Shuffle and return all records from the query.                         |
 
 
 Here are some code examples detailing how each of these methods can be used:
@@ -94,6 +95,9 @@ Todo.query().offset(50).limit(100).all()
 // order
 Todo.query().order('text').last()
 Todo.query().order((a, b) => a.id > b.id).last()
+
+// shuffle
+Todo.query().shuffle().all()
 ```
 
 ## Filtering
@@ -134,6 +138,6 @@ Or, it can contain a comparator callable that will receive two records as inputs
 
 ```javascript
 const lengthSortedTodos = Todo.query().sort((a, b) => {
-  return a.text.length > b.text.length;
+  return b.text.length - a.text.length;
 });
 ```

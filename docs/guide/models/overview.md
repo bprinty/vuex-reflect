@@ -78,14 +78,13 @@ class Author extends Model {
   /**
    * Relationships to other objects tracked by the orm.
    */
-  static relationships() {
+  static relations() {
     return {
       /**
-       * All todo items for a single author.
+       * All posts for a single author.
        */
-      todos: {
-        type: Array,
-        model: Post,
+      posts: {
+        collection: Post,
         url: '/authors/:id/posts',
       },
     }
@@ -97,7 +96,7 @@ Let's unpack some parts of the `Author` definition from above:
 
 1. This library provides granularity over what endpoints are used during specific types of API actions. The [API](/guide/models/api.md) subsection has more details on all available actions.
 2. Properties can define (in a declarative way) rules for mutating and validating data during updates. The [Properties](/guide/models/properties.md) subsection has more information on these rules.
-3. Relationships between models where data can be fetched via API can be defined using the `relationships()` static method. The [Relationships](/guide/models/relationships.md) subsection has more information on how to configure these data links.
+3. Relationships between models where data can be fetched via API can be defined using the `relations()` static method. The [Relationships](/guide/models/relationships.md) subsection has more information on how to configure these data links.
 
 Now that we've defined our `Author` Model, let's define our `Post` Model. The API providing `Post` data has the following endpoints:
 
@@ -179,11 +178,12 @@ class Post extends Model {
         mutation: value => `<div>${value}</div>`,
       },
       /**
-      * Linked post author.
+      * Linked post author. Collapse to `author_id` when making create/update requests.
       */
       author: {
-        type: Author,
-        collapse: 'author_id',
+        model: Author,
+        collapse: true,
+        to: 'author_id',
       },
     };
   }
@@ -249,7 +249,7 @@ export default {
       return Post.query().all();
     },
     shortPosts() {
-      return Post.query().filter((x) => { x.body.length < 200 }).all();
+      return Post.query().filter(x => x.body.length < 200).all();
     },
   },
 }
@@ -277,7 +277,7 @@ And since author data was embedded in the `Post` fetch, you can also access `Aut
 const author = Author.get({email: 'john@doe.com'});
 
 author.name // get author name
-author.posts[0].title // get first post available for author (in store)
+const authorPosts = await author.posts.fetch(); // get nested posts for author
 ```
 
 Creating a new object is as easy as:

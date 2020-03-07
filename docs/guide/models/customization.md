@@ -21,7 +21,7 @@ class Todo extends Model {
    * response.
    */
   closeTodo() {
-    return this.axios.post('/todos/:id/done').then(() => {
+    return this.axios.post(`/todos/${this.id}/done`).then(() => {
       this.done = true;
       this.commit();
     });

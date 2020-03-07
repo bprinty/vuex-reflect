@@ -11,10 +11,7 @@ import Vuex from 'vuex';
 import Reflect from 'vuex-reflect';
 
 // creating models
-class Post extends Model {
-  static api() { ... }
-  ...
-}
+class Post extends Model { ... }
 class Author extends Model { ... }
 
 // registering models
@@ -24,10 +21,21 @@ const db = Reflect({ Post, Author });
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: { ... },
+  getters: { ... },
   mutations: { ... },
-  ...
+  actions: { ... },
   plugins: [db],
 })
+```
+
+If you want to change the property name used for managing model state in Vuex, you can use specific key names when passing inputs to `Reflect`. For example:
+
+```javascript
+// registering models
+const db = Reflect({
+  posts: Post,
+  authors: Author
+});
 ```
 
 Creating Models to register via this library is detailed in the [Models](/guide/models/overview.md) section of the documentation.
@@ -42,11 +50,7 @@ import Vuex from 'vuex';
 import Reflect from 'vuex-reflect';
 
 // declaring configuration
-const posts = {
-  default: [],
-  api: { ... }
-  ...
-};
+const posts = { ... };
 const authors = { ... };
 
 // registering configuration
@@ -56,8 +60,9 @@ const db = Reflect({ posts, authors });
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: { ... },
+  getters: { ... },
   mutations: { ... },
-  ...
+  actions: { ... },
   plugins: [db],
 })
 ```

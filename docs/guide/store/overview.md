@@ -175,17 +175,17 @@ this.$store.dispatch('profile.fetch').then((data) => {
 
 // create new post
 var post = { title: 'foo', body: 'this is a post', author_id: 1 };
-this.$store.dispatch('posts.create', post);
+await this.$store.dispatch('posts.create', post);
 
 // get specific post
-const post = this.$store.getters('posts.get', 1);
+const post = await this.$store.dispatch('posts.get', 1);
 
 // update post data
 post.title = 'bar';
-const post = this.$store.getters('posts.update', post);
+const post = await this.$store.dispatch('posts.update', post);
 
 // delete post
-this.$store.getters('posts.delete', post);
+await this.$store.dispatch('posts.delete', post);
 ```
 
 The automatic creation of Vuex constructs performed by this library saves a lot of developer time and the engineering work associated with figuring out how to properly manage and reflect API data from an external application. Instead of needing to worry about defining the right set of methods for each type of API model they're working with, developers can get up and running by simply specifying the API data access patterns and contract.
@@ -270,6 +270,8 @@ Using the `model` and `collection` definitions can help developers reduce boiler
 Once these models have been defined and [registered](/guide/setup/configure.md), you can use them throughout your application. As a quick example, let's take a look at a component that interacts with data from the `Post` model. In this component, you'll see that we need to first fetch the data before using it in the component.
 
 ```javascript
+import { mapGetters } from 'vuex';
+
 // JavaScript portion of Post Feed component.
 export default {
   name: 'post-feed',
@@ -277,12 +279,12 @@ export default {
     this.$store.dispatch('posts.fetch')
   },
   computed() {
-    allPosts() {
-      return this.$store.state.posts;
-    },
     shortPosts() {
       return this.$store.state.posts.filter((x) => x.body.length < 200));
     },
+    ...mapGetters({
+      allPosts: 'posts.all',
+    });
   },
 }
 ```
