@@ -84,7 +84,7 @@ class Author extends Model {
        * All posts for a single author.
        */
       posts: {
-        collection: Post,
+        model: Post,
         url: '/authors/:id/posts',
       },
     }
@@ -384,12 +384,34 @@ await post.author.update(otherAuthor);
 const posts = await otherAuthor.posts.fetch();
 ```
 
-In each of these relations, inputs to actions (when required) should be other objects, and return values are objects of the type referenced in the relation.
+Each of these actions will automatically insert the `id` of the current model into the nested url, so the nested operation is fully contextualized. Inputs to actions (when required) should be other objects, and return values are objects of the Model type referenced in the relation configuration.
+
+See the [Relationships](/guide/models/relationships.md) section for more information on defining nested model relations.
 
 
 ## Nested Actions
 
+When nested `actions()` or `queries()` are defined, you can utilize them directly from model instances with the following syntax:
 
+```javascript
+const obj = await Post.get(1);
+
+// archive post
+await obj.archive();
+
+// query history
+const history = await obj.history.fetch();
+
+// send data to nested history url
+await obj.history.update({
+  action: 'updating history',
+  time: 'now'
+});
+```
+
+When the same key is used multiple times for a nested action (across actions and queries), the key is automatically set up as an object that can dispatch to the `fetch/get/create/update/delete` interface available throughout the rest of this library. Otherwise, it is configured as a callable that returns a promise containing request data.
+
+See the [Relationships](/guide/models/relationships.md) section for more information on defining nested model actions and queries. The configuration for nested actions can be complex enough to accommodate most needs.
 
 
 ## Clearing Store Data

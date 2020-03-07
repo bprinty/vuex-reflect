@@ -205,12 +205,12 @@ Promise.all([ Comments.fetch(), Author.fetch(), Post.fetch() ]).then(() => {
   const post = Post.get(1);
 
   // get nested post author
-  post.author.fetch().then((result) = > {
+  post.author.fetch().then((result) => {
     const postAuthor = result;
   });
 
   // get all nested comments
-  post.comments.fetch().then((results) = > {
+  post.comments.fetch().then((results) => {
     const postComments = results;
   });
 
@@ -239,29 +239,9 @@ await post.comments.create(comment);
 You can also define nested actions and queries that work within the context of your model. Let's add onto our example from above to include a nested action for `archive` (archiving a single post) and `history` (fetching historical data about a post):
 
 ```javascript
-class Author extends Model { ... }
-class Comment extends Model { ... }
-
 class Post extends Model {
-  static props() {
-    return {
-      title: '',
-      body: '',
-    };
-  }
 
-  static relations() {
-    return {
-      author: {
-        model: Author,
-        url: '/posts/:id/author',
-      },
-      comments: {
-        model: Comment,
-        url: '/posts/:id/comments',
-      },
-    };
-  }
+  ...
 
   static actions() {
     return {
@@ -363,16 +343,10 @@ class Post extends Model {
       },
     };
   }
-
-  static queries() {
-    return {
-      history: '/posts/:id/history',
-    };
-  }
 }
 ```
 
-When can then be used with the following syntax:
+Which can then be used with the following syntax:
 
 ```javascript
 const post = Post.get(1);
