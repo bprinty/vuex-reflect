@@ -80,3 +80,17 @@ test("getters.template", async () => {
     author: undefined
   }));
 });
+
+test("getters.defaults", async () => {
+  res = store.getters['profile.defaults']();
+  assert.isTrue(_.isEqual(res, { username: '<anonymous>' }));
+
+  res = store.getters['authors.defaults']();
+  assert.isTrue(_.isEqual(res, { name: null }));
+
+  res = store.getters['posts.defaults']();
+  assert.isTrue(_.isEqual(res, {
+    title: 'My Post Title',
+    footer: 'footer',
+  }));
+});

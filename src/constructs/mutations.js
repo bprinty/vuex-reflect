@@ -141,7 +141,7 @@ function resetSingleton(state, config, model, data) {
  * @param {string} data - Data to use for updating existing model.
  */
 function clearCollection(state, config, model, data) {
-  state[model] = Object.assign({}, defaults);
+  state[model] = {};
 }
 
 
