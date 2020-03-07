@@ -39,7 +39,14 @@ export default function Reflect(models) {
         config = models[key];
       }
 
-      // sanitize contract inputs
+      // normalize contract key definitions into object
+      _.each(config.contract, (value, key) => {
+        if (!_.isObject(value)) {
+          config.contract[key] = { default: value };
+        }
+      });
+
+      // sanitize contract inputs (accounting for different naming)
       _.each(config.contract, (spec, param) => {
         if (_.has(spec, 'collapse') && _.isBoolean(spec.collapse)) {
           spec.collapse = 'id';
