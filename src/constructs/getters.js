@@ -21,6 +21,12 @@ export function getCollection(state, model, input) {
     return state[model][input];
   }
 
+  // query
+  else if (_.isPlainObject(input)) {
+    // TODO: QUERY USING PROPERTIES
+    throw 'Not Yet Implemented';
+  }
+
   // subset
   else if ( _.isArray(input) ) {
     return input.map(item => state[model][item]);
