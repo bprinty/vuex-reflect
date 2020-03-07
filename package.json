@@ -6,7 +6,7 @@
   "authors": [
     "Blake Printy <bprinty@gmail.com> (http://bprinty.github.io)"
   ],
-  "description": "Data reflection for Vuex store using API or GraphQL",
+  "description": "Front-End Data Models with Vuex",
   "license": "Apache-2.0",
   "keywords": [],
   "ignore": [
