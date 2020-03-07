@@ -267,3 +267,14 @@ store.dispatch('posts.fetch').then((data) => {
   store.authors // [{id: 1, name: 'foobar'}, ...]
 });
 ```
+
+## Model Templates
+
+You can also use the store to generate templates and default objects for each type of model. For example:
+
+```javascript
+const newAuthor = store.getters('authors.template')()
+const authorDefaults = store.getters('authors.defaults')()
+```
+
+This is primarily useful for pre-allocating an object that can be filled and later sent to the server on an update. The difference between these two is that `template` will return `undefined` for any property without defaults, and `defaults` will only return keys for contract definitions with a `default` key set.
