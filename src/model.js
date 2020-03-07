@@ -260,9 +260,28 @@ export class Model {
    *
    * @returns {object} Object of api configuration.
    */
-  static relationships() {
+  static relations() {
     return {};
   }
+
+  /**
+   * Nested actions for model.
+   *
+   * @returns {object} Object of with configuration for nested actions.
+   */
+  static actions() {
+    return {};
+  }
+
+  /**
+   * Nested queries for model.
+   *
+   * @returns {object} Object of with configuration for nested queries.
+   */
+  static queries() {
+    return {};
+  }
+
 
   /**
    * Commit data to external API and update store to reflect
