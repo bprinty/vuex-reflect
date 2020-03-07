@@ -49,7 +49,7 @@ function formatPush(contract, data) {
       }
 
       // collapse and remove original data
-      value = value[spec.collapse]
+      value = value[spec.collapse];
       result[key] = value;
     }
 
@@ -65,7 +65,8 @@ function formatPush(contract, data) {
     if (_.has(spec, 'validate')){
       const check = spec.validate.check || spec.validate;
       const msg = _.template(spec.validate.message || 'Value `${value}` for key `${key}` did not pass validation.');
-      if (!check(value)) {
+      const valid = check instanceof RegExp ? check.test(value) : check(value);
+      if (!valid) {
         throw msg({ value, key });
       }
     }
