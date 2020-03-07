@@ -147,7 +147,7 @@ describe("query.resolvers", () => {
   });
 
   test("query.shuffle", async () => {
-    result = Post.query().shuffle();
+    result = Post.query().shuffle().all();
     assert.equal(result.length, 2);
     assert.isTrue(result[0] instanceof Post);
   });

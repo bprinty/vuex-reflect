@@ -137,6 +137,14 @@ export function operator(model, data) {
   };
 
   /**
+   * Shuffle query records.
+   */
+  operate.shuffle = () => {
+    current = _.sampleSize(current, current.length);
+    return operate;
+  }
+
+  /**
    * Resolve query with all data.
    */
   operate.all = () => {
@@ -184,13 +192,6 @@ export function operator(model, data) {
      }
      return new cls(result);
    };
-
-   /**
-    * Resolve query by shuffling records and returning results.
-    */
-   operate.shuffle = () => {
-     return _.sampleSize(current, current.length).map(item => new cls(item));
-   }
 
    /**
     * Resolve query by returning count of results.
