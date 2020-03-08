@@ -5,7 +5,8 @@ import axios from 'axios';
 import { Singleton } from './model';
 import getterFactory from './constructs/getters';
 import mutationFactory from './constructs/mutations';
-import actionFactory from './constructs/actions';
+import dispatchFactory from './constructs/actions';
+import { relationFactory, actionFactory, queryFactory } from './constructs/relationships';
 
 
 /**
@@ -17,27 +18,60 @@ export default function Reflect(models) {
   // configure options
 
   // set global axios instance?
+  const options = {
+    axios: {},
+    methods: {
+      'create': 'post',
+      'update': 'put',
+      'fetch': 'get',
+      'get': 'get',
+      'delete': 'delete',
+      'patch': 'patch',
+    }
+  };
+
+  const defaults = {
+    name: null,
+    singleton: false,
+    api: {},
+    contract: {},
+    relations: {},
+    actions: {},
+    queries: {},
+  };
 
 
   return (store) => {
-    Object.keys(models).forEach((key) => {
-      let config;
+    let schema = {};
 
-      // configuration from models
-      if(!_.isPlainObject(models[key])) {
-        config = {
+    // populate initial schema
+    Object.keys(models).forEach((key) => {
+
+      // model-based definition
+      if (!_.isPlainObject(models[key])) {
+        models[key].__store__ = store;
+        models[key].__name__ = key;
+        schema[key] = {
           singleton: models[key].prototype instanceof Singleton,
           api: models[key].api(),
           contract: models[key].props(),
+          relations: models[key].relations(),
+          actions: models[key].actions(),
+          queries: models[key].queries(),
+          options: models[key].options(),
         }
-        models[key].__store__ = store;
-        models[key].__name__ = key;
       }
 
-      // configuration for store directly
+      // store-based definition
       else {
-        config = models[key];
+        schema[key] = Object.assign(_.clone(defaults), models[key]);
       }
+      schema[key].name = key;
+      schema[key].options = Object.assign(_.clone(options), schema[key].options);
+    });
+
+    // normalize configuration
+    schema = _.reduce(schema, (result, config, name) => {
 
       // normalize contract key definitions into object
       _.each(config.contract, (value, key) => {
@@ -59,37 +93,73 @@ export default function Reflect(models) {
         }
       });
 
-      // instantiate store constructs
+      // normalize queries/actions into single data structure
+      _.each(config.queries || {}, (value, key) => {
+        if (_.has(config.actions, key)) {
+          if (!_.isObject(config.actions[key])) {
+            config.actions[key] = {
+              create: config.actions[key],
+              update: config.actions[key],
+              delete: config.actions[key],
+            };
+          }
+          if (!_.isObject(value)) {
+            value = { get: value, fetch: value };
+          }
+          config.actions[key] = Object.assign(config.actions[key], value);
+        } else {
+          if (!_.isObject(value)) {
+            value = { fetch: value };
+          }
+          config.actions[key] = value;
+        }
+      });
+      delete config.queries;
+
+      result[name] = config;
+      return result;
+    }, {});
+
+    // create store modules for each model
+    _.map(schema, (config, model) => {
+
+      // store constructs
       const get = getterFactory(config);
       const mutate = mutationFactory(config);
-      const act = actionFactory(config);
+      const act = dispatchFactory(config);
+
+      // additional actions
+      const relations = relationFactory(schema, model);
+      const actions = actionFactory(config);
 
       // register constructs
-      store.registerModule(key, {
+      store.registerModule(model, {
         namespaced: false,
         state: {
-          [`${key}`]: config.singleton ? config.default || null : {},
+          [`${model}`]: config.singleton ? config.default || null : {},
         },
         getters: {
-          [`${key}`]: state => input => get.base(state, key, input),
-          [`${key}.one`]: state => input => get.base(state, key, input),
-          [`${key}.all`]: state => input => get.base(state, key, input),
-          [`${key}.sample`]: state => n => get.sample(state, key, n),
-          [`${key}.template`]: state => () => get.template(config.contract),
-          [`${key}.defaults`]: state => () => get.defaults(config.contract),
+          [`${model}`]: state => input => get.base(state, config, input),
+          [`${model}.one`]: state => input => get.base(state, config, input),
+          [`${model}.all`]: state => input => get.base(state, config, input),
+          [`${model}.sample`]: state => n => get.sample(state, config, n),
+          [`${model}.template`]: state => () => get.template(config),
+          [`${model}.defaults`]: state => () => get.defaults(config),
         },
         mutations: {
-          [`${key}.clear`]: (state, data) => mutate.clear(state, config, key, data),
-          [`${key}.sync`]: (state, data) => mutate.sync(state, config, key, data),
-          [`${key}.reset`]: (state, id) => mutate.reset(state, config, key, id),
-          [`${key}.remove`]: (state, id) => mutate.remove(state, config, key, id),
+          [`${model}.clear`]: (state, data) => mutate.clear(state, config, data),
+          [`${model}.sync`]: (state, data) => mutate.sync(state, config, data),
+          [`${model}.reset`]: (state, id) => mutate.reset(state, config, id),
+          [`${model}.remove`]: (state, id) => mutate.remove(state, config, id),
         },
         actions: {
-          [`${key}.fetch`]: context => act.fetch(context, config, key),
-          [`${key}.create`]: (context, data) => act.create(context, config, key, data),
-          [`${key}.update`]: (context, data) => act.update(context, config, key, data),
-          [`${key}.get`]: (context, id) => act.get(context, config, key, id),
-          [`${key}.delete`]: (context, id) => act.delete(context, config, key, id),
+          [`${model}.fetch`]: context => act.fetch(context, config),
+          [`${model}.create`]: (context, data) => act.create(context, config, data),
+          [`${model}.update`]: (context, data) => act.update(context, config, data),
+          [`${model}.get`]: (context, id) => act.get(context, config, id),
+          [`${model}.delete`]: (context, id) => act.delete(context, config, id),
+          ...relations,
+          ...actions,
         },
       });
     });
