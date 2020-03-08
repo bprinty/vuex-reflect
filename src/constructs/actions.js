@@ -137,11 +137,11 @@ function formatPull(contract, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  */
-function fetchCollection(context, config, model) {
+export function fetchCollection(context, config) {
 
   // use fetch or collection config
+  const model = config.name;
   let action = config.api.fetch || config.api.collection;
 
   // throw if no fetch configuration
@@ -171,11 +171,11 @@ function fetchCollection(context, config, model) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  */
-function fetchSingleton(context, config, model) {
+export function fetchSingleton(context, config) {
 
   // use fetch, get, or model config
+  const model = config.name;
   let action = config.api.fetch || config.api.get || config.api.model;
 
   // throw if no fetch configuration
@@ -204,12 +204,12 @@ function fetchSingleton(context, config, model) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for creating model.
  */
-function createModel(context, config, model, data) {
+export function createModel(context, config, data) {
 
   // use create or collection config
+  const model = config.name;
   let action = config.api.create || config.api.collection;
 
   // throw if no fetch configuration
@@ -240,12 +240,12 @@ function createModel(context, config, model, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} id - Id for model to get.
  */
-function getModel(context, config, model, id) {
+export function getModel(context, config, id) {
 
   // use get or model config
+  const model = config.name;
   let action = config.api.get || config.api.model;
 
   // throw if no fetch configuration
@@ -273,19 +273,18 @@ function getModel(context, config, model, id) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function updateModel(context, config, model, data) {
+export function updateModel(context, config, data) {
 
+  // use update or model config
+  const model = config.name;
+  let action = config.api.update || config.api.model;
+
+  // assert id and actions exist
   if (!_.has(data, 'id')) {
     throw `Update action for model ${model} must include 'id' key.`;
   }
-
-  // use update or model config
-  let action = config.api.update || config.api.model;
-
-  // throw if no fetch configuration
   if (action === undefined) {
     throw `Model '${model}' has no configuration for 'update' option.`;
   }
@@ -314,12 +313,12 @@ function updateModel(context, config, model, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function updateSingleton(context, config, model, data) {
+export function updateSingleton(context, config, data) {
 
   // use update or model config
+  const model = config.name;
   let action = config.api.update || config.api.model;
 
   // throw if no fetch configuration
@@ -350,12 +349,12 @@ function updateSingleton(context, config, model, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {integer} id - Id of model to delete.
  */
-function deleteModel(context, config, model, id) {
+export function deleteModel(context, config, id) {
 
   // use update or model config
+  const model = config.name;
   let action = config.api.delete || config.api.model;
 
   // throw if no fetch configuration
@@ -383,12 +382,12 @@ function deleteModel(context, config, model, id) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {integer} id - Id of model to delete.
  */
-function deleteSingleton(context, config, model) {
+export function deleteSingleton(context, config) {
 
   // use delete or model config
+  const model = config.name;
   let action = config.api.delete || config.api.model;
 
   // throw if no fetch configuration
@@ -413,7 +412,7 @@ function deleteSingleton(context, config, model) {
  * Action factory function for returning get methods based
  * on model config.
  */
-export default function actionFactory(config) {
+export default function dispatchFactory(config) {
   return {
     fetch: config.singleton ? fetchSingleton : fetchCollection,
     create: config.singleton ? createModel : createModel,
