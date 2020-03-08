@@ -237,6 +237,15 @@ export class Model {
   }
 
   /**
+   * Model-specific options to use when managing data.
+   *
+   * @returns {object} Object with options configuration.
+   */
+  static options() {
+    return {};
+  }
+
+  /**
    * API config for fetching and updating data. This method must
    * be defined by classes inheriting from this model type.
    *
