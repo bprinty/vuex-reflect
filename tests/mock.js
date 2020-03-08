@@ -265,7 +265,7 @@ export class MockServer {
         // model request
         else {
           resolve({
-            status: 202,
+            status: 200,
             data: method(id, data),
           });
         }
@@ -331,7 +331,17 @@ export class MockServer {
       });
     });
 
-    axios.mockImplementation(params => axios[data.method](params.url, params.data));
+    // instance creation
+    axios.create.mockImplementation((params) => {
+      return axios;
+    });
+
+    // base handler
+    axios.mockImplementation((params) => {
+      params = Object.assign({method: 'get', data: {}}, params);
+      const method = axios[params.method];
+      return method(params.url, params.data);
+    });
 
   }
 

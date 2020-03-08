@@ -21,7 +21,7 @@ beforeEach(() => {
 
 // tests
 // -----
-describe("api mock", () => {
+describe("api", () => {
   let res;
 
   test("404", async () => {
@@ -33,7 +33,26 @@ describe("api mock", () => {
     }
   });
 
-  test("GET", async () => {
+  test("axios.create", async () => {
+    const inst = axios.create({});
+    res = await inst({
+      method: 'get',
+      url: '/posts',
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.data.length, 2);
+  });
+
+  test("axios.base", async () => {
+    res = await axios({
+      method: 'get',
+      url: '/posts',
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.data.length, 2);
+  });
+
+  test("axios.get", async () => {
     // collection
     res = await axios.get('/posts');
     assert.equal(res.status, 200);
@@ -43,9 +62,19 @@ describe("api mock", () => {
     res = await axios.get('/posts/1');
     assert.equal(res.status, 200);
     assert.equal(res.data.title, 'Foo');
+
+    // nested model
+    res = await axios.get('/posts/1/author');
+    assert.equal(res.status, 200);
+    assert.equal(res.data.name, 'Jane Doe');
+
+    // nested query
+    res = await axios.get('/posts/1/history');
+    assert.equal(res.status, 200);
+    assert.equal(res.data.length, 2);
   });
 
-  test("POST", async () => {
+  test("axios.post", async () => {
     // create
     const author = { name: 'Foo Bar', email: 'foo@bar.com' };
     res = await axios.post('/authors', author);
@@ -56,9 +85,18 @@ describe("api mock", () => {
     res = await axios.get('/authors/3');
     assert.equal(res.status, 200);
     assert.equal(res.data.name, 'Foo Bar');
+
+    // nested action
+    res = await axios.post('/posts/1/archive');
+    assert.equal(res.data.archived, true);
+
+    // nested create
+    res = await axios.post('/posts/1/history', { delta: 'baz' });
+    assert.equal(res.status, 200);
+    assert.equal(res.data.length, 3);
   });
 
-  test("PUT", async () => {
+  test("axios.put", async () => {
     // check
     res = await axios.get('/authors/1');
     assert.equal(res.status, 200);
@@ -75,7 +113,7 @@ describe("api mock", () => {
     assert.equal(res.data.name, 'test');
   });
 
-  test("DELETE", async () => {
+  test("axios.delete", async () => {
     // check
     res = await axios.get('/authors/1');
     assert.equal(res.status, 200);
@@ -93,4 +131,5 @@ describe("api mock", () => {
       assert.equal(err.status, 404);
     }
   });
+
 });
