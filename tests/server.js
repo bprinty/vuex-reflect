@@ -16,12 +16,19 @@ class App extends MockServer {
           body: 'foo bar baz',
           hits: 100,
           author_id: 1,
+          history: [
+            { delta: 'foo' },
+            { delta: 'bar' },
+          ],
+          archived: false,
         },
         {
           title: 'Bar',
           body: 'bar baz',
           hits: 200,
           author_id: 1,
+          history: [],
+          archived: true,
         },
       ],
       authors: [
@@ -55,6 +62,19 @@ class App extends MockServer {
       },
       '/posts': this.collection('posts'),
       '/posts/:id': this.model('posts'),
+      '/posts/:id/history': {
+        get: id => this.db.posts[id].history,
+        post: (id, data) => {
+          this.db.posts[id].history.push(data);
+          return this.db.posts[id].history;
+        },
+      },
+      '/posts/:id/archive': {
+        post: (id) => {
+          this.db.posts[id].archived = true;
+          return this.db.posts[id];
+        },
+      },
       '/posts/:id/author': {
         get: id => this.db.authors[this.db.posts[id].author_id],
       },
