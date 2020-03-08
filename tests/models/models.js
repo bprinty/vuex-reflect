@@ -44,14 +44,13 @@ export class Author extends Model {
     return authors.contract;
   }
 
-  // relationships
-  static relationships() {
+  // relations
+  static relations() {
     return {
       /**
        * All post items for a single author.
        */
        posts: {
-        type: Array,
         model: Post,
         url: '/authors/:id/posts',
       },
@@ -79,6 +78,21 @@ export class Post extends Model {
     const data = _.clone(posts.contract);
     data.author.model = Author;
     return data;
+  }
+
+  // relations
+  static relations() {
+    return posts.relations;
+  }
+
+  // actions
+  static actions() {
+    return posts.actions;
+  }
+
+  // queries
+  static queries() {
+    return posts.queries;
   }
 }
 
