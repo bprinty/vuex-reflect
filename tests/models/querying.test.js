@@ -14,11 +14,8 @@ import server from '../server';
 // ------
 jest.mock('axios');
 server.init();
-server.reset();
-beforeAll(async (done) => {
-  await Post.fetch();
-  await Author.fetch();
-  done();
+beforeEach(() => {
+  server.reset();
 });
 
 
@@ -27,6 +24,11 @@ beforeAll(async (done) => {
 let result;
 
 describe("query.base", () => {
+
+  beforeAll(async (done) => {
+    await Post.fetch();
+    done();
+  });
 
   test("query.one", async () => {
     result = Post.query(1);
@@ -42,6 +44,11 @@ describe("query.base", () => {
 });
 
 describe("query.filters", () => {
+
+  beforeAll(async (done) => {
+    await Post.fetch();
+    done();
+  });
 
   test("query.filter", async () => {
 

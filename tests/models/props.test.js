@@ -23,13 +23,13 @@ beforeEach(() => {
 // -----
 let model;
 
-test("props.default", async () => {
+test("contract.default", async () => {
   model = await Post.get(1);
   assert.equal(model.title, 'Foo');
   assert.equal(model.footer, 'footer');
 });
 
-test("props.validate", async () => {
+test("contract.validate", async () => {
   try {
     model = new Author({ name: 'a', email: 'a' });
     await model.commit();
@@ -39,7 +39,7 @@ test("props.validate", async () => {
   }
 });
 
-test("props.required", async () => {
+test("contract.required", async () => {
   // missing not required key
   model = new Author({ name: 'a' });
   await model.commit();
@@ -77,4 +77,14 @@ test("contract.collapse", async () => {
   await model.commit();
   assert.equal(model.title, 'aba');
   assert.equal(model.author.id, 2);
+});
+
+test("contract.sync", async () => {
+  model = await Post.get(1);
+  model.title = 'Bar';
+  assert.equal(model.title, 'Bar');
+  assert.equal(model.$.title, 'Foo');
+  model.sync();
+  assert.equal(model.title, 'Foo');
+  assert.equal(model.$.title, 'Foo');
 });
