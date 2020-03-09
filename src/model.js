@@ -358,6 +358,13 @@ export class Singleton extends Model {
   }
 
   /**
+   * Override query method to throw an error.
+   */
+  static query() {
+    throw '`query()` static method not available for Singleton models.';
+  }
+
+  /**
    * Dispatch fetch action to retrieve singleton data. This returns
    * a collection of new objects of a model's type.
    *

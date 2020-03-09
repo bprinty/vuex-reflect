@@ -64,6 +64,7 @@ module.exports = {
                 '/guide/models/relationships',
                 '/guide/models/querying',
                 '/guide/models/customization',
+                '/guide/models/singleton',
               ],
             },
             {
@@ -75,6 +76,7 @@ module.exports = {
                 '/guide/store/contract',
                 '/guide/store/relationships',
                 '/guide/store/querying',
+                '/guide/store/singleton',
                 '/guide/store/debugging',
               ],
             },
