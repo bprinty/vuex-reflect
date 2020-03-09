@@ -155,12 +155,16 @@ export function fetchCollection(context, config) {
   }
 
   // commit data after promise resolves with data
+  function commit(item) {
+    const processed = formatPull(config.contract, item);
+    context.commit(`${model}.sync`, processed);
+    return context.getters[model](processed.id);
+  }
   return action.then((collection) => {
-    return collection.map((data) => {
-      const processed = formatPull(config.contract, data);
-      context.commit(`${model}.sync`, processed);
-      return context.state[model][data.id];
-    });
+    if (!_.isArray(collection)) {
+      return commit(collection);
+    }
+    return collection.map(data => commit(data));
   });
 
 }
@@ -192,7 +196,7 @@ export function fetchSingleton(context, config) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model];
+    return context.getters[model]();
   });
 
 }
@@ -229,7 +233,7 @@ export function createModel(context, config, data) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model][data.id];
+    return context.getters[model](processed.id);
   });
 }
 
@@ -263,7 +267,7 @@ export function getModel(context, config, id) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model][id];
+    return context.getters[model](id);
   });
 }
 
@@ -302,7 +306,7 @@ export function updateModel(context, config, data) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model][data.id];
+    return context.getters[model](processed.id);;
   });
 }
 
@@ -338,7 +342,7 @@ export function updateSingleton(context, config, data) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model];
+    return context.getters[model]();
   });
 }
 
