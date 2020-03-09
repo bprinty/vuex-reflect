@@ -34,17 +34,17 @@ describe("store.relations", () => {
     assert.equal(res.id, 1);
   });
 
-//   test("store.relations.collection", async () => {
-//     // dispatch relation
-//     res = store.dispatch('authors.posts', 1);
-//     assert.equal(res.length, 2);
-//     assert.equal(res[0].id, 1);
-//
-//     // check that nested collection in store
-//     res = store.getters['posts']();
-//     assert.equal(res.length, 2);
-//     assert.equal(res[0].id, 1);
-//   });
+  test("store.relations.collection", async () => {
+    // dispatch relation
+    res = await store.dispatch('authors.posts.fetch', 1);
+    assert.equal(res.length, 2);
+    assert.equal(res[0].id, 1);
+
+    // check that nested collection in store
+    res = store.getters['posts']();
+    assert.equal(res.length, 2);
+    assert.equal(res[0].id, 1);
+  });
 
 });
 

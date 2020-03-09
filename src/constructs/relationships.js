@@ -5,7 +5,7 @@
 
 import _ from 'lodash';
 import axios from 'axios';
-import { getModel } from './actions';
+import { getModel, fetchCollection, createModel, updateModel, deleteModel } from './actions';
 
 
 /**
@@ -30,21 +30,40 @@ export function relationFactory(schema, model) {
       throw `No model configuration registered for relation \`${relative}\``;
     }
 
-    // // fetch
-    // methods[`${model}.${relative}.fetch`] = (context, id) => {
-    //   target = target.replace(':id', id);
-    //   const config = _.clone(schema[relative]);
-    //   config.api = { model: target, collection: target };
-    //   return fetchCollection(context, config);
-    // };
+    // fetch/get
+    methods[`${model}.${name}.fetch`] = (context, id) => {
+      const endpoint = target.replace(':id', id);
+      const config = _.clone(schema[relative]);
+      config.api = { model: endpoint, collection: endpoint };
+      return fetchCollection(context, config);
+    };
+    methods[`${model}.${name}.get`] = methods[`${model}.${name}.fetch`];
+
+    // create
+    methods[`${model}.${name}.create`] = (context, id, data) => {
+      const endpoint = target.replace(':id', id);
+      const config = _.clone(schema[relative]);
+      config.api = { model: endpoint, collection: endpoint };
+      return createModel(context, config, data);
+    };
+
+    // update
+    methods[`${model}.${name}.update`] = (context, id, data) => {
+      const endpoint = target.replace(':id', id);
+      const config = _.clone(schema[relative]);
+      config.api = { model: endpoint, collection: endpoint };
+      return updateModel(context, config, data);
+    };
+
+    // delete
+    methods[`${model}.${name}.delete`] = (context, id, data) => {
+      const endpoint = target.replace(':id', id);
+      const config = _.clone(schema[relative]);
+      config.api = { model: endpoint, collection: endpoint };
+      return deleteModel(context, config, data);
+    };
 
   });
-
-
-    // methods[`${model}.${relative}.get`] = () => {};
-    // methods[`${model}.${relative}.create`] = () => {};
-    // methods[`${model}.${relative}.update`] = () => {};
-    // methods[`${model}.${relative}.delete`] = () => {};
 
   return methods;
 }
