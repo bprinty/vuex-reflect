@@ -35,6 +35,44 @@ function normalizeInputs(contract, data) {
 }
 
 
+function actionClojure(instance, config, action) {
+
+  // normalize inputs
+  if (!_.isObject(config)) {
+    config = { post: config };
+  }
+  const model = instance.constructor.__name__;
+  const store = instance.constructor.__store__;
+
+  // default method for clojure
+  function act(...arg) {
+    if (Object.keys(config).length == 1) {
+      const method = Object.keys(value)[0];
+      return act[method](...arg);
+    } else {
+      throw `Multiple nested actions available for \`${model}.${action}\`. Please call one specifically.`;
+    }
+  }
+
+  // check for need to refresh model
+  const refresh = Boolean(config.refresh);
+  delete config.refresh;
+
+  // dispatch to nested store actions for each
+  _.each(config, (endpoint, method) => {
+    act[method] = (...arg) => {
+      store.dispatch(`${model}.${action}.${method}`, instance.id, ...arg).then((data) => {
+        if (refresh) {
+          instance.sync();
+        }
+        return data;
+      });
+    };
+  });
+
+  return act;
+}
+
 /**
  * Abstract base class for Model definitions.
  */
@@ -49,8 +87,15 @@ export class Model {
     data = data || {};
 
     // setup
-    this.__actions__ = this.constructor.api();
+    this.__api__ = this.constructor.api();
     this.__contract__ = this.constructor.props();
+    this.__nested__ = {
+      actions: _.map(
+        this.constructor.actions(),
+        (config, name) => actionClojure(this, config, name)
+      ),
+      relations: this.constructor.relations(),
+    };
     this.id = data.id;
 
     // build nested model mapping
@@ -60,6 +105,8 @@ export class Model {
       }
       return result;
     }, {});
+
+    // TODO: PROTECT AGAINST DEFINING RELATION ON TOP OF PROPERTY
 
     // set up local store, accounting for nested models
     this._ = _.reduce(data, (result, value, prop) => {
@@ -99,6 +146,16 @@ export class Model {
         // get local copy of data
         if (_.has(obj._, prop)) {
           return obj._[prop];
+        }
+
+        // relations
+        else if (_.has(obj.__nested__.relations, prop)) {
+          return obj.__nested__.relations[prop];
+        }
+
+        // actions
+        else if (_.has(obj.__nested__.actions, prop)) {
+          return obj.__nested__.actions[prop];
         }
 
         // everything else
@@ -298,10 +355,11 @@ export class Model {
    */
   commit() {
     const payload = this.json();
+    let action = 'update';
     if (_.isNil(this.id)) {
       delete payload.id;
+      action = 'create';
     }
-    const action = _.has(self.__actions__, 'update') ? 'update' : 'create';
     return this.constructor.__dispatch__(action, payload).then((data) => {
       this.update(data);
       return this;
@@ -342,11 +400,31 @@ export class Model {
   }
 
   /**
+   * Sync local model data with data from store.
+   */
+  sync() {
+    const data = _.reduce(this._, (result, value, key) => {
+      result[key] = this.$[key];
+      return result;
+    }, {});
+    return this.update(data);
+  }
+
+
+  /**
    * Return javascript Object representing current model and nested
    * configuration.
    */
   json() {
-    return _.clone(this._);
+    const result = {};
+    _.each(this._, (value, key) => {
+      if (value instanceof Model) {
+        result[key] = value.json();
+      } else {
+        result[key] = value;
+      }
+    });
+    return result;
   }
 }
 
