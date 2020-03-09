@@ -81,7 +81,10 @@ class App extends MockServer {
       '/authors': this.collection('authors'),
       '/authors/:id': this.model('authors'),
       '/authors/:id/posts': {
-        get: id => this.db.posts.filter(x => x.author_id === id),
+        get: id => {
+          const posts = Object.keys(this.db.posts).map(id => this.db.posts[id]);
+          return posts.filter(x => x.author_id === id);
+        },
       },
     }
   }
