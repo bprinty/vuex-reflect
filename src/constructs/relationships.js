@@ -98,7 +98,7 @@ function constructActionPromise(config, endpoint, method, refresh) {
 
     // return promise
     const url = endpoint.replace(':id', id);
-    const params = Object.assign(config.options.axios, { method, url, data });
+    const params = { method, url, data, ...config.options.axios };
     return axios(params).then(async (response) => {
       if (refresh) {
         await getModel(context, config, id);

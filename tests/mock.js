@@ -183,9 +183,11 @@ export class MockServer {
    */
   init() {
 
+    let baseUrl = '';
+
     // GET
     axios.get.mockImplementation((url) => {
-      const { id, endpoint } = normalize(url);
+      const { id, endpoint } = normalize(baseUrl + url);
       return new Promise((resolve, reject) => {
 
         // handle invalid urls
@@ -232,7 +234,7 @@ export class MockServer {
 
     // POST
     axios.post.mockImplementation((url, data) => {
-      const { id, endpoint } = normalize(url);
+      const { id, endpoint } = normalize(baseUrl + url);
       return new Promise((resolve, reject) => {
 
         // handle invalid urls
@@ -266,7 +268,7 @@ export class MockServer {
 
     // PUT
     axios.put.mockImplementation((url, data) => {
-      const { id, endpoint } = normalize(url);
+      const { id, endpoint } = normalize(baseUrl + url);
       return new Promise((resolve, reject) => {
 
         // handle invalid urls
@@ -301,7 +303,7 @@ export class MockServer {
 
     // DELETE
     axios.delete.mockImplementation((url) => {
-      const { id, endpoint } = normalize(url);
+      const { id, endpoint } = normalize(baseUrl + url);
       return new Promise((resolve, reject) => {
 
         // handle invalid urls
@@ -325,14 +327,23 @@ export class MockServer {
 
     // instance creation
     axios.create.mockImplementation((params) => {
+      if (_.has(params, 'baseUrl')) {
+        baseUrl = params.baseUrl;
+      }
       return axios;
     });
 
     // base handler
     axios.mockImplementation((params) => {
+      const before = baseUrl;
+      if (_.has(params, 'baseUrl')) {
+        baseUrl = params.baseUrl;
+      }
       params = Object.assign({method: 'get', data: {}}, params);
       const method = axios[params.method];
-      return method(params.url, params.data);
+      const result = method(params.url, params.data);
+      baseUrl = before;
+      return result;
     });
 
   }
