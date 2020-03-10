@@ -121,6 +121,8 @@ export function actionFactory(config) {
   const model = config.name;
 
   _.each(config.actions, (value, key) => {
+    value = _.clone(value);
+
     // normalize inputs
     if (!_.isObject(value)) {
       value = { post: value };
