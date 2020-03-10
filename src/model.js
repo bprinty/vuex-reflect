@@ -35,7 +35,16 @@ function normalizeInputs(contract, data) {
 }
 
 
+/**
+ * Function for generating clojure for accessing nested instance actions.
+ *
+ * @param {Model} instance - Model instance to generate clojure for.
+ * @param {object} config - Action configuration for model.
+ * @param {object} action - Action name.
+ */
 function actionClojure(instance, config, action) {
+
+  config = _.clone(config);
 
   // normalize inputs
   if (!_.isObject(config)) {
@@ -47,7 +56,7 @@ function actionClojure(instance, config, action) {
   // default method for clojure
   function act(...arg) {
     if (Object.keys(config).length == 1) {
-      const method = Object.keys(value)[0];
+      const method = Object.keys(config)[0];
       return act[method](...arg);
     } else {
       throw `Multiple nested actions available for \`${model}.${action}\`. Please call one specifically.`;
@@ -61,7 +70,7 @@ function actionClojure(instance, config, action) {
   // dispatch to nested store actions for each
   _.each(config, (endpoint, method) => {
     act[method] = (...arg) => {
-      store.dispatch(`${model}.${action}.${method}`, instance.id, ...arg).then((data) => {
+      return store.dispatch(`${model}.${action}.${method}`, instance.id, ...arg).then((data) => {
         if (refresh) {
           instance.sync();
         }
@@ -72,6 +81,48 @@ function actionClojure(instance, config, action) {
 
   return act;
 }
+
+
+/**
+ * Function for generating clojure for accessing nested models.
+ *
+ * @param {Model} instance - Model instance to generate clojure for.
+ * @param {object} config - Relation configuration for model.
+ * @param {object} relation - Relation name.
+ */
+function relationClojure(instance, config, relation) {
+
+  // store setup
+  const model = instance.constructor.__name__;
+  const store = instance.constructor.__store__;
+
+  // validating inputs
+  const cls = config.model;
+  if (_.isString(cls)) {
+    throw `Relation \`${cls}\` for model \`${model}\` must be Model class.`;
+  }
+  const relative = cls.__name__;
+
+  function clojure() {}
+
+  ['fetch', 'get', 'update', 'create', 'delete'].forEach((method) => {
+    clojure[method] = (...arg) => {
+      return store.dispatch(`${model}.${relative}.${method}`, instance.id, ...arg).then((data) => {
+        if (_.isArray(data)) {
+          return data.map(item => new cls(item));
+        } else if (_.isObject(data)) {
+          return new cls(data);
+        } else {
+          return data;
+        }
+      });
+    };
+  });
+
+  return clojure;
+
+}
+
 
 /**
  * Abstract base class for Model definitions.
@@ -89,16 +140,22 @@ export class Model {
     // setup
     this.__api__ = this.constructor.api();
     this.__contract__ = this.constructor.props();
-    this.__nested__ = {
-      actions: _.map(
-        this.constructor.actions(),
-        (config, name) => actionClojure(this, config, name)
-      ),
-      relations: this.constructor.relations(),
-    };
+    this.__nested__ = {}
     this.id = data.id;
 
-    // build nested model mapping
+    // nested realtions
+    this.__nested__.relations = _.reduce(this.constructor.relations(), (result, config, name) => {
+      result[name] = relationClojure(this, config, name);
+      return result
+    }, {});
+
+    // nested actions
+    this.__nested__.actions = _.reduce(this.constructor.actions(), (result, config, name) => {
+      result[name] = actionClojure(this, config, name);
+      return result
+    }, {});
+
+    // build rename model mapping
     this.__remap__ = _.reduce(this.__contract__, (result, spec, key) => {
       if (_.has(spec, 'to') && spec.to) {
         result[spec.to] = key;
@@ -384,9 +441,19 @@ export class Model {
    * @param {object} data - Object with data to update model with.
    */
   update(data) {
-    // leverage proxy setters to update data
     _.reduce(data, (result, value, param) => {
-      this[param] = value;
+      if (param === 'id') {
+        this.id = value;
+      }
+      if (this._[param] !== value) {
+        if (_.has(this.__remap__, param)) {
+          param = this.__remap__[param];
+        }
+        if (_.has(this.__contract__[param], 'model')) {
+          value = parseModel(this.__contract__[param].model, value);
+        }
+        this._[param] = value;
+      }
     }, {});
     return this;
   }
