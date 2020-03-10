@@ -8,7 +8,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { assert } from 'chai';
+import server from './server';
 import { Reflect } from '../src/index';
+import { Profile } from './models/models';
+
+
+// config
+// ------
+jest.mock('axios');
+server.init();
+beforeEach(() => {
+  server.reset();
+});
 
 
 // plugin setup
@@ -30,7 +41,14 @@ const store = new Vuex.Store({
       });
     },
   },
-  plugins: [Reflect({})],
+  plugins: [Reflect({
+    Profile,
+    options: {
+      axios: {
+        baseUrl: '/missing',
+      },
+    }
+  })],
 });
 
 
@@ -47,8 +65,13 @@ describe("config", () => {
     });
   });
 
-  test("config.axios", () => {
-    assert.isTrue(true);
+  test("config.axios", async () => {
+    try {
+      await Profile.fetch();
+      assert.fail('Axios instance not overridden in requests.');
+    } catch (err) {
+      assert.equal(err.message, 'URL /profile not in API');
+    }
   });
 
 });
