@@ -116,6 +116,20 @@ export default function Reflect(models) {
       });
       delete config.queries;
 
+      // normalize relation inputs
+      _.each(config.relations, (value, key) => {
+        if (!_.isObject(value)) {
+          value = { model: key, url: value };
+        }
+        if (!_.isString(value.model)) {
+          value.model = value.model.__name__
+        }
+        if (_.isUndefined(value.model)) {
+          throw `Invalid model configuration for \`${key}\` relation on \`${name}\` model.`;
+        }
+        config.relations[key] = value;
+      });
+
       result[name] = config;
       return result;
     }, {});
