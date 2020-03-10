@@ -50,9 +50,9 @@ describe("model.nested", () => {
     model = await Post.get(1);
     assert.equal(model.archived, false);
     await model.archive();
+    assert.equal(model.title, 'Foo');
     assert.equal(model.archived, true);
     assert.equal(model.$.archived, true);
-    assert.equal(model.title, 'Foo');
 
     // dispatch method
     res = await model.history.fetch();
@@ -64,7 +64,6 @@ describe("model.nested", () => {
 
   test("model.nested.queries", async () => {
     model = await Post.get(1);
-    console.log(model.history);
     res = await model.history.fetch();
     assert.equal(res.length, 2);
     assert.equal(res[0].delta, 'foo');
