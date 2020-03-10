@@ -15,10 +15,8 @@ import { relationFactory, actionFactory, queryFactory } from './constructs/relat
 export default function Reflect(models) {
   // sanitize inputs
 
-  // configure options
-
-  // set global axios instance?
-  const options = {
+  // configure global option defaults
+  const options = Object.assign({
     axios: {},
     methods: {
       'create': 'post',
@@ -28,7 +26,8 @@ export default function Reflect(models) {
       'delete': 'delete',
       'patch': 'patch',
     }
-  };
+  }, models.options || {});
+  delete models.options;
 
   const defaults = {
     name: null,
@@ -39,7 +38,6 @@ export default function Reflect(models) {
     actions: {},
     queries: {},
   };
-
 
   return (store) => {
     let schema = {};
