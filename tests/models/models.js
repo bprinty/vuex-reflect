@@ -44,18 +44,18 @@ export class Author extends Model {
     return authors.contract;
   }
 
-  // // relations
-  // static relations() {
-  //   return {
-  //     /**
-  //      * All post items for a single author.
-  //      */
-  //      posts: {
-  //       model: Post,
-  //       url: '/authors/:id/posts',
-  //     },
-  //   }
-  // }
+  // relations
+  static relations() {
+    return {
+      /**
+       * All post items for a single author.
+       */
+       posts: {
+        model: Post,
+        url: '/authors/:id/posts',
+      },
+    }
+  }
 }
 
 
