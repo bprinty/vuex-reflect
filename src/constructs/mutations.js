@@ -12,12 +12,12 @@ import _ from 'lodash';
  *
  * @param {object} state - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function syncModel(state, config, model, data) {
+function syncModel(state, config, data) {
 
   // TODO: NEED TO FIGURE OUT HOW TO IMPUTE DEFAULTS FROM CONFIG
+  const model = config.name;
   const defaults = {};
 
   if (!_.isArray(data)) {
@@ -43,12 +43,12 @@ function syncModel(state, config, model, data) {
  *
  * @param {object} state - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function syncSingleton(state, config, model, data) {
+function syncSingleton(state, config, data) {
 
   // TODO: NEED TO FIGURE OUT HOW TO IMPUTE DEFAULTS FROM CONFIG
+  const model = config.name;
   const defaults = {};
 
   state[model] = Object.assign(
@@ -65,10 +65,10 @@ function syncSingleton(state, config, model, data) {
  *
  * @param {object} state - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {integer} data - Id(s) for model to remove from store.
  */
-function removeModel(state, config, model, data) {
+function removeModel(state, config, data) {
+  const model = config.name;
   if (!_.isArray(data)) {
     data = [data];
   }
@@ -90,12 +90,12 @@ function removeModel(state, config, model, data) {
  *
  * @param {object} state - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {integer} data - Id(s) for model to reset in store.
  */
-function resetModel(state, config, model, data) {
+function resetModel(state, config, data) {
 
   // TODO: NEED TO FIGURE OUT HOW TO IMPUTE DEFAULTS FROM CONFIG
+  const model = config.name;
   const defaults = {};
 
   if (!_.isArray(data)) {
@@ -120,15 +120,14 @@ function resetModel(state, config, model, data) {
  *
  * @param {object} state - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function resetSingleton(state, config, model, data) {
+function resetSingleton(state, config, data) {
 
   // TODO: NEED TO FIGURE OUT HOW TO IMPUTE DEFAULTS FROM CONFIG
   const defaults = {};
 
-  state[model] = Object.assign({}, defaults);
+  state[config.name] = Object.assign({}, defaults);
 }
 
 
@@ -137,11 +136,10 @@ function resetSingleton(state, config, model, data) {
  *
  * @param {object} state - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function clearCollection(state, config, model, data) {
-  state[model] = {};
+function clearCollection(state, config, data) {
+  state[config.name] = {};
 }
 
 

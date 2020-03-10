@@ -36,6 +36,95 @@ function normalizeInputs(contract, data) {
 
 
 /**
+ * Function for generating clojure for accessing nested instance actions.
+ *
+ * @param {Model} instance - Model instance to generate clojure for.
+ * @param {object} config - Action configuration for model.
+ * @param {object} action - Action name.
+ */
+function actionClojure(instance, config, action) {
+
+  config = _.clone(config);
+
+  // normalize inputs
+  if (!_.isObject(config)) {
+    config = { post: config };
+  }
+  const model = instance.constructor.__name__;
+  const store = instance.constructor.__store__;
+
+  // default method for clojure
+  function act(...arg) {
+    if (Object.keys(config).length == 1) {
+      const method = Object.keys(config)[0];
+      return act[method](...arg);
+    } else {
+      throw `Multiple nested actions available for \`${model}.${action}\`. Please call one specifically.`;
+    }
+  }
+
+  // check for need to refresh model
+  const refresh = Boolean(config.refresh);
+  delete config.refresh;
+
+  // dispatch to nested store actions for each
+  _.each(config, (endpoint, method) => {
+    act[method] = (...arg) => {
+      return store.dispatch(`${model}.${action}.${method}`, instance.id, ...arg).then((data) => {
+        if (refresh) {
+          instance.sync();
+        }
+        return data;
+      });
+    };
+  });
+
+  return act;
+}
+
+
+/**
+ * Function for generating clojure for accessing nested models.
+ *
+ * @param {Model} instance - Model instance to generate clojure for.
+ * @param {object} config - Relation configuration for model.
+ * @param {object} relation - Relation name.
+ */
+function relationClojure(instance, config, relation) {
+
+  // store setup
+  const model = instance.constructor.__name__;
+  const store = instance.constructor.__store__;
+
+  // validating inputs
+  const cls = config.model;
+  if (_.isString(cls)) {
+    throw `Relation \`${cls}\` for model \`${model}\` must be Model class.`;
+  }
+  const relative = cls.__name__;
+
+  function clojure() {}
+
+  ['fetch', 'get', 'update', 'create', 'delete'].forEach((method) => {
+    clojure[method] = (...arg) => {
+      return store.dispatch(`${model}.${relative}.${method}`, instance.id, ...arg).then((data) => {
+        if (_.isArray(data)) {
+          return data.map(item => new cls(item));
+        } else if (_.isObject(data)) {
+          return new cls(data);
+        } else {
+          return data;
+        }
+      });
+    };
+  });
+
+  return clojure;
+
+}
+
+
+/**
  * Abstract base class for Model definitions.
  */
 export class Model {
@@ -49,17 +138,32 @@ export class Model {
     data = data || {};
 
     // setup
-    this.__actions__ = this.constructor.api();
+    this.__api__ = this.constructor.api();
     this.__contract__ = this.constructor.props();
+    this.__nested__ = {}
     this.id = data.id;
 
-    // build nested model mapping
+    // nested realtions
+    this.__nested__.relations = _.reduce(this.constructor.relations(), (result, config, name) => {
+      result[name] = relationClojure(this, config, name);
+      return result
+    }, {});
+
+    // nested actions
+    this.__nested__.actions = _.reduce(this.constructor.actions(), (result, config, name) => {
+      result[name] = actionClojure(this, config, name);
+      return result
+    }, {});
+
+    // build rename model mapping
     this.__remap__ = _.reduce(this.__contract__, (result, spec, key) => {
       if (_.has(spec, 'to') && spec.to) {
         result[spec.to] = key;
       }
       return result;
     }, {});
+
+    // TODO: PROTECT AGAINST DEFINING RELATION ON TOP OF PROPERTY
 
     // set up local store, accounting for nested models
     this._ = _.reduce(data, (result, value, prop) => {
@@ -99,6 +203,16 @@ export class Model {
         // get local copy of data
         if (_.has(obj._, prop)) {
           return obj._[prop];
+        }
+
+        // relations
+        else if (_.has(obj.__nested__.relations, prop)) {
+          return obj.__nested__.relations[prop];
+        }
+
+        // actions
+        else if (_.has(obj.__nested__.actions, prop)) {
+          return obj.__nested__.actions[prop];
         }
 
         // everything else
@@ -237,6 +351,15 @@ export class Model {
   }
 
   /**
+   * Model-specific options to use when managing data.
+   *
+   * @returns {object} Object with options configuration.
+   */
+  static options() {
+    return {};
+  }
+
+  /**
    * API config for fetching and updating data. This method must
    * be defined by classes inheriting from this model type.
    *
@@ -289,10 +412,11 @@ export class Model {
    */
   commit() {
     const payload = this.json();
+    let action = 'update';
     if (_.isNil(this.id)) {
       delete payload.id;
+      action = 'create';
     }
-    const action = _.has(self.__actions__, 'update') ? 'update' : 'create';
     return this.constructor.__dispatch__(action, payload).then((data) => {
       this.update(data);
       return this;
@@ -317,9 +441,19 @@ export class Model {
    * @param {object} data - Object with data to update model with.
    */
   update(data) {
-    // leverage proxy setters to update data
     _.reduce(data, (result, value, param) => {
-      this[param] = value;
+      if (param === 'id') {
+        this.id = value;
+      }
+      if (this._[param] !== value) {
+        if (_.has(this.__remap__, param)) {
+          param = this.__remap__[param];
+        }
+        if (_.has(this.__contract__[param], 'model')) {
+          value = parseModel(this.__contract__[param].model, value);
+        }
+        this._[param] = value;
+      }
     }, {});
     return this;
   }
@@ -333,11 +467,31 @@ export class Model {
   }
 
   /**
+   * Sync local model data with data from store.
+   */
+  sync() {
+    const data = _.reduce(this._, (result, value, key) => {
+      result[key] = this.$[key];
+      return result;
+    }, {});
+    return this.update(data);
+  }
+
+
+  /**
    * Return javascript Object representing current model and nested
    * configuration.
    */
   json() {
-    return _.clone(this._);
+    const result = {};
+    _.each(this._, (value, key) => {
+      if (value instanceof Model) {
+        result[key] = value.json();
+      } else {
+        result[key] = value;
+      }
+    });
+    return result;
   }
 }
 

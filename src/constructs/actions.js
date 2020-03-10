@@ -137,11 +137,11 @@ function formatPull(contract, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  */
-function fetchCollection(context, config, model) {
+export function fetchCollection(context, config) {
 
   // use fetch or collection config
+  const model = config.name;
   let action = config.api.fetch || config.api.collection;
 
   // throw if no fetch configuration
@@ -155,12 +155,16 @@ function fetchCollection(context, config, model) {
   }
 
   // commit data after promise resolves with data
+  function commit(item) {
+    const processed = formatPull(config.contract, item);
+    context.commit(`${model}.sync`, processed);
+    return context.getters[model](processed.id);
+  }
   return action.then((collection) => {
-    return collection.map((data) => {
-      const processed = formatPull(config.contract, data);
-      context.commit(`${model}.sync`, processed);
-      return context.state[model][data.id];
-    });
+    if (!_.isArray(collection)) {
+      return commit(collection);
+    }
+    return collection.map(data => commit(data));
   });
 
 }
@@ -171,11 +175,11 @@ function fetchCollection(context, config, model) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  */
-function fetchSingleton(context, config, model) {
+export function fetchSingleton(context, config) {
 
   // use fetch, get, or model config
+  const model = config.name;
   let action = config.api.fetch || config.api.get || config.api.model;
 
   // throw if no fetch configuration
@@ -192,7 +196,7 @@ function fetchSingleton(context, config, model) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model];
+    return context.getters[model]();
   });
 
 }
@@ -204,12 +208,12 @@ function fetchSingleton(context, config, model) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for creating model.
  */
-function createModel(context, config, model, data) {
+export function createModel(context, config, data) {
 
   // use create or collection config
+  const model = config.name;
   let action = config.api.create || config.api.collection;
 
   // throw if no fetch configuration
@@ -229,7 +233,7 @@ function createModel(context, config, model, data) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model][data.id];
+    return context.getters[model](processed.id);
   });
 }
 
@@ -240,12 +244,12 @@ function createModel(context, config, model, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} id - Id for model to get.
  */
-function getModel(context, config, model, id) {
+export function getModel(context, config, id) {
 
   // use get or model config
+  const model = config.name;
   let action = config.api.get || config.api.model;
 
   // throw if no fetch configuration
@@ -263,7 +267,7 @@ function getModel(context, config, model, id) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model][id];
+    return context.getters[model](id);
   });
 }
 
@@ -273,19 +277,18 @@ function getModel(context, config, model, id) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function updateModel(context, config, model, data) {
+export function updateModel(context, config, data) {
 
+  // use update or model config
+  const model = config.name;
+  let action = config.api.update || config.api.model;
+
+  // assert id and actions exist
   if (!_.has(data, 'id')) {
     throw `Update action for model ${model} must include 'id' key.`;
   }
-
-  // use update or model config
-  let action = config.api.update || config.api.model;
-
-  // throw if no fetch configuration
   if (action === undefined) {
     throw `Model '${model}' has no configuration for 'update' option.`;
   }
@@ -303,7 +306,7 @@ function updateModel(context, config, model, data) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model][data.id];
+    return context.getters[model](processed.id);;
   });
 }
 
@@ -314,12 +317,12 @@ function updateModel(context, config, model, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {string} data - Data to use for updating existing model.
  */
-function updateSingleton(context, config, model, data) {
+export function updateSingleton(context, config, data) {
 
   // use update or model config
+  const model = config.name;
   let action = config.api.update || config.api.model;
 
   // throw if no fetch configuration
@@ -339,7 +342,7 @@ function updateSingleton(context, config, model, data) {
   return action.then((data) => {
     const processed = formatPull(config.contract, data);
     context.commit(`${model}.sync`, processed);
-    return context.state[model];
+    return context.getters[model]();
   });
 }
 
@@ -350,12 +353,12 @@ function updateSingleton(context, config, model, data) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {integer} id - Id of model to delete.
  */
-function deleteModel(context, config, model, id) {
+export function deleteModel(context, config, id) {
 
   // use update or model config
+  const model = config.name;
   let action = config.api.delete || config.api.model;
 
   // throw if no fetch configuration
@@ -383,12 +386,12 @@ function deleteModel(context, config, model, id) {
  *
  * @param {object} context - Store action context.
  * @param {string} config - Model configuration.
- * @param {string} model - Name of model.
  * @param {integer} id - Id of model to delete.
  */
-function deleteSingleton(context, config, model) {
+export function deleteSingleton(context, config) {
 
   // use delete or model config
+  const model = config.name;
   let action = config.api.delete || config.api.model;
 
   // throw if no fetch configuration
@@ -413,7 +416,7 @@ function deleteSingleton(context, config, model) {
  * Action factory function for returning get methods based
  * on model config.
  */
-export default function actionFactory(config) {
+export default function dispatchFactory(config) {
   return {
     fetch: config.singleton ? fetchSingleton : fetchCollection,
     create: config.singleton ? createModel : createModel,

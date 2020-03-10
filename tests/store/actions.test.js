@@ -41,12 +41,6 @@ describe("store.actions", () => {
     assert.equal(collection.length, 2);
     assert.equal(collection[0].id, 1);
 
-    // TODO: BELOW
-    // // get nested payloads
-    // collection = store.getters.authors();
-    // assert.equal(collection.length, 1);
-    // assert.equal(collection[0].id, 1);
-
     // check nested payloads
     assert.equal(collection[0].author.id, 1);
 
@@ -133,12 +127,11 @@ describe("store.actions", () => {
 
     // update new item with nested data
     model = await store.dispatch("posts.create", {
-      id: 2,
       title: 'b',
       body: 'bbb',
       author: { id: 1 },
     });
-    assert.equal(model.id, 2);
+    assert.equal(model.id, 3);
     assert.equal(model.title, 'b');
     assert.equal(model.author.id, 1);
 

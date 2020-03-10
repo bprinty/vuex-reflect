@@ -67,6 +67,12 @@ export const authors = {
       },
     },
   },
+  relations: {
+    posts: {
+      model: 'posts',
+      url: '/authors/:id/posts',
+    }
+  }
 };
 
 
@@ -125,8 +131,23 @@ export const posts = {
       collapse: true,
     },
   },
+  relations: {
+    author: {
+      model: 'authors',
+      url: '/posts/:id/author',
+    }
+  },
+  actions: {
+    archive: {
+      post: '/posts/:id/archive',
+      refresh: true,
+    },
+    history: '/posts/:id/history',
+  },
+  queries: {
+    history: '/posts/:id/history',
+  },
 };
-
 
 // store
 Vue.use(Vuex);

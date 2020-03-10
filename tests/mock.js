@@ -26,16 +26,6 @@ function normalize(url) {
   return { id, endpoint };
 }
 
-/**
- * Wrap data object with ID key for payload responses.
- *
- * @param {number} id - Identifier for model.
- * @param {object} data - Data structure to add identifer to.
- */
-function indexed(id, data) {
-  return Object.assign({ id: Number(id)}, data);
-}
-
 
 /**
  * Generate promise response for missing resource.
@@ -70,6 +60,7 @@ export class MockServer {
       if (_.isArray(val)) {
         let idx = 1;
         this.db[key] = val.reduce((obj, item) => {
+          item.id = idx;
           obj[idx] = item
           idx += 1;
           return obj;
@@ -102,7 +93,7 @@ export class MockServer {
       const mapping = _.isArray(this._relationships[model]) ? this._relationships[model] : [this._relationships[model]];
       mapping.forEach((spec) => {
         const collection = _.isString(spec.collection) ? this.db[spec.collection] : spec.collection;
-        data[spec.to] = indexed(data[spec.from], collection[data[spec.from]]);
+        data[spec.to] = collection[data[spec.from]];
         delete data[spec.from];
       });
     }
@@ -123,13 +114,14 @@ export class MockServer {
     return {
       get: () => {
         return Object.keys(this.db[name]).map((id) => {
-          return indexed(id, this.get(name, id));
+          return this.get(name, id);
         });
       },
       post: (data) => {
         const id = Number(_.max(Object.keys(this.db[name]))) + 1;
+        data.id = id;
         this.db[name][id] = data;
-        return indexed(id, this.get(name, id));
+        return this.get(name, id);
       },
     };
   }
@@ -144,11 +136,11 @@ export class MockServer {
    */
   model(name) {
     return {
-      get: (id) => indexed(id, this.get(name, id)),
+      get: (id) => this.get(name, id),
       put: (id, payload) => {
         const keys = Object.keys(this.db[name][id]);
         this.db[name][id] = Object.assign(this.db[name][id], _.pick(payload, keys));
-        return indexed(id, this.get(name, id));
+        return this.get(name, id);
       },
       delete: (id) => {
         delete this.db[name][id];
@@ -219,8 +211,8 @@ export class MockServer {
         else {
 
           // reject on missing model
-          const result = method(id);
-          if (Object.keys(result).length === 1) {
+          const result = method(Number(id));
+          if (_.isUndefined(result)) {
             reject({
               status: 404,
               message: `Record ${id} not in API Database`,
@@ -265,8 +257,8 @@ export class MockServer {
         // model request
         else {
           resolve({
-            status: 202,
-            data: method(id, data),
+            status: 200,
+            data: method(Number(id), data),
           });
         }
       });
@@ -293,7 +285,7 @@ export class MockServer {
         if (id) {
           resolve({
             status: 200,
-            data: method(id, data),
+            data: method(Number(id), data),
           });
         }
 
@@ -326,12 +318,22 @@ export class MockServer {
         // call method
         resolve({
           status: 204,
-          data: this._api[endpoint].delete(id)
+          data: this._api[endpoint].delete(Number(id))
         });
       });
     });
 
-    axios.mockImplementation(params => axios[data.method](params.url, params.data));
+    // instance creation
+    axios.create.mockImplementation((params) => {
+      return axios;
+    });
+
+    // base handler
+    axios.mockImplementation((params) => {
+      params = Object.assign({method: 'get', data: {}}, params);
+      const method = axios[params.method];
+      return method(params.url, params.data);
+    });
 
   }
 

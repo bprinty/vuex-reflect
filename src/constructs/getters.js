@@ -9,13 +9,15 @@ import _ from 'lodash';
  * multiple, single, or all model retrieval from store.
  *
  * @param {object} state - Store state snapshot.
- * @param {string} model - Name of model.
+ * @param {object} config - Configuration for model.
  * @param {integer, array} input - Input to getter. If returning
  *     single instance, this should be the instance id to query.
  *     If returning multiple instances, this should be an array
  *     of instance ids. If not specified, all instances are returned.
  */
-export function getCollection(state, model, input) {
+export function getCollection(state, config, input) {
+  const model = config.name;
+
   // single
   if ( _.isInteger(input) || _.isString(input) ) {
     return state[model][input];
@@ -48,11 +50,12 @@ export function getCollection(state, model, input) {
  * Getter for sampling model definitions from store.
  *
  * @param {object} state - Store state snapshot.
- * @param {string} model - Name of model.
+ * @param {object} config - Configuration for model.
  * @param {integer} n - Number of records to sample from store.
  *     Default is `1`.
  */
-export function getCollectionSample(state, model, n) {
+export function getCollectionSample(state, config, n) {
+  const model = config.name;
   n = n || 1;
 
   // one
@@ -73,26 +76,30 @@ export function getCollectionSample(state, model, n) {
  * Getter for returning singleton models from store.
  *
  * @param {object} state - Store state snapshot.
- * @param {string} model - Name of model.
+ * @param {object} config - Configuration for model.
  */
-export function getSingleton(state, model) {
-  return state[model];
+export function getSingleton(state, config) {
+  return state[config.name];
 }
 
 
 /**
  * Getter for model template, using contract for defaults.
+ *
+ * @param {object} config - Configuration for model.
  */
-export function getTemplate(contract) {
-  return _.mapValues(contract, 'default');
+export function getTemplate(config) {
+  return _.mapValues(config.contract, 'default');
 }
 
 
 /**
  * Getter for model template, using contract for defaults.
+ *
+ * @param {object} config - Configuration for model.
  */
-export function getDefaults(contract) {
-  return _.reduce(contract, (result, spec, key) => {
+export function getDefaults(config) {
+  return _.reduce(config.contract, (result, spec, key) => {
     if (_.has(spec, 'default')) {
       result[key] = spec.default;
     }
