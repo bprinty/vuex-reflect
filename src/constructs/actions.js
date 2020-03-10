@@ -151,7 +151,8 @@ export function fetchCollection(context, config) {
 
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.get(action).then(response => response.data);
+    const params = { method: 'get', url: action, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -189,7 +190,8 @@ export function fetchSingleton(context, config) {
 
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.get(action).then(response => response.data);
+    const params = { method: 'get', url: action, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -226,7 +228,8 @@ export function createModel(context, config, data) {
 
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.post(action, payload).then(response => response.data);
+    const params = { method: 'post', url: action, data: payload, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -260,7 +263,8 @@ export function getModel(context, config, id) {
   // use axios if no promise specified
   if (_.isString(action)) {
     action = action.replace(':id', id)
-    action = axios.get(action).then(response => response.data);
+    const params = { method: 'get', url: action, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -299,7 +303,8 @@ export function updateModel(context, config, data) {
   // use axios if no promise specified
   if (_.isString(action)) {
     action = action.replace(':id', data.id)
-    action = axios.put(action, payload).then(response => response.data);
+    const params = { method: 'put', url: action, data: payload, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -335,7 +340,8 @@ export function updateSingleton(context, config, data) {
 
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.put(action, payload).then(response => response.data);
+    const params = { method: 'put', url: action, data: payload, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -369,7 +375,8 @@ export function deleteModel(context, config, id) {
   // use axios if no promise specified
   if (_.isString(action)) {
     action = action.replace(':id', id)
-    action = axios.delete(action).then(response => response.data);
+    const params = { method: 'delete', url: action, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
@@ -401,7 +408,8 @@ export function deleteSingleton(context, config) {
 
   // use axios if no promise specified
   if (_.isString(action)) {
-    action = axios.delete(action).then(response => response.data);
+    const params = { method: 'delete', url: action, ...config.options.axios };
+    action = axios(params).then(response => response.data);
   }
 
   // commit data after promise resolves with data
