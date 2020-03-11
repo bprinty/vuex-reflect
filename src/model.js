@@ -52,6 +52,7 @@ function actionClojure(instance, config, action) {
   }
   const model = instance.constructor.__name__;
   const store = instance.constructor.__store__;
+  const prefix = instance.constructor.__prefix__;
 
   // default method for clojure
   function act(...arg) {
@@ -70,7 +71,7 @@ function actionClojure(instance, config, action) {
   // dispatch to nested store actions for each
   _.each(config, (endpoint, method) => {
     act[method] = (...arg) => {
-      return store.dispatch(`${model}.${action}.${method}`, instance.id, ...arg).then((data) => {
+      return store.dispatch(`${prefix}${model}.${action}.${method}`, instance.id, ...arg).then((data) => {
         if (refresh) {
           instance.sync();
         }
@@ -95,6 +96,7 @@ function relationClojure(instance, config, relation) {
   // store setup
   const model = instance.constructor.__name__;
   const store = instance.constructor.__store__;
+  const prefix = instance.constructor.__prefix__;
 
   // validating inputs
   const cls = config.model;
@@ -107,7 +109,7 @@ function relationClojure(instance, config, relation) {
 
   ['fetch', 'get', 'update', 'create', 'delete'].forEach((method) => {
     clojure[method] = (...arg) => {
-      return store.dispatch(`${model}.${relative}.${method}`, instance.id, ...arg).then((data) => {
+      return store.dispatch(`${prefix}${model}.${relative}.${method}`, instance.id, ...arg).then((data) => {
         if (_.isArray(data)) {
           return data.map(item => new cls(item));
         } else if (_.isObject(data)) {
@@ -265,7 +267,7 @@ export class Model {
       throw 'Model must be registered with Vuex store for data management.';
     }
     method = method || 'all';
-    return this.__store__.getters[`${this.__name__}.${method}`](...args);
+    return this.__store__.getters[`${this.__prefix__}${this.__name__}.${method}`](...args);
   }
 
   /**
@@ -278,7 +280,7 @@ export class Model {
     if (_.isUndefined(this.__store__) || _.isUndefined(this.__name__)) {
       throw 'Model must be registered with Vuex store for data management.';
     }
-    return this.__store__.dispatch(`${this.__name__}.${method}`, ...args);
+    return this.__store__.dispatch(`${this.__prefix__}${this.__name__}.${method}`, ...args);
   }
 
   /**
@@ -291,7 +293,7 @@ export class Model {
     if (_.isUndefined(this.__store__) || _.isUndefined(this.__name__)) {
       throw 'Model must be registered with Vuex store for data management.';
     }
-    return this.__store__.commit(`${this.__name__}.${method}`, ...args);
+    return this.__store__.commit(`${this.__prefix__}${this.__name__}.${method}`, ...args);
   }
 
   /**
