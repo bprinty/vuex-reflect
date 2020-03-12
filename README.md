@@ -1,23 +1,13 @@
 
 [![Build Status](https://travis-ci.com/bprinty/vuex-reflect.png?branch=master)](https://travis-ci.com/bprinty/vuex-reflect)
 
+[![Code coverage](https://codecov.io/gh/bprinty/Flask-Occam/branch/master/graph/badge.svg)](https://codecov.io/gh/bprinty/Flask-Occam)
 
-<!-- |Build status| |Code coverage| |Maintenance yes| |GitHub license| |Documentation Status|
+[![Maintenance yes](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bprinty/vuex-reflect/graphs/commit-activity)
 
-.. |Build status| image:: https://travis-ci.com/bprinty/Flask-Occam.png?branch=master
-   :target: https://travis-ci.com/bprinty/Flask-Occam
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/bprinty/vuex-reflect/blob/master/LICENSE)
 
-.. |Code coverage| image:: https://codecov.io/gh/bprinty/Flask-Occam/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/bprinty/Flask-Occam
-
-.. |Maintenance yes| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
-   :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
-
-.. |GitHub license| image:: https://img.shields.io/github/license/Naereen/StrapDown.js.svg
-   :target: https://github.com/bprinty/Flask-Occam/blob/master/LICENSE
-
-.. |Documentation Status| image:: https://readthedocs.org/projects/flask-occam/badge/?version=latest
-   :target: http://flask-occam.readthedocs.io/?badge=latest -->
+[![Documentation status](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)](https://bprinty.github.io/vuex-reflect)
 
 
 # Vuex Reflect
