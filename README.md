@@ -46,13 +46,166 @@ To use this package via CDN, import it in your project via:
 
 ## Quickstart
 
-> TODO: Need to make more concise quickstart for README and point to external documentation.
+For full documentation on how to use the plugin, see the (docs)[https://bprinty.github.com/vuex-reflect]. The sections below will give a brief overview of some of the concepts.
+
+### Defining Models
+
+For this example, let's say we're initially interested in a single `Todo` model. The endpoints supplying data for this model are as follows:
+
+```
+/todos
+  GET - Query all or a subset of objects.
+  POST - Create a new todo.
+
+/todos/:id
+  GET - Get the metadata for a single todo.
+  PUT - Update data for a single todo.
+  DELETE - Delete data for a single todo.
+```
+
+And we can define this model using the following configuration:
+
+```javascript
+import { Model } from 'vuex-reflect';
+
+class Todo extends Model {
+
+  /**
+   * API config for fetching and updating data.
+   */
+  static api() {
+    return {
+      create: '/todos', // url for creating new todo items (POST)
+      fetch: '/todos', // url for fetching data with parameters (GET /todos?name.like=my-todo)
+      get: '/todos/:id', // url for getting data for a single todo (GET)
+      update: '/todos/:id', // url for updating a single todo (PUT)
+      delete: '/todos/:id', // url for deleting a single todo (DELETE)
+    };
+  }
+
+  /**
+   * Property definitions for the model.
+   */
+  static props() {
+    return {
+      /**
+       * Todo text
+       */
+      text: {
+        default: null,
+        required: true
+        mutation: value => `todo: ${value}`,
+        validation: /^[a-zA-Z\-]+$/, // validate input with regex
+      },
+      /**
+       * Todo status
+       */
+      done: {
+        default: false,
+        type: Boolean,
+        validation: value => typeof value === "boolean", // validate input with function
+      },
+    };
+  }
+}
+```
+
+Once models are defined, you can register them with Vuex like so:
+
+```javascript
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Reflect from 'vuex-reflect';
+import { Todo } from 'models';
+
+Vue.use(Vuex);
+
+const db = Reflect({
+  Todo,
+});
+
+const store = new Vuex.Store({
+  state: { ... },
+  mutations: { ... },
+  plugins: [db],
+})
+```
+
+With the syntax provided by this library, you define (in clear code) 1) where the data come from, and 2) how that data are mutated and validated during updates. Once you have a model, you can use it to fetch data for the store using (typically called when a component is created):
+
+```javascript
+Todo.query().then(() => {
+  console.log('Data fetched and saved to vuex store.');
+});
+```
+
+To see all of the data fetched, you can access the store directly:
+
+```javascript
+// result of: store.state
+{
+  todos: {
+    1: { id: 1, text: 'first todo', done: false },
+    2: { id: 2, text: 'done todo', done: true },
+    ...
+  }
+}
+```
+
+Or, you can use the model classes to access the data:
+
+```javascript
+// result of: Todo.query().all().map(x => x.json())
+[
+  { id: 1, text: 'first todo', done: false },
+  { id: 2, text: 'done todo', done: true },
+  ...
+]
+```
+
+Other api methods available on models include static methods for querying models from the store:
+
+```javascript
+// get an existing todo by id
+const todo = Todo.query(1);
+const todo = Todo.query().filter({ text: /part of todo text/ }).first(); // or by other properties
+
+// count all completed todos
+const doneTodos = Todo.query().filter({ done: true }).count();
+
+// query with a fluid api
+Todo.query().filter({ done: true }).has('text').offset(50).limit(3).count()
+```
+
+Or, static methods for changing data and committing those changes to the API and store:
+
+```javascript
+// create a new todo
+const todo = new Todo({ text: 'read docs' });
+
+// update it and save it via the API (results will be available via store)
+todo.text += ' tomorrow';
+todo.$.text // 'read docs' -> see the store version of the data
+todo.commit() // POST /todos/:id -> commit result to store
+todo.$.text // 'read docs tomorrow' -> store is updated after commit
+
+// later in the application, fetch all todos and commit them to the store
+await Todo.fetch();
+
+// get the first todo and change the status
+const todo = Todo.query().first();
+todo.done = true;
+
+// PUT the changed data to the API and commit the result to the store
+await todo.commit();
+```
+
+For full documentation on how to use the library (this README details a small portion of the functionality), see the (docs)[https://bprinty.github.com/vuex-reflect].
 
 ## Documentation
 
-Documentation for the project can be found [here](http://storage.googleapis.com/atgtag/vuex-reflect/index.html).
+Documentation for the project can be found [here](http://bprinty.github.io/vuex-reflect).
 
-<!-- TODO: don't store docs in a bucket after it's published - use GitHub pages. -->
 
 ## Contributors
 

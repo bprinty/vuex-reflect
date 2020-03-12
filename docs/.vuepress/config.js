@@ -1,7 +1,4 @@
-// const { sidebarTree } = require('../api/config');
-
 module.exports = {
-  base: '/atgtag/vuex-reflect/',
   locales: {
     '/': {
       lang: 'en-US',

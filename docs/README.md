@@ -108,13 +108,12 @@ Once models are defined, you can register them with Vuex like so:
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Reflect from 'vuex-reflect';
-import { Post, Author } from 'models';
+import { Todo } from 'models';
 
 Vue.use(Vuex);
 
 const db = Reflect({
-  Post,
-  Author
+  Todo,
 });
 
 const store = new Vuex.Store({
@@ -137,9 +136,9 @@ To see all of the data fetched, you can access the store directly:
 ```javascript
 // result of: store.state
 {
-  todos: [
-    { id: 1, text: 'first todo', done: false },
-    { id: 2, text: 'done todo', done: true },
+  todos: {
+    1: { id: 1, text: 'first todo', done: false },
+    2: { id: 2, text: 'done todo', done: true },
     ...
   }
 }
@@ -148,7 +147,7 @@ To see all of the data fetched, you can access the store directly:
 Or, you can use the model classes to access the data:
 
 ```javascript
-// result of: Todo.all().map((x) => x.json())
+// result of: Todo.query().all().map(x => x.json())
 [
   { id: 1, text: 'first todo', done: false },
   { id: 2, text: 'done todo', done: true },
@@ -177,7 +176,7 @@ const todo = new Todo({ text: 'read docs' });
 // update it and save it via the API (results will be available via store)
 todo.text += ' tomorrow';
 todo.$.text // 'read docs' -> see the store version of the data
-todo.commit() // PUT /todos/:id -> commit result to store
+todo.commit() // POST /todos/:id -> commit result to store
 todo.$.text // 'read docs tomorrow' -> store is updated after commit
 ```
 
@@ -227,7 +226,7 @@ Next, let's define our `TodoItem` component for viewing a single todo item.
   <div class="todo-item">
     <p>{{ todo.text }}</p>
     <input type="checkbox" v-model="todo.done">
-    <button v-if="todo.edited" @click="todo.commit">Update Status</button>
+    <button @click="todo.commit">Update Status</button>
   </div>
 </template>
 
@@ -267,7 +266,7 @@ export default {
     Todo.fetch() // fetch the data via `GET /todos`
   },
   computed: {
-    list: () => Todo.all(),
+    list: () => Todo.query().all(),
     done: () => Todo.query().filter({ done: true }).count(),
   },
 }
