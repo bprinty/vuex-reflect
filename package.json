@@ -1,8 +1,8 @@
 {
   "name": "vuex-reflect",
-  "homepage": "http://github.com/bprinty/vuex-reflect",
+  "homepage": "http://bprinty.github.io/vuex-reflect",
   "repository": "http://github.com/bprinty/vuex-reflect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "authors": [
     "Blake Printy <bprinty@gmail.com> (http://bprinty.github.io)"
   ],
@@ -26,6 +26,7 @@
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand --watch",
     "docs": "vuepress build docs",
     "docs:dev": "vuepress dev docs",
+    "docs:deploy": "rm -rf docs/.vuepress.dist && vuepress build docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m \"vuex-reflect, $npm_package_version\" && git push -f git@github.com:bprinty/vuex-reflect.git master:gh-pages",
     "readme": "vuepress dev"
   },
   "main": [
