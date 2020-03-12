@@ -35,7 +35,7 @@ function normalize(url) {
 function NotFound(url) {
   return {
     status: 404,
-    message: `URL ${url} not in API`,
+    message: `URL \`${url}\` not in API`,
   };
 }
 
@@ -217,7 +217,7 @@ export class MockServer {
           if (_.isUndefined(result)) {
             reject({
               status: 404,
-              message: `Record ${id} not in API Database`,
+              message: `Record \`${id}\` not in API Database`,
             });
           }
 
