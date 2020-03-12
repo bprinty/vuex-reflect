@@ -170,7 +170,7 @@ const store = new Vuex.Store({
 
 ## Axios Configuration
 
-This library uses [axios](https://github.com/axios/axios) for making requests. To set up the plugin with an axios instance having a pre-defined configuration, you can set the `getAxios` configuration option when instantiating the plugin:
+This library uses [axios](https://github.com/axios/axios) for making requests. To set up the plugin with an axios instance having a pre-defined configuration, you can set the `axios` configuration option when instantiating the plugin:
 
 ```javascript
 const http = new axios.create({
@@ -182,11 +182,21 @@ const http = new axios.create({
 
 // passing in http object
 var reflect = Reflect({
-  axios: () => http,
+  axios: http,
 });
 ```
 
-If the result of `getAxios` is an object, this library will automatically wrap that object in an `axios({})` call. For example, this also works:
+If the result of `axios` is an object, this library will automatically wrap that object in an `axios({})` call. For example, this also works:
+
+```javascript
+var reflect = Reflect({
+  axios: {
+    baseURL: process.env.VUE_APP_API,
+  },
+});
+```
+
+Finally, you can additionally configure the `axios` option as a callable (useful if you dynamically need to set authentication for requests):
 
 ```javascript
 var reflect = Reflect({
@@ -209,6 +219,9 @@ Other options available when setting up this library are as follows:
 | Option                  | Type       | Default           | Description                                                                                                |
 |:------------------------|:-----------|:------------------|:-----------------------------------------------------------------------------------------------------------|
 | `axios`                 | `Function` | `axios`           | Function returning axios instance or axios configuration to use.                                           |
+
+<!--
+
 | `methods`               | `Object`   | *See below*       | HTTP request methods.                                                                                      |
 | `primary`               | `String`   | `"id"`            | The property that should be used as the primary key to the model, usually something like `"id"`.           |
 
@@ -220,11 +233,13 @@ To change the default request methods used for various operations, use the `meth
 ```javascript
 var reflect = Reflect({
   methods: {
-    'query': 'GET',
-    'create': 'POST',
-    'get': 'GET',
-    'update': 'PUT',
-    'delete': 'DELETE',
+    'fetch': 'get',
+    'create': 'post',
+    'get': 'get',
+    'update': 'put',
+    'delete': 'delete',
   },
 });
 ```
+
+-->
