@@ -1,4 +1,5 @@
 module.exports = {
+  base: '/vuex-reflect/',
   locales: {
     '/': {
       lang: 'en-US',
