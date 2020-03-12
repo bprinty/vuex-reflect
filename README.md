@@ -1,16 +1,4 @@
-
-[Build status] [Code coverage] [Maintenance yes] [GitHub license] [Documentation status]
-
-[![Build Status](https://travis-ci.com/bprinty/vuex-reflect.png?branch=master)]: https://travis-ci.com/bprinty/vuex-reflect
-
-[![Code coverage](https://codecov.io/gh/bprinty/Flask-Occam/branch/master/graph/badge.svg)]: https://codecov.io/gh/bprinty/Flask-Occam
-
-[![Maintenance yes](https://img.shields.io/badge/Maintained%3F-yes-green.svg)]: https://github.com/bprinty/vuex-reflect/graphs/commit-activity
-
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)]: https://github.com/bprinty/vuex-reflect/blob/master/LICENSE
-
-[![Documentation status](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)]: https://bprinty.github.io/vuex-reflect
-
+[![Build Status](https://travis-ci.com/bprinty/vuex-reflect.png?branch=master)](https://travis-ci.com/bprinty/vuex-reflect) [![Code coverage](https://codecov.io/gh/bprinty/Flask-Occam/branch/master/graph/badge.svg)](https://codecov.io/gh/bprinty/Flask-Occam) [![Maintenance yes](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bprinty/vuex-reflect/graphs/commit-activity) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/bprinty/vuex-reflect/blob/master/LICENSE) [![Documentation status](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)](https://bprinty.github.io/vuex-reflect)
 
 # Vuex Reflect
 
