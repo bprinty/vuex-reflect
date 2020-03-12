@@ -36,6 +36,7 @@ Or, with [yarn](https://yarnpkg.com/):
 yarn add vuex-reflect
 ```
 
+
 ### Use via CDN
 
 To use this package via CDN, import it in your project via:
@@ -44,9 +45,15 @@ To use this package via CDN, import it in your project via:
 <script src="https://unpkg.com/vuex-reflect/dist/vuex-reflect.min.js"></script>
 ```
 
-## Quickstart
 
-For full documentation on how to use the plugin, see the (docs)[https://bprinty.github.com/vuex-reflect]. The sections below will give a brief overview of some of the concepts.
+## Documentation
+
+Documentation for the project can be found [here](http://bprinty.github.io/vuex-reflect).
+
+
+## Overview
+
+For full documentation on how to use the plugin, see the (docs)[https://bprinty.github.io/vuex-reflect]. The sections below will give a brief overview of some of the concepts.
 
 ### Defining Models
 
@@ -110,6 +117,8 @@ class Todo extends Model {
 }
 ```
 
+### Registering Models with Vuex
+
 Once models are defined, you can register them with Vuex like so:
 
 ```javascript
@@ -163,6 +172,8 @@ Or, you can use the model classes to access the data:
 ]
 ```
 
+### Data Interaction
+
 Other api methods available on models include static methods for querying models from the store:
 
 ```javascript
@@ -200,11 +211,7 @@ todo.done = true;
 await todo.commit();
 ```
 
-For full documentation on how to use the library (this README details a small portion of the functionality), see the (docs)[https://bprinty.github.com/vuex-reflect].
-
-## Documentation
-
-Documentation for the project can be found [here](http://bprinty.github.io/vuex-reflect).
+For full documentation on how to use the library (this README details a small portion of the functionality), see the (docs)[https://bprinty.github.io/vuex-reflect].
 
 
 ## Contributors
