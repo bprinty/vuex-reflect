@@ -27,7 +27,8 @@
     "docs": "vuepress build docs",
     "docs:dev": "vuepress dev docs",
     "docs:deploy": "rm -rf docs/.vuepress/dist && vuepress build docs && cd docs/.vuepress/dist && git init && git add -A && git commit -m \"vuex-reflect, $npm_package_version\" && git push -f git@github.com:bprinty/vuex-reflect.git master:gh-pages",
-    "readme": "vuepress dev"
+    "readme": "vuepress dev",
+    "release": "git tag -f $npm_package_version && git push -f origin $npm_package_version && yarn docs:deploy && yarn publish",
   },
   "main": [
     "dist/index.min.js"
