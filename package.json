@@ -21,7 +21,7 @@
     "build": "webpack",
     "build:dev": "webpack --mode=development",
     "lint": "eslint src --fix",
-    "test": "jest",
+    "test": "jest --config .jest.json",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand --watch",
     "docs": "vuepress build docs",
