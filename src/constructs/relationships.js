@@ -4,7 +4,6 @@
 
 
 import _ from 'lodash';
-import axios from 'axios';
 import { getModel, fetchCollection, createModel, updateModel, deleteModel } from './actions';
 
 
@@ -98,8 +97,7 @@ function constructActionPromise(config, endpoint, method, refresh) {
 
     // return promise
     const url = endpoint.replace(':id', id);
-    const params = { method, url, data, ...config.options.axios };
-    return axios(params).then(async (response) => {
+    return config.options.axios({ method, url, data }).then(async (response) => {
       if (refresh) {
         await getModel(context, config, id);
       }

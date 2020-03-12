@@ -70,7 +70,7 @@ describe("config", () => {
       await Profile.fetch();
       assert.fail('Axios instance not overridden in requests.');
     } catch (err) {
-      assert.equal(err.message, 'URL /profile not in API');
+      assert.equal(err.message, 'URL `/profile` not in API');
     }
   });
 

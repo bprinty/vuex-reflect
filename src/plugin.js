@@ -10,6 +10,33 @@ import { relationFactory, actionFactory, queryFactory } from './constructs/relat
 
 
 /**
+ * Parse and normalize option inputs.
+ *
+ * @params {object} options - Object with options to parse.
+ */
+function parseOptions(options) {
+
+  // request methods
+  options.methods = _.mapValues(options.methods, _.method('toLowerCase'));
+
+  // axios
+  if (!_.has(options.axios, 'request')) {
+    if (_.isPlainObject(options.axios)) {
+      const opts = _.clone(options.axios);
+      options.axios = () => opts;
+    }
+    const getAxiosConfig = options.axios;
+    options.axios = (param) => {
+      const config = getAxiosConfig();
+      return axios({...config, ...param})
+    };
+  }
+
+  return options;
+}
+
+
+/**
  * Main entrypoint for Vuex Reflect plugin.
  */
 export default function Reflect(args) {
@@ -80,7 +107,7 @@ export default function Reflect(args) {
         }
         schema[key].prefix = prefix;
         schema[key].name = key;
-        schema[key].options = Object.assign(_.clone(options), schema[key].options);
+        schema[key].options = parseOptions(Object.assign(_.clone(options), schema[key].options));
       });
 
       // normalize configuration
