@@ -55,7 +55,7 @@ Documentation for the project can be found [here](http://bprinty.github.io/vuex-
 
 ## Overview
 
-For full documentation on how to use the plugin, see the (docs)[https://bprinty.github.io/vuex-reflect]. The sections below will give a brief overview of some of the concepts.
+For full documentation on how to use the plugin, see the [docs](https://bprinty.github.io/vuex-reflect). The sections below will give a brief overview of some of the concepts.
 
 ### Defining Models
 
@@ -213,7 +213,7 @@ todo.done = true;
 await todo.commit();
 ```
 
-For full documentation on how to use the library (this README details a small portion of the functionality), see the (docs)[https://bprinty.github.io/vuex-reflect].
+For full documentation on how to use the library (this README details a small portion of the functionality), see the [docs](https://bprinty.github.io/vuex-reflect).
 
 
 ## Contributors
