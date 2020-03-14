@@ -9,14 +9,15 @@ module.exports = {
   },
   plugins: {
     '@vuepress/pwa': {
-      serviceWorker: true,
-      updatePopup: {
-        '/': {
-          message: "New content is available.",
-          buttonText: "Refresh"
+        serviceWorker: true,
+        updatePopup: {
+          '/': {
+            message: "New content is available.",
+            buttonText: "Refresh"
+          }
         }
-      }
-    }
+    },
+    'vuepress-plugin-autodoc': {},
   },
   theme: '@vuepress/theme-vue',
   themeConfig: {
@@ -31,12 +32,12 @@ module.exports = {
         selectText: 'Languages',
         lastUpdated: 'Last Updated',
         editLinkText: 'Edit this page on GitHub',
-        // nav: [
-        //   {
-        //     text: 'API',
-        //     link: '/api/'
-        //   },
-        // ],
+        nav: [
+          {
+            text: 'API',
+            link: '/api/'
+          },
+        ],
         sidebar: {
           '/': [
             {
@@ -87,7 +88,6 @@ module.exports = {
             //   ],
             // },
           ],
-          // '/api/': sidebarTree()['/api/']
         }
       }
     }
