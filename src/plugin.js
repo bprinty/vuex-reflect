@@ -6,7 +6,7 @@ import { Singleton } from './model';
 import getterFactory from './constructs/getters';
 import mutationFactory from './constructs/mutations';
 import dispatchFactory from './constructs/actions';
-import { relationFactory, actionFactory, queryFactory } from './constructs/relationships';
+import { relationFactory, actionFactory } from './constructs/relationships';
 
 
 /**
