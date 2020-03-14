@@ -32,12 +32,12 @@ module.exports = {
         selectText: 'Languages',
         lastUpdated: 'Last Updated',
         editLinkText: 'Edit this page on GitHub',
-        nav: [
-          {
-            text: 'API',
-            link: '/api/'
-          },
-        ],
+        // nav: [
+        //   {
+        //     text: 'API',
+        //     link: '/api/'
+        //   },
+        // ],
         sidebar: {
           '/': [
             {
