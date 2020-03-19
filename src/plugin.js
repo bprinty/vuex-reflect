@@ -37,7 +37,7 @@ function parseOptions(options) {
 
 
 /**
- * Main entrypoint for Vuex Reflect plugin.
+ * Main entrypoint for plugin.
  */
 export default function Reflect(args) {
   // pull models form input

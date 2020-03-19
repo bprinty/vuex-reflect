@@ -11,17 +11,17 @@ export default [
       {
         file: 'dist/index.cjs.js',
         format: 'cjs',
-        name: 'vuex-reflect',
+        name: 'jade',
       },
       {
         file: 'dist/index.esm.js',
         format: 'esm',
-        name: 'vuex-reflect',
+        name: 'jade',
       },
       {
         file: 'dist/index.min.js',
         format: 'cjs',
-        name: 'vuex-reflect',
+        name: 'jade',
         plugins: [terser()],
       },
     ],

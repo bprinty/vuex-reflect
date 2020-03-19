@@ -5,13 +5,13 @@
 To use this library in a Vue project, add the package to your package dependencies via:
 
 ```bash
-npm install --save vuex-reflect
+npm install --save jade
 ```
 
 Or, with [yarn](https://yarnpkg.com/):
 
 ```bash
-yarn add vuex-reflect
+yarn add jade
 ```
 
 ## Use via CDN
@@ -19,5 +19,5 @@ yarn add vuex-reflect
 To use this package via CDN, import it in your project via:
 
 ```html
-<script src="https://unpkg.com/vuex-reflect/dist/vuex-reflect.min.js"></script>
+<script src="https://unpkg.com/jade/dist/jade.min.js"></script>
 ```

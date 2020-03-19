@@ -1,15 +1,15 @@
-[![Build Status](https://travis-ci.com/bprinty/vuex-reflect.png?branch=master)](https://travis-ci.com/bprinty/vuex-reflect) [![Code coverage](https://codecov.io/gh/bprinty/Flask-Occam/branch/master/graph/badge.svg)](https://codecov.io/gh/bprinty/Flask-Occam) [![Maintenance yes](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bprinty/vuex-reflect/graphs/commit-activity) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/bprinty/vuex-reflect/blob/master/LICENSE) [![Documentation status](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)](https://bprinty.github.io/vuex-reflect)
+[![Build Status](https://travis-ci.com/bprinty/jade.png?branch=master)](https://travis-ci.com/bprinty/jade) [![Code coverage](https://codecov.io/gh/bprinty/Flask-Occam/branch/master/graph/badge.svg)](https://codecov.io/gh/bprinty/Flask-Occam) [![Maintenance yes](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bprinty/jade/graphs/commit-activity) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/bprinty/jade/blob/master/LICENSE) [![Documentation status](http://inch-ci.org/github/dwyl/hapi-auth-jwt2.svg?branch=master)](https://bprinty.github.io/jade)
 
-# Vuex Reflect
+# Jade
 
 ## Overview
 
-Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
+Jade is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
 
 It does this with two main features:
 
 1. A declarative syntax for defining and configuring data models. This feature provides a) an easy way to connect models to an external API endpoint for CRUD actions, b) utilities for property mutations and validation, and c) a fluid query API for accessing data from the store.
-2. Automatic vuex-based data management for models tracked by this library. Vuex Relfect handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via class-based model definitions (or from the store directly, if you're not a fan of ES6 classes).
+2. Automatic vuex-based data management for models tracked by this library. This package handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via class-based model definitions (or from the store directly, if you're not a fan of ES6 classes).
 
 ### Notes on Vuex
 
@@ -29,13 +29,13 @@ The name `Reflect` was chosen because this package essentially lets you reflect 
 To use this library in a Vue project, add the package to your package dependencies via:
 
 ```bash
-npm install --save vuex-reflect
+npm install --save jade
 ```
 
 Or, with [yarn](https://yarnpkg.com/):
 
 ```bash
-yarn add vuex-reflect
+yarn add jade
 ```
 
 
@@ -44,18 +44,18 @@ yarn add vuex-reflect
 To use this package via CDN, import it in your project via:
 
 ```html
-<script src="https://unpkg.com/vuex-reflect/dist/vuex-reflect.min.js"></script>
+<script src="https://unpkg.com/jade/dist/index.min.js"></script>
 ```
 
 
 ## Documentation
 
-Documentation for the project can be found [here](http://bprinty.github.io/vuex-reflect).
+Documentation for the project can be found [here](http://bprinty.github.io/jade).
 
 
 ## Overview
 
-For full documentation on how to use the plugin, see the [docs](https://bprinty.github.io/vuex-reflect). The sections below will give a brief overview of some of the concepts.
+For full documentation on how to use the plugin, see the [docs](https://bprinty.github.io/jade). The sections below will give a brief overview of some of the concepts.
 
 ### Defining Models
 
@@ -75,7 +75,7 @@ For this example, let's say we're initially interested in a single `Todo` model.
 And we can define this model using the following configuration:
 
 ```javascript
-import { Model } from 'vuex-reflect';
+import { Model } from 'jade';
 
 class Todo extends Model {
 
@@ -126,7 +126,7 @@ Once models are defined, you can register them with Vuex like so:
 ```javascript
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Reflect from 'vuex-reflect';
+import Reflect from 'jade';
 import { Todo } from 'models';
 
 Vue.use(Vuex);
@@ -213,7 +213,7 @@ todo.done = true;
 await todo.commit();
 ```
 
-For full documentation on how to use the library (this README details a small portion of the functionality), see the [docs](https://bprinty.github.io/vuex-reflect).
+For full documentation on how to use the library (this README details a small portion of the functionality), see the [docs](https://bprinty.github.io/jade).
 
 
 ## Contributors
@@ -223,8 +223,8 @@ For full documentation on how to use the library (this README details a small po
 To get started contributing to the project, simply clone the repo and setup the dependencies using `yarn` or `npm install`:
 
 ```bash
-git clone git@github.com:bprinty/vuex-reflect.git
-cd vuex-reflect/
+git clone git@github.com:bprinty/jade.git
+cd jade/
 yarn
 ```
 
@@ -275,12 +275,12 @@ jest --watch -t model.update
 
 ### Submiting Feature Requests
 
-If you would like to see or build a new feature for the project, submit an issue in the [GitHub Issue Tracker](https://github.com/bprinty/vuex-reflect/issues) for the project. When submitting a feature request, please fully explain the context, purpose, and potential implementation for the feature, and label the ticket with the `discussion` label. Once the feature is approved, it will be re-labelled as `feature` and added to the project Roadmap.
+If you would like to see or build a new feature for the project, submit an issue in the [GitHub Issue Tracker](https://github.com/bprinty/jade/issues) for the project. When submitting a feature request, please fully explain the context, purpose, and potential implementation for the feature, and label the ticket with the `discussion` label. Once the feature is approved, it will be re-labelled as `feature` and added to the project Roadmap.
 
 
 ### Improving Documentation
 
-Project documentation can always be improved. If you see typos, inconsistencies, or confusing wording in the documentation, please create an issue in the [GitHub Issue Tracker](https://github.com/bprinty/vuex-reflect/issues) with the label `documentation`. If you would like to fix the issue or improve the documentation, create a branch with the issue number (i.e. `GH-123`) and submit a PR against the `master` branch.
+Project documentation can always be improved. If you see typos, inconsistencies, or confusing wording in the documentation, please create an issue in the [GitHub Issue Tracker](https://github.com/bprinty/jade/issues) with the label `documentation`. If you would like to fix the issue or improve the documentation, create a branch with the issue number (i.e. `GH-123`) and submit a PR against the `master` branch.
 
 
 ### Submitting PRs
@@ -290,11 +290,11 @@ For contributors to this project, please submit improvements according to the fo
 1. Create a branch named after the ticket you're addressing. `GH-1` or `bp/GH-1` are examples of good branch naming.
 2. Make your changes and write tests for your changes.
 3. Run all tests locally before pushing code.
-4. Address any test failures caught by [Travis CI](https://travis-ci.com/bprinty/vuex-reflect).
+4. Address any test failures caught by [Travis CI](https://travis-ci.com/bprinty/jade).
 5. Make sure you've updated the documentation to reflect your changes (if applicable).
 6. Submit a PR against the `master` branch for the project. Provide any additional context in the PR description or comments.
 
 
 ### Keeping up to Speed on the Project
 
-All development efforts for the project are tracked by the project [Kanban](https://github.com/bprinty/vuex-reflect/projects/1) board. Contributors use that board to communicate the status of pending, in-progress, or resolved development efforts. If you have a question about the Roadmap or current in-progress issues for the project, see that board.
+All development efforts for the project are tracked by the project [Kanban](https://github.com/bprinty/jade/projects/1) board. Contributors use that board to communicate the status of pending, in-progress, or resolved development efforts. If you have a question about the Roadmap or current in-progress issues for the project, see that board.

@@ -1,13 +1,13 @@
-# Vuex Reflect
+# Jade
 
 ## Introduction
 
-Vuex Reflect is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
+Jade is a [Vuex](https://vuex.vuejs.org/) plugin that simplifies the configuration and management of data models in an application, providing a simple and declarative API for reflecting an external datasource. Modern web applications can be quite complex, and engineering a data store to reflect data models in your application doesn't need to be left up to interpretation. Abstractions like [SQLAlchemy](https://sqlalchemy.org) have reduced complexity and augmented developer experience for languages like Python, and this library similarly augments the developer experience associated with managing frontend application data.
 
 It does this with two main features:
 
 1. A declarative syntax for defining and configuring data models. This feature provides a) an easy way to connect models to an external API endpoint for CRUD actions, b) utilities for property mutations and validation, and c) a fluid query API for accessing data from the store.
-2. Automatic vuex-based data management for models tracked by this library. Vuex Relfect handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via class-based model definitions (or from the store directly, if you're not a fan of ES6 classes).
+2. Automatic vuex-based data management for models tracked by this library. This package handles all of the details around managing how data are stored, [updated](https://redux.js.org/recipes/structuring-reducers/updating-normalized-data/), and [normalized](https://redux.js.org/recipes/structuring-reducers/normalizing-state-shape/) so that they can be easily be accessed via class-based model definitions (or from the store directly, if you're not a fan of ES6 classes).
 
 ### Notes on Vuex
 
@@ -15,9 +15,9 @@ Vuex is a fantastic library for doing exactly what it needs to do: manage state.
 
 Because this module integrates with Vuex for storing data, it also integrates with Vue's official devtools extension to provide advanced features such as zero-config time-travel debugging and state snapshot export/import. It was made with REST API reflection specifically in mind, but can be extended to reflect other types of data sources (i.e. GraphQL).
 
-### Why `Reflect`?
+<!-- ### Why `Reflect`?
 
-The name `Reflect` was chosen because this package essentially lets you reflect the data provided via an API into your store, with minimal configuration. There are many types of data reflection throughout a well-designed application - the UI reflects data from the frontend data store, the frontend store reflects data from the API, and the API reflects data from the database. This library covers one piece of that puzzle.
+The name `Reflect` was chosen because this package essentially lets you reflect the data provided via an API into your store, with minimal configuration. There are many types of data reflection throughout a well-designed application - the UI reflects data from the frontend data store, the frontend store reflects data from the API, and the API reflects data from the database. This library covers one piece of that puzzle. -->
 
 
 ## Prerequisites
@@ -58,7 +58,7 @@ For this example, let's say we're initially interested in a single `Todo` model.
 And we can define this model using the following configuration:
 
 ```javascript
-import { Model } from 'vuex-reflect';
+import { Model } from 'jade';
 
 class Todo extends Model {
 
@@ -107,7 +107,7 @@ Once models are defined, you can register them with Vuex like so:
 ```javascript
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Reflect from 'vuex-reflect';
+import Reflect from 'jade';
 import { Todo } from 'models';
 
 Vue.use(Vuex);

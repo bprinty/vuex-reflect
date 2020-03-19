@@ -13,7 +13,7 @@ With this endpoint, there are no collections to manage and no model instances to
 
 ```javascript
 import v from 'validator';
-import { Singleton } from 'vuex-reflect';
+import { Singleton } from 'jade';
 
 class Profile extends Singleton {
 

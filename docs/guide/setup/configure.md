@@ -8,7 +8,7 @@ There are two ways to register this library with the `Vuex` store in your applic
 ```javascript
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Reflect from 'vuex-reflect';
+import Reflect from 'jade';
 
 // creating models
 class Post extends Model { ... }
@@ -42,12 +42,12 @@ Creating Models to register via this library is detailed in the [Models](/guide/
 
 ## Registering Store Configuration
 
-The second is for developers who don't want to extend ES6 classes when defining models for their application (they wish to use the store directly). To register Vuex Reflect configuration directly with the Store, use:
+The second is for developers who don't want to extend ES6 classes when defining models for their application (they wish to use the store directly). To register configuration directly with the Store, use:
 
 ```javascript
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Reflect from 'vuex-reflect';
+import Reflect from 'jade';
 
 // declaring configuration
 const posts = { ... };
@@ -76,7 +76,7 @@ Separating parts of the store into modules that encapsulate logical blocks of yo
 ```javascript
 // contents of ./modules/moduleA/models.js
 
-import { Model } from 'vuex-reflect';
+import { Model } from 'jade';
 
 class ModelAA extends Model {
   ...
@@ -97,7 +97,7 @@ export default {
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Reflect from 'vuex-reflect';
+import Reflect from 'jade';
 import a from './modules/moduleA/models';
 import b from './modules/moduleB/models';
 
@@ -143,7 +143,7 @@ And register them in your application like so:
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Reflect from 'vuex-reflect';
+import Reflect from 'jade';
 import moduleA from './modules/moduleA/store';
 import moduleB from './modules/moduleA/store';
 import modelsA from './modules/moduleA/models';
@@ -228,7 +228,7 @@ Other options available when setting up this library are as follows:
 
 ### Default Request Methods
 
-To change the default request methods used for various operations, use the `methods` keyword when defining Vuex-Reflect options.
+To change the default request methods used for various operations, use the `methods` keyword when defining jade options.
 
 ```javascript
 var reflect = Reflect({

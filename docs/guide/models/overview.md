@@ -1,6 +1,6 @@
 # Overview
 
-Let's take a top-down approach to understanding how models work with Vuex Reflect. Throughout this section of the documentation, let's focus on building a content management application with two related models: `Posts` and `Authors`. Using tools from this library, we want to define Models to help us traverse our data and reflect a backend API. Additionally, we'll be defining relationships between our Models. First, let's start with `Author`. The API providing `Author` data has the following endpoints:
+Let's take a top-down approach to understanding how models work with this package. Throughout this section of the documentation, let's focus on building a content management application with two related models: `Posts` and `Authors`. Using tools from this library, we want to define Models to help us traverse our data and reflect a backend API. Additionally, we'll be defining relationships between our Models. First, let's start with `Author`. The API providing `Author` data has the following endpoints:
 
 ```
 /authors
