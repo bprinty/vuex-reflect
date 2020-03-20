@@ -4,22 +4,13 @@ module.exports = {
     '/': {
       lang: 'en-US',
       title: 'Vuex Reflect',
-      description: 'Vuex database reflection and orm.'
+      description: 'Front-End Data Models with Vuex'
     }
   },
   plugins: {
-    '@vuepress/pwa': {
-        serviceWorker: true,
-        updatePopup: {
-          '/': {
-            message: "New content is available.",
-            buttonText: "Refresh"
-          }
-        }
-    },
     'vuepress-plugin-autodoc': {},
   },
-  theme: '@vuepress/theme-vue',
+  theme: '@vuepress/theme-default',
   themeConfig: {
     repo: 'bprinty/vuex-reflect',
     docsDir: 'docs',
