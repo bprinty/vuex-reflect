@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>API | Vuex Reflect</title>
+    <meta name="description" content="Front-End Data Models with Vuex">
+    <meta name="generator" content="VuePress 1.3.0">
+    
+    
+    <link rel="preload" href="/vuex-reflect/assets/css/0.styles.200083b1.css" as="style"><link rel="preload" href="/vuex-reflect/assets/js/app.275ec620.js" as="script"><link rel="preload" href="/vuex-reflect/assets/js/2.befe28c1.js" as="script"><link rel="preload" href="/vuex-reflect/assets/js/9.a964af7f.js" as="script"><link rel="prefetch" href="/vuex-reflect/assets/js/10.9da502ac.js"><link rel="prefetch" href="/vuex-reflect/assets/js/11.185fc26e.js"><link rel="prefetch" href="/vuex-reflect/assets/js/12.9f05655c.js"><link rel="prefetch" href="/vuex-reflect/assets/js/13.284a35ad.js"><link rel="prefetch" href="/vuex-reflect/assets/js/14.489319f4.js"><link rel="prefetch" href="/vuex-reflect/assets/js/15.0c2fc09f.js"><link rel="prefetch" href="/vuex-reflect/assets/js/16.7724eed0.js"><link rel="prefetch" href="/vuex-reflect/assets/js/17.6e322519.js"><link rel="prefetch" href="/vuex-reflect/assets/js/18.7cddc45a.js"><link rel="prefetch" href="/vuex-reflect/assets/js/19.d1c0c17e.js"><link rel="prefetch" href="/vuex-reflect/assets/js/20.87ce99fa.js"><link rel="prefetch" href="/vuex-reflect/assets/js/21.ce432f00.js"><link rel="prefetch" href="/vuex-reflect/assets/js/22.90ceca75.js"><link rel="prefetch" href="/vuex-reflect/assets/js/23.2f54cbc3.js"><link rel="prefetch" href="/vuex-reflect/assets/js/24.91a01d15.js"><link rel="prefetch" href="/vuex-reflect/assets/js/25.9d4a0ac6.js"><link rel="prefetch" href="/vuex-reflect/assets/js/26.d426ab18.js"><link rel="prefetch" href="/vuex-reflect/assets/js/27.6f5b39e6.js"><link rel="prefetch" href="/vuex-reflect/assets/js/3.2f5a3663.js"><link rel="prefetch" href="/vuex-reflect/assets/js/4.9951f089.js"><link rel="prefetch" href="/vuex-reflect/assets/js/5.f2868031.js"><link rel="prefetch" href="/vuex-reflect/assets/js/6.c098fd86.js"><link rel="prefetch" href="/vuex-reflect/assets/js/7.a543f4bf.js"><link rel="prefetch" href="/vuex-reflect/assets/js/8.b966b240.js">
+    <link rel="stylesheet" href="/vuex-reflect/assets/css/0.styles.200083b1.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vuex-reflect/" class="home-link router-link-active"><!----> <span class="site-name">Vuex Reflect</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"> <a href="https://github.com/bprinty/vuex-reflect" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"> <a href="https://github.com/bprinty/vuex-reflect" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><a href="/vuex-reflect/" class="sidebar-link">Overview </a></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Setup</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vuex-reflect/guide/setup/install.html" class="sidebar-link">Install</a></li><li><a href="/vuex-reflect/guide/setup/configure.html" class="sidebar-link">Configure</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Models</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vuex-reflect/guide/models/overview.html" class="sidebar-link">Overview</a></li><li><a href="/vuex-reflect/guide/models/api.html" class="active sidebar-link">API</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/api.html#interpreting-urls" class="sidebar-link">Interpreting URLs</a></li><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/api.html#request-methods" class="sidebar-link">Request Methods</a></li><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/api.html#alternative-data-sources" class="sidebar-link">Alternative Data Sources</a></li><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/api.html#parsing-request-data" class="sidebar-link">Parsing Request Data</a></li></ul></li><li><a href="/vuex-reflect/guide/models/properties.html" class="sidebar-link">Properties</a></li><li><a href="/vuex-reflect/guide/models/relationships.html" class="sidebar-link">Relationships</a></li><li><a href="/vuex-reflect/guide/models/querying.html" class="sidebar-link">Querying</a></li><li><a href="/vuex-reflect/guide/models/customization.html" class="sidebar-link">Customization</a></li><li><a href="/vuex-reflect/guide/models/singleton.html" class="sidebar-link">Singleton</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Store</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vuex-reflect/guide/store/overview.html" class="sidebar-link">Overview</a></li><li><a href="/vuex-reflect/guide/store/api.html" class="sidebar-link">API</a></li><li><a href="/vuex-reflect/guide/store/contract.html" class="sidebar-link">Contract</a></li><li><a href="/vuex-reflect/guide/store/relationships.html" class="sidebar-link">Relationships</a></li><li><a href="/vuex-reflect/guide/store/querying.html" class="sidebar-link">Querying</a></li><li><a href="/vuex-reflect/guide/store/singleton.html" class="sidebar-link">Singleton</a></li><li><a href="/vuex-reflect/guide/store/debugging.html" class="sidebar-link">Debugging</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="api"><a href="#api" class="header-anchor">#</a> API</h1> <p>The most important feature of this library is the ability to reflect data from an external API. When defining front-end models to store data, developers must specify configuration for how to retrieve the data.</p> <p>The following code shows the data structure for Model API configuration:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">MyModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+
+  <span class="token comment">/**
+   * Static method for declaring data accessors.
+   */</span>
+  <span class="token keyword">static</span> <span class="token function">api</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token comment">/**
+       * Endpoint for model collection actions. This property is automatically
+       * used for `fetch` and `create` in api definitions if those
+       * configuration items aren't specified.
+       */</span>
+      collection<span class="token operator">:</span> <span class="token string">'/mymodel'</span><span class="token punctuation">,</span>
+      <span class="token comment">/**
+       * Endpoint for model instance actions. This property is automatically
+       * used for `get`, `update`, and `delete` in api definitions if those
+       * configuration items aren't specified.
+       */</span>
+      model<span class="token operator">:</span> <span class="token string">'/mymodel/:id'</span><span class="token punctuation">,</span>
+      <span class="token comment">/**
+       * Endpoint for fetching a collection of models via API parameters.
+       * This method is used whenever Model.fetch() is called.
+       */</span>
+      fetch<span class="token operator">:</span> <span class="token string">'/mymodel'</span><span class="token punctuation">,</span>
+      <span class="token comment">/**
+       * Endpoint for creating a single model via API.
+       * This method is used whenever Model.commit() is used after
+       * a new frontend model is created.
+       */</span>
+      create<span class="token operator">:</span> <span class="token string">'mymodel'</span><span class="token punctuation">,</span>
+      <span class="token comment">/**
+       * Endpoint for fetching a single model via API.
+       * This method is used whenever Model.fetch(&lt;id&gt;) is called.
+       */</span>
+      <span class="token keyword">get</span><span class="token operator">:</span> <span class="token string">'/mymodel/:id'</span><span class="token punctuation">,</span>
+      <span class="token comment">/**
+       * Endpoint for updating a single model via API.
+       * This method is used whenever Model.commit() is called
+       * for an existing model in the store. If `delete` is not
+       * set, this endpoint will be used for DELETE operations.
+       */</span>
+      update<span class="token operator">:</span> <span class="token string">'/mymodel/:id'</span><span class="token punctuation">,</span>
+      <span class="token comment">/**
+       * Endpoint for deleting a single odel via API.
+       * This method is used whenever Model.delete() is called for
+       * an existing model in the store.
+       */</span>
+      <span class="token keyword">delete</span><span class="token operator">:</span> <span class="token string">'/mymodel/:id'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token operator">...</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><blockquote><p>Note that <code>api()</code> must be a <code>static</code> method on your class. If it is not declared as a static method, the model <strong>will not work according to expectations</strong>.</p></blockquote> <h2 id="interpreting-urls"><a href="#interpreting-urls" class="header-anchor">#</a> Interpreting URLs</h2> <p>Developers commonly need to construct URLs using model properties when updating data for a specific model. For instance, the following actions might be used for interacting with data from the <code>Post</code> model:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token constant">PUT</span> <span class="token operator">/</span>posts<span class="token operator">/</span><span class="token number">1</span>  <span class="token comment">// update a post with the id `1`</span>
+<span class="token constant">GET</span> <span class="token operator">/</span>posts<span class="token operator">/</span>my<span class="token operator">-</span>post <span class="token comment">// fetch data for a post with the url slug `my-post`</span>
+</code></pre></div><p>With this library, you can automatically construct those urls for models using the <code>:prop</code> syntax in <code>api()</code> configuration:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code>  <span class="token operator">...</span>
+
+  <span class="token keyword">static</span> <span class="token function">api</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      update<span class="token operator">:</span> <span class="token string">'/posts/:id'</span><span class="token punctuation">,</span> <span class="token comment">// PUT /posts/:id</span>
+      <span class="token keyword">get</span><span class="token operator">:</span> <span class="token string">'/posts/:slug'</span><span class="token punctuation">,</span> <span class="token comment">// GET /posts/:slug</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">static</span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      slug<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token comment">// slug property (id is implicitly used as key)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token operator">...</span>
+</code></pre></div><p>If the <code>Post</code> model has the properties <code>id</code> and <code>slug</code>, these urls will be automatically resolved when used for updating data.</p> <p>This syntax will also work with more complex endpoint patterns like:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token constant">GET</span> <span class="token operator">/</span>authors<span class="token operator">/</span><span class="token operator">:</span>id<span class="token operator">/</span>posts<span class="token operator">/</span><span class="token operator">:</span>tag <span class="token comment">// fetch posts from a specific author with a specific tag</span>
+</code></pre></div><h2 id="request-methods"><a href="#request-methods" class="header-anchor">#</a> Request Methods</h2> <p>The following request methods are used by default for each of the actions available in <code>api()</code> configuration:</p> <table><thead><tr><th style="text-align:left;">Action</th> <th style="text-align:left;">Method</th> <th style="text-align:left;">Description</th></tr></thead> <tbody><tr><td style="text-align:left;"><strong>fetch</strong></td> <td style="text-align:left;"><code>GET</code></td> <td style="text-align:left;">Fetch a collection of models. Used with <code>Model.fetch()</code>.</td></tr> <tr><td style="text-align:left;"><strong>create</strong></td> <td style="text-align:left;"><code>POST</code></td> <td style="text-align:left;">Creating new item. Used with <code>new Model({}) and Model.commit()</code>.</td></tr> <tr><td style="text-align:left;"><strong>get</strong></td> <td style="text-align:left;"><code>GET</code></td> <td style="text-align:left;">Fetch single item. Used with <code>Model.fetch(id)</code>.</td></tr> <tr><td style="text-align:left;"><strong>update</strong></td> <td style="text-align:left;"><code>PUT</code></td> <td style="text-align:left;">Update data for single item. Used with <code>Model.commit()</code> after data changes.</td></tr> <tr><td style="text-align:left;"><strong>delete</strong></td> <td style="text-align:left;"><code>DELETE</code></td> <td style="text-align:left;">Delete single item. Used with <code>Model.delete()</code></td></tr></tbody></table> <p>For information on how to override these request methods globally or for a specific model, see the <a href="/vuex-reflect/guide/setup/configure.html">Configuration</a> section of the documentation.</p> <h2 id="alternative-data-sources"><a href="#alternative-data-sources" class="header-anchor">#</a> Alternative Data Sources</h2> <p>In addition to accepting strings, each of the keys in the <code>api()</code> configuration can take callables for retrieving data. If using callables for these actions, the callables <em>must</em> return a <code>Promise</code> object:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">MyModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">static</span> <span class="token function">api</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      update<span class="token operator">:</span> <span class="token string">'/mymodel/:id'</span><span class="token punctuation">,</span>
+      <span class="token function-variable function">fetch</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">params</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+          <span class="token comment">// code for fetching data with params</span>
+          <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span> <span class="token string">'one'</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'two'</span><span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span> <span class="token string">'three'</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'four'</span><span class="token operator">:</span> <span class="token number">4</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token punctuation">]</span><span class="token punctuation">;</span>
+          <span class="token function">resolve</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// fetch data with params</span>
+MyModel<span class="token punctuation">.</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> foo<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> bar<span class="token operator">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">results</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token comment">// do something after data returns</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><p>This mechanism for overwriting data access methods is particularly useful if you're not using a REST API in your application (e.g. <a href="https://graphql.org/" target="_blank" rel="noopener noreferrer">GraphQL<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> or <a href="https://grpc.io/%5D" target="_blank" rel="noopener noreferrer">gRPC<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p> <h2 id="parsing-request-data"><a href="#parsing-request-data" class="header-anchor">#</a> Parsing Request Data</h2> <p>Ideas about data models on the frontend of an application can differ from models exposed via the application API, especially for large teams that don't communicate well. Frontend developers might need to reshape data from the backend so that they more logically represent the ideas available via the application UI.</p> <p>Let's say our API is producing data in the format (please don't design an API like this; the structure below is here just to illustrate a point):</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token punctuation">[</span>
+  <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> title<span class="token operator">:</span> <span class="token string">'foo'</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> title<span class="token operator">:</span> <span class="token string">'bar'</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+</code></pre></div><p>And we need to re-parse that data into the following format so it can be consumed by our models:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> title<span class="token operator">:</span> <span class="token string">'test'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> title<span class="token operator">:</span> <span class="token string">'test2'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+</code></pre></div><p>To accomplish this, we can overwrite API callables to reshape data before and after requests:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// within Model.api()</span>
+<span class="token punctuation">{</span>
+  <span class="token function-variable function">update</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">// parsing input for update action</span>
+    <span class="token keyword">const</span> <span class="token punctuation">{</span>id<span class="token punctuation">,</span> <span class="token operator">...</span>extra<span class="token punctuation">}</span> <span class="token operator">=</span> data<span class="token punctuation">;</span>
+    <span class="token keyword">const</span> newData <span class="token operator">=</span> <span class="token punctuation">[</span>id<span class="token punctuation">,</span> extra<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// return promise for sending the update</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>axios<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">'/mymodel'</span><span class="token punctuation">,</span> newData<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+
+      <span class="token comment">// parsing result to update internal properties</span>
+      <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token punctuation">{</span>response<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">...</span>response<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+      <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">fetch</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">params</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">// return promise for fetching and processing the data</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>axios<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/mymodel'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> params <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+
+      <span class="token comment">// parse payload into new structure</span>
+      <span class="token keyword">return</span> response<span class="token punctuation">.</span>data<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">item</span> <span class="token operator">=&gt;</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> id<span class="token operator">:</span> item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><blockquote><p>Note that the axios instance used by models can be accessed via <code>this.axios</code>. Axios configuration parameters set on the library will automatically be set on the instance.</p></blockquote> <style>
+.badge {
+  display: inline-block;
+  font-size: 20px;
+  font-family: monospace;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 3px;
+  padding: 0 6px;
+  color: #fff;
+  background-color: #42b983;
+}
+.scoped .badge,
+blockquote .badge {
+  font-size: 15px;
+  height: 23px;
+  line-height: 23px;
+}
+.badge.warning {
+  background-color: #e7c000;
+}
+.badge.error {
+  background-color: #da5961;
+}
+.badge.tip {
+  background-color: #42b983;
+}
+blockquote.scoped.warning {
+  border-color: #e7c000;
+}
+blockquote.scoped.error {
+  border-color: #da5961;
+}
+blockquote.scoped.tip {
+  border-color: #42b983;
+}
+
+</style></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/bprinty/vuex-reflect/edit/master/docs/guide/models/api.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2/29/2020, 5:38:06 AM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vuex-reflect/guide/models/overview.html" class="prev">
+        Overview
+      </a></span> <span class="next"><a href="/vuex-reflect/guide/models/properties.html">
+        Properties
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vuex-reflect/assets/js/app.275ec620.js" defer></script><script src="/vuex-reflect/assets/js/2.befe28c1.js" defer></script><script src="/vuex-reflect/assets/js/9.a964af7f.js" defer></script>
+  </body>
+</html>

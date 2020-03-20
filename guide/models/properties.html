@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Properties | Vuex Reflect</title>
+    <meta name="description" content="Front-End Data Models with Vuex">
+    <meta name="generator" content="VuePress 1.3.0">
+    
+    
+    <link rel="preload" href="/vuex-reflect/assets/css/0.styles.200083b1.css" as="style"><link rel="preload" href="/vuex-reflect/assets/js/app.275ec620.js" as="script"><link rel="preload" href="/vuex-reflect/assets/js/2.befe28c1.js" as="script"><link rel="preload" href="/vuex-reflect/assets/js/12.9f05655c.js" as="script"><link rel="prefetch" href="/vuex-reflect/assets/js/10.9da502ac.js"><link rel="prefetch" href="/vuex-reflect/assets/js/11.185fc26e.js"><link rel="prefetch" href="/vuex-reflect/assets/js/13.284a35ad.js"><link rel="prefetch" href="/vuex-reflect/assets/js/14.489319f4.js"><link rel="prefetch" href="/vuex-reflect/assets/js/15.0c2fc09f.js"><link rel="prefetch" href="/vuex-reflect/assets/js/16.7724eed0.js"><link rel="prefetch" href="/vuex-reflect/assets/js/17.6e322519.js"><link rel="prefetch" href="/vuex-reflect/assets/js/18.7cddc45a.js"><link rel="prefetch" href="/vuex-reflect/assets/js/19.d1c0c17e.js"><link rel="prefetch" href="/vuex-reflect/assets/js/20.87ce99fa.js"><link rel="prefetch" href="/vuex-reflect/assets/js/21.ce432f00.js"><link rel="prefetch" href="/vuex-reflect/assets/js/22.90ceca75.js"><link rel="prefetch" href="/vuex-reflect/assets/js/23.2f54cbc3.js"><link rel="prefetch" href="/vuex-reflect/assets/js/24.91a01d15.js"><link rel="prefetch" href="/vuex-reflect/assets/js/25.9d4a0ac6.js"><link rel="prefetch" href="/vuex-reflect/assets/js/26.d426ab18.js"><link rel="prefetch" href="/vuex-reflect/assets/js/27.6f5b39e6.js"><link rel="prefetch" href="/vuex-reflect/assets/js/3.2f5a3663.js"><link rel="prefetch" href="/vuex-reflect/assets/js/4.9951f089.js"><link rel="prefetch" href="/vuex-reflect/assets/js/5.f2868031.js"><link rel="prefetch" href="/vuex-reflect/assets/js/6.c098fd86.js"><link rel="prefetch" href="/vuex-reflect/assets/js/7.a543f4bf.js"><link rel="prefetch" href="/vuex-reflect/assets/js/8.b966b240.js"><link rel="prefetch" href="/vuex-reflect/assets/js/9.a964af7f.js">
+    <link rel="stylesheet" href="/vuex-reflect/assets/css/0.styles.200083b1.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vuex-reflect/" class="home-link router-link-active"><!----> <span class="site-name">Vuex Reflect</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"> <a href="https://github.com/bprinty/vuex-reflect" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"> <a href="https://github.com/bprinty/vuex-reflect" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><a href="/vuex-reflect/" class="sidebar-link">Overview </a></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Setup</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vuex-reflect/guide/setup/install.html" class="sidebar-link">Install</a></li><li><a href="/vuex-reflect/guide/setup/configure.html" class="sidebar-link">Configure</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Models</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vuex-reflect/guide/models/overview.html" class="sidebar-link">Overview</a></li><li><a href="/vuex-reflect/guide/models/api.html" class="sidebar-link">API</a></li><li><a href="/vuex-reflect/guide/models/properties.html" class="active sidebar-link">Properties</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/properties.html#data-flow" class="sidebar-link">Data Flow</a></li><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/properties.html#mutating-properties" class="sidebar-link">Mutating Properties</a></li><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/properties.html#data-validation" class="sidebar-link">Data Validation</a></li><li class="sidebar-sub-header"><a href="/vuex-reflect/guide/models/properties.html#linked-models" class="sidebar-link">Linked Models</a></li></ul></li><li><a href="/vuex-reflect/guide/models/relationships.html" class="sidebar-link">Relationships</a></li><li><a href="/vuex-reflect/guide/models/querying.html" class="sidebar-link">Querying</a></li><li><a href="/vuex-reflect/guide/models/customization.html" class="sidebar-link">Customization</a></li><li><a href="/vuex-reflect/guide/models/singleton.html" class="sidebar-link">Singleton</a></li></ul></section></li><li><section class="sidebar-group depth-0"><p class="sidebar-heading"><span>Store</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/vuex-reflect/guide/store/overview.html" class="sidebar-link">Overview</a></li><li><a href="/vuex-reflect/guide/store/api.html" class="sidebar-link">API</a></li><li><a href="/vuex-reflect/guide/store/contract.html" class="sidebar-link">Contract</a></li><li><a href="/vuex-reflect/guide/store/relationships.html" class="sidebar-link">Relationships</a></li><li><a href="/vuex-reflect/guide/store/querying.html" class="sidebar-link">Querying</a></li><li><a href="/vuex-reflect/guide/store/singleton.html" class="sidebar-link">Singleton</a></li><li><a href="/vuex-reflect/guide/store/debugging.html" class="sidebar-link">Debugging</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="properties"><a href="#properties" class="header-anchor">#</a> Properties</h1> <p>Most (if not all) front-end data management libraries require some type of specification for Model properties so that assumptions can be made about how data should be available externally and processed internally. This section will detail how to explicitly declare properties for a model.</p> <p>The following code shows the data structure for declaring Model properties:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">MyModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+
+  <span class="token operator">...</span>
+
+  <span class="token comment">/**
+   * Static method for declaring properties of Model.
+   */</span>
+  <span class="token keyword">static</span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token comment">/**
+         * Placeholder property for example.
+         */</span>
+        myProp<span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token comment">/**
+           * Default value for property.
+           */</span>
+          <span class="token keyword">default</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+          <span class="token comment">/**
+           * Default type for the property. If no `mutate` configuration
+           * is set, the type specified here will be used to mutate the object.
+           */</span>
+          type<span class="token operator">:</span> String<span class="token punctuation">,</span>
+          <span class="token comment">/**
+           * Parse value from server. This is useful for reformatting back-end
+           * data into a format that is more useful for front-end operations.
+           * This is different than the `mutate` property because it
+           * defines how the contract will be parsed **after** data is returned
+           * from the back-end.
+           * @param value - Value passed to property after fetching data.
+           * @returns Parsed value to use for property on front-end.
+           */</span>
+          <span class="token function-variable function">parse</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span>
+            <span class="token keyword">return</span> parsedValue<span class="token punctuation">;</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token comment">/**
+           * Mutation function for processing property before create/update
+           * actions. This is different than the `parse` property because it
+           * defines how the contract will be mutated **before** data is sent to
+           * the backend.
+           * @param value - Value passed to property on update.
+           * @returns Mutated value to set as model property.
+           */</span>
+          <span class="token function-variable function">mutate</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span>
+            <span class="token keyword">return</span> newValue<span class="token punctuation">;</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token comment">/**
+           * Validation function for ensuring property is valid.
+           * @param value - Un-mutated value passed to property on update.
+           * @returns Boolean describing if value is valid or not.
+           */</span>
+          <span class="token function-variable function">validate</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span>
+            <span class="token keyword">return</span> isValid<span class="token punctuation">;</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token comment">/**
+           * Collapse nested models into a single property for API
+           * update actions (POST or PUT). This value is only relevant if
+           * the property is an Object type or a linked Model instance. If
+           * a boolean `true` is applied here, 'id' will be used as the collapse
+           * property.
+           */</span>
+           collapse<span class="token operator">:</span> <span class="token string">'linkedPropId'</span><span class="token punctuation">,</span>
+           <span class="token comment">/**
+            * Function for retrieving property data. Properties that
+            * instrument this property are not saved in the store for models,
+            * and instead accessed using the function specified below. This
+            * is primarily useful for adding linked models that aren't nested
+            * in response data.
+            * @returns Value accessible via Model.&lt;prop&gt;
+            */</span>
+            <span class="token function-variable function">get</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token comment">/**
+             * Shorthand for easily renaming a model property when data is
+             * received **from** the API. In this case, `originalName` in
+             * the payload for this model will be cast to `myProp` when the
+             * model is used and casted back to `originalName` when data are
+             * sent back to the application API.
+             */</span>
+            <span class="token keyword">from</span><span class="token operator">:</span> <span class="token string">'originalName'</span><span class="token punctuation">,</span>
+            <span class="token comment">/**
+             * Shorthand for easily renaming a model property when data is sent
+             * to the API. In this case, the model property will be renamed to
+             * `apiName` when requests are sent to the application API.
+             */</span>
+            to<span class="token operator">:</span> <span class="token string">'apiName'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token operator">...</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><blockquote><p>Note that <code>props()</code> must be a <code>static</code> method on your class. If it is not declared as a static method, the model <strong>will not work according to expectations</strong>.</p></blockquote> <p>Under the hood, this module automatically creates state properties, mutations, and actions in Vuex. Setting a mutation as a property on a model is equivalent to creating a mutation in the Vuex store for changing a state parameter. You can find more information on this in the <a href="/vuex-reflect/guide/store/overview.html">Store</a> section of the documentation.</p> <p>If you don't wish to specify detailed property-specific configuration, you can use the following shorthand for simply setting defaults:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">MyModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      prop1<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
+      prop2<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      prop3<span class="token operator">:</span> <span class="token string">'foo'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="data-flow"><a href="#data-flow" class="header-anchor">#</a> Data Flow</h2> <p>There are several logical processes that happen behind the scenes when a value is set on an Model instance. Take this block of code for example:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyModel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> myProp<span class="token operator">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+obj<span class="token punctuation">.</span>myProp <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> obj<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span>myProp<span class="token punctuation">)</span> <span class="token comment">// 1</span>
+</code></pre></div><p>What's really happening during each of these operations is the following:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyModel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> myProp<span class="token operator">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+obj<span class="token punctuation">.</span>myProp <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 1. Validate input using validate function</span>
+                <span class="token comment">// 2. Mutate data using mutate function</span>
+                <span class="token comment">// 3. Store data on instance (not in Vuex store until commit)</span>
+
+<span class="token keyword">await</span> obj<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// Dispatch Vuex store action that will:</span>
+                      <span class="token comment">//   1. Make axios request to update data, return promise</span>
+                      <span class="token comment">//   2. Wait for response</span>
+                      <span class="token comment">//   3. Update new value in Vuex store</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span>myProp<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Use Vuex getter to pull property from store for instance.</span>
+</code></pre></div><p>More information about how data are organized in the Vuex store can be found in the <a href="/vuex-reflect/guide/store/overview.html">Store</a> section of the documentation.</p> <h2 id="mutating-properties"><a href="#mutating-properties" class="header-anchor">#</a> Mutating Properties</h2> <p>You can also define mutations for properties in your Model definitions via the <code>mutation</code> parameter within a property definition. The <code>mutation</code> key takes a callable and should return a value to store as the property state:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// within Model.props()</span>
+divWrappedProperty<span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token keyword">default</span><span class="token operator">:</span> <span class="token string">'&amp;nbsp;'</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">mutate</span><span class="token operator">:</span> <span class="token parameter">value</span> <span class="token operator">=&gt;</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;div&gt;</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>value<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">&lt;/div&gt;</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre></div><p>After setting the <code>mutation</code> key on a property definition, any attempts to set the property will be automatically processed:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// on instantiation</span>
+<span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token function">MyModel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> divWrappedProperty<span class="token operator">:</span> <span class="token string">'foo'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span>divWrappedProperty<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// '&lt;div&gt;foo&lt;/div&gt;'</span>
+
+<span class="token comment">// after instantiation</span>
+obj<span class="token punctuation">.</span>divWrappedProperty <span class="token operator">=</span> <span class="token string">'bar'</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>obj<span class="token punctuation">.</span>divWrappedProperty<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// '&lt;div&gt;bar&lt;/div&gt;'</span>
+</code></pre></div><h2 id="data-validation"><a href="#data-validation" class="header-anchor">#</a> Data Validation</h2> <p>Validation for model properties can be specified using the <code>validation</code> parameter within a property definition. The <code>validation</code> key can take either a callable returning a boolean:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// within Model.props()</span>
+numericProperty<span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token keyword">default</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">validate</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span> <span class="token comment">// validation logic</span>
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre></div><p>Or, a dictionary specifying the callable (<code>check</code>) and a message (<code>message</code>) to raise if the validation fails:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// within Model.props()</span>
+specificValue<span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token keyword">default</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  validate<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">check</span><span class="token operator">:</span> <span class="token parameter">value</span> <span class="token operator">=&gt;</span> value <span class="token operator">&lt;</span> <span class="token number">4</span><span class="token punctuation">,</span>
+    message<span class="token operator">:</span> <span class="token string">&quot;${value} must be less than 4.&quot;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>Inputs to the validate function will be the pre-mutated value.</p> <p>After setting the <code>validation</code> key on a property definition, any attempts to set the property will be automatically processed:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// valid property values, no errors thrown:</span>
+<span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token function">MyModel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> specificValue<span class="token operator">:</span> <span class="token number">3</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+obj<span class="token punctuation">.</span>specificValue <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+obj<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// invalid property values, errors thrown with message on commit</span>
+<span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token function">MyModel</span><span class="token punctuation">(</span><span class="token punctuation">{</span> specificValue<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+obj<span class="token punctuation">.</span>specificValue <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+obj<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>See <a href="https://lodash.com/docs" target="_blank" rel="noopener noreferrer">lodash<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> and <a href="https://github.com/validatorjs/validator.js" target="_blank" rel="noopener noreferrer">validator<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a> for libraries that can provide validation for different types of data.</p> <h2 id="linked-models"><a href="#linked-models" class="header-anchor">#</a> Linked Models</h2> <p>As described in the <a href="/vuex-reflect/guide/models/overview.html">Overview</a> section of the documentation, you can configure properties to reference other types of models via the <code>type</code> parameter in Model property declaration.</p> <p>If the API you're pulling data from produces nested data:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// GET /posts</span>
+<span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+      id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      title<span class="token operator">:</span> <span class="token string">'Post 1'</span><span class="token punctuation">,</span>
+      body<span class="token operator">:</span> <span class="token string">'This is the text for post 1'</span><span class="token punctuation">,</span>
+      author<span class="token operator">:</span> <span class="token punctuation">{</span>
+        id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span><span class="token punctuation">,</span>
+        email<span class="token operator">:</span> <span class="token string">'jane@doe.com'</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+      id<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+      title<span class="token operator">:</span> <span class="token string">'Post 2'</span><span class="token punctuation">,</span>
+      body<span class="token operator">:</span> <span class="token string">'This is the text for post 2'</span><span class="token punctuation">,</span>
+      author<span class="token operator">:</span> <span class="token punctuation">{</span>
+        id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span><span class="token punctuation">,</span>
+        email<span class="token operator">:</span> <span class="token string">'jane@doe.com'</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
+</code></pre></div><p>And you have two models configured for the nested data (in this case, <code>Author</code> and <code>Post</code>), you can configure the <code>Post</code> model to reference the internal <code>Author</code> model for the nested data like so:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">Author</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Post</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      title<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      body<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      author<span class="token operator">:</span> <span class="token punctuation">{</span>
+        model<span class="token operator">:</span> Author<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>The configuration above will enable this library to automatically store <code>Author</code> objects in the store once they're fetched via the <code>/posts</code> endpoint. Additionally, <code>Author</code> models will be directly available from the <code>Post</code> instances, so you can traverse the model data like so:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> post <span class="token operator">=</span> <span class="token keyword">await</span> Post<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment">// get post with id `1` from API</span>
+post<span class="token punctuation">.</span>author<span class="token punctuation">.</span>id     <span class="token comment">// 1</span>
+post<span class="token punctuation">.</span>author<span class="token punctuation">.</span>title  <span class="token comment">// Post 1</span>
+</code></pre></div><p>By default, on update actions, all of the author information will be sent in the <code>PUT</code> or <code>POST</code> payload:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> post <span class="token operator">=</span> Post<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// get post with id `1` from the store</span>
+post<span class="token punctuation">.</span>title <span class="token operator">=</span> <span class="token string">'new title'</span><span class="token punctuation">;</span>
+post<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// see below for payload</span>
+</code></pre></div><div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// PUT /posts/:id</span>
+<span class="token punctuation">{</span>
+    id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    title<span class="token operator">:</span> <span class="token string">'new title'</span><span class="token punctuation">,</span>
+    body<span class="token operator">:</span> <span class="token string">'This is the text for post 1'</span><span class="token punctuation">,</span>
+    author<span class="token operator">:</span> <span class="token punctuation">{</span>
+      id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+      name<span class="token operator">:</span> <span class="token string">'Jane Doe'</span><span class="token punctuation">,</span>
+      email<span class="token operator">:</span> <span class="token string">'jane@doe.com'</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre></div><p>However, this often isn't a contract required by the application API. More commonly, the application API will accept a payload in the form:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// PUT /posts/:id</span>
+<span class="token punctuation">{</span>
+    id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    title<span class="token operator">:</span> <span class="token string">'new title'</span><span class="token punctuation">,</span>
+    body<span class="token operator">:</span> <span class="token string">'This is the text for post 1'</span><span class="token punctuation">,</span>
+    author_id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre></div><p>To automatically collapse the nested <code>Author</code> data into a single update parameter, use the <code>collapse</code> parameter when defining the property:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">Post</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      title<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      body<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      author<span class="token operator">:</span> <span class="token punctuation">{</span>
+        type<span class="token operator">:</span> Author<span class="token punctuation">,</span>
+        collapse<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        to<span class="token operator">:</span> <span class="token string">'author_id'</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>Similarly, <code>collapse</code> can take a string that will be used to pull a value from nested objects to include in the payload.</p> <p>Explicitly declaring how models are related can assume many different types of patterns, and this library was built to accommodate as many as possible. For instance, sometimes related models are declared in the API using a key reference:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// GET /posts/:id</span>
+<span class="token punctuation">{</span>
+    id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    title<span class="token operator">:</span> <span class="token string">'new title'</span><span class="token punctuation">,</span>
+    body<span class="token operator">:</span> <span class="token string">'This is the text for post 1'</span><span class="token punctuation">,</span>
+    author_id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre></div><p>If your frontend models would more easily be usable by changing the <code>author_id</code> property into an <code>Author</code> relationship, you can use <code>from</code> to automatically map the data in that way:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">class</span> <span class="token class-name">Post</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      title<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      body<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+      author<span class="token operator">:</span> <span class="token punctuation">{</span>
+        type<span class="token operator">:</span> Author<span class="token punctuation">,</span>
+        <span class="token keyword">from</span><span class="token operator">:</span> <span class="token string">'author_id'</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>However, this requires that the <code>Author</code> data being referenced is already in the Vuex store. When you access the property:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code>Post<span class="token punctuation">.</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> post <span class="token operator">=</span> Post<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  post<span class="token punctuation">.</span>author<span class="token punctuation">.</span>id
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>This library will use a store getter to try to retrieve an <code>Author</code> model using the <code>author_id</code> data from the <code>posts</code> payload. An <code>Author</code> model will only be returned if that <code>Author</code> entry already exists in the store. Otherwise, accessing the <code>author</code> property will return <code>null</code>.</p> <p>Or, you can simply use the <code>from</code> keyword to rename payload data to your liking (doesn't need to be associated with a linked model).</p> <style>
+.badge {
+  display: inline-block;
+  font-size: 20px;
+  font-family: monospace;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 3px;
+  padding: 0 6px;
+  color: #fff;
+  background-color: #42b983;
+}
+.scoped .badge,
+blockquote .badge {
+  font-size: 15px;
+  height: 23px;
+  line-height: 23px;
+}
+.badge.warning {
+  background-color: #e7c000;
+}
+.badge.error {
+  background-color: #da5961;
+}
+.badge.tip {
+  background-color: #42b983;
+}
+blockquote.scoped.warning {
+  border-color: #e7c000;
+}
+blockquote.scoped.error {
+  border-color: #da5961;
+}
+blockquote.scoped.tip {
+  border-color: #42b983;
+}
+
+</style></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/bprinty/vuex-reflect/edit/master/docs/guide/models/properties.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">3/7/2020, 10:52:10 AM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vuex-reflect/guide/models/api.html" class="prev">
+        API
+      </a></span> <span class="next"><a href="/vuex-reflect/guide/models/relationships.html">
+        Relationships
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vuex-reflect/assets/js/app.275ec620.js" defer></script><script src="/vuex-reflect/assets/js/2.befe28c1.js" defer></script><script src="/vuex-reflect/assets/js/12.9f05655c.js" defer></script>
+  </body>
+</html>
